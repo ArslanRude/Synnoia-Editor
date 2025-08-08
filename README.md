@@ -1,2 +1,1 @@
-# OnlyWord
 Word with AI
