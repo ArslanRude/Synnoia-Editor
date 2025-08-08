@@ -6,7 +6,7 @@
     </div>
     <!-- Editor content - takes remaining space -->
     <div class="flex-1 min-h-0">
-      <UmoEditorComponent ref="editorRef" v-bind="options" />
+      <MyWord ref="editorRef" v-bind="options" />
     </div>
 
     <!-- <div class="box">
@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import UmoEditorComponent from '@/components/index.vue'
+import MyWord from '@/components/index.vue'
 import Nav from '@/components/navbar/nav.vue'
 import { shortId } from '@/utils/short-id'
 
