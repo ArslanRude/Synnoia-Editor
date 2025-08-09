@@ -131,27 +131,70 @@ const newStyleFontWeight = ref('')
 const newStyleColor = ref('')
 
 const currentValue = computed(() => {
-  const heading = (level: any) => editor.value?.isActive('heading', { level })
+  const isHeadingActive = (level: any) => editor.value?.isActive('heading', { level })
   if (editor.value) {
+    // 1) Prefer to detect a matching custom style first
+    for (const style of customStyles) {
+      let match = true
+      let hasAnyAttr = false
+
+      const attrs: Record<string, any> = {}
+      if (style.fontSize) {
+        hasAnyAttr = true
+        const s = String(style.fontSize).trim()
+        attrs.fontSize = s.endsWith('px') ? s : `${s}px`
+      }
+      if (style.fontFamily) {
+        hasAnyAttr = true
+        attrs.fontFamily = style.fontFamily
+      }
+      if (style.color) {
+        hasAnyAttr = true
+        attrs.color = style.color
+      }
+
+      // Check textStyle attributes
+      for (const [k, v] of Object.entries(attrs)) {
+        if (!editor.value?.isActive('textStyle', { [k]: v })) {
+          match = false
+          break
+        }
+      }
+
+      // Optional: treat heavy weight as bold for detection
+      if (match && style.fontWeight) {
+        const fw = String(style.fontWeight).toLowerCase()
+        if (fw === 'bold' || Number(style.fontWeight) >= 600) {
+          hasAnyAttr = true
+          if (!editor.value?.isActive('bold')) match = false
+        }
+      }
+
+      if (match && hasAnyAttr) {
+        return style.value
+      }
+    }
+
+    // 2) Fallback to built-in paragraph and headings
     if (editor.value?.isActive('paragraph')) {
       return 'paragraph'
     }
-    if (heading(1)) {
+    if (isHeadingActive(1)) {
       return 1
     }
-    if (heading(2)) {
+    if (isHeadingActive(2)) {
       return 2
     }
-    if (heading(3)) {
+    if (isHeadingActive(3)) {
       return 3
     }
-    if (heading(4)) {
+    if (isHeadingActive(4)) {
       return 4
     }
-    if (heading(5)) {
+    if (isHeadingActive(5)) {
       return 5
     }
-    if (heading(6)) {
+    if (isHeadingActive(6)) {
       return 6
     }
   }
@@ -159,11 +202,55 @@ const currentValue = computed(() => {
 })
 
 const setHeading = (value: any) => {
+  const ed = editor.value
+  if (!ed) return
+
   if (value === 'paragraph') {
-    editor.value?.chain().focus().setParagraph().run()
-  } else {
-    editor.value?.chain().focus().toggleHeading({ level: value }).run()
+    ed.chain().focus().setParagraph().run()
+    return
   }
+
+  // Built-in heading levels 1-6
+  if (typeof value === 'number') {
+    ed.chain().focus().toggleHeading({ level: value }).run()
+    return
+  }
+
+  // Handle custom styles
+  const style = customStyles.find((s: any) => s.value === value)
+  if (!style) return
+
+  let chain = ed.chain().focus()
+
+  if (style.fontFamily) {
+    chain = chain.setFontFamily(style.fontFamily)
+  }
+
+  if (style.fontSize) {
+    const s = String(style.fontSize).trim()
+    const size = s.endsWith('px') ? s : `${s}px`
+    chain = chain.setFontSize(size)
+  }
+
+  if (style.color) {
+    chain = chain.setColor(style.color)
+  }
+
+  // Best-effort: heavy weights act like bold
+  if (style.fontWeight) {
+    const fw = String(style.fontWeight).toLowerCase()
+    if (fw === 'bold' || Number(style.fontWeight) >= 600) {
+      if (!ed.isActive('bold')) {
+        chain = chain.toggleBold()
+      }
+    } else {
+      if (ed.isActive('bold')) {
+        chain = chain.toggleBold()
+      }
+    }
+  }
+
+  chain.run()
 }
 
 // Function to create a new custom heading style

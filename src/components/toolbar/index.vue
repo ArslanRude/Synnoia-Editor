@@ -112,16 +112,18 @@
         @click="toggleToolbarMode"
       >
         <t-button
-          class="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
+          class="rounded transition-colors"
           variant="text"
           size="small"
         >
-          <icon name="expand-down" class="text-gray-700 dark:text-gray-200" />
+        <div class="flex items-center p-2 rounded-xl hover:bg-primary-light ">
+          <icon name="expand-down" class="text-text-light dark:text-text-dark " />
           <span
-            class="flex items-center sm:inline hidden ml-1 text-gray-700 dark:text-gray-200"
+            class="flex items-center sm:inline hidden ml-1 text-text-light dark:text-text-dark"
           >
             {{ t('toolbar.toggle') }}
           </span>
+        </div>
         </t-button>
         <template #dropdown>
           <t-dropdown-menu
