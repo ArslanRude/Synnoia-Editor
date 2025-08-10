@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <iframe ref="iframeRef" class="arslan-print-iframe" :srcdoc="iframeCode" />
 </template>
 
@@ -69,7 +69,7 @@ const getIframeCode = () => {
   /* eslint-disable */
   return `
     <!DOCTYPE html>
-    <html lang="zh-CN" theme-mode="${options.value.theme}">
+    <html lang="en" theme-mode="${options.value.theme}">
     <head>
       <title>${options.value.document?.title}</title>
       <meta charset="UTF-8">

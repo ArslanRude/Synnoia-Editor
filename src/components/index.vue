@@ -1,6 +1,6 @@
 <template>
   <t-config-provider :key="options.editorKey" :global-config="{
-    ...localeConfig[locale],
+    ...localeConfig['en-US'],
     classPrefix: 'arslan',
   }">
     <div :id="container.substr(1)" class="arslan-editor-container" :class="{
@@ -50,7 +50,6 @@ import type {
   MessageOptions,
 } from 'tdesign-vue-next'
 import enConfig from 'tdesign-vue-next/esm/locale/en_US'
-import cnConfig from 'tdesign-vue-next/esm/locale/zh_CN'
 
 import { getSelectionNode, getSelectionText } from '@/extensions/selection'
 import { i18n } from '@/i18n'
@@ -66,7 +65,6 @@ import type {
 import type {
   AutoSaveOptions,
   DocumentOptions,
-  SupportedLocale,
   WatermarkOption,
 } from '@/types'
 import { contentTransform } from '@/utils/content-transform'
@@ -74,7 +72,6 @@ import { consoleCopyright } from '@/utils/copyright'
 import { getOpitons } from '@/utils/options'
 import { shortId } from '@/utils/short-id'
 
-import ruConfig from '../locales/tdesign/ru-RU'
 
 const { toBlob, toJpeg, toPng } = domToImage
 
@@ -382,34 +379,22 @@ watch(
 // i18n Setup
 // @ts-ignore
 const { t, locale, mergeLocaleMessage } = useI18n()
-// Preserve previously saved locale from legacy key and migrate to new key
-const $newLocale = useStorage('arslan-editor:locale', options.value.locale)
-const $oldLocale = useStorage('umo-editor:locale', options.value.locale)
-if ($oldLocale.value && !$newLocale.value) {
-  $newLocale.value = $oldLocale.value
-}
-const $locale = $newLocale
-locale.value = $locale.value
+// English-only locale
+locale.value = 'en-US'
 consoleCopyright()
-const getLocaleMessage = (lang: SupportedLocale) => {
-  const translations = options.value.translations?.[lang.replaceAll('-', '_')]
+const getLocaleMessage = () => {
+  const translations = options.value.translations?.en_US
   if (isRecord(translations)) {
     return translations
   }
   return {}
 }
-mergeLocaleMessage(locale.value, getLocaleMessage(locale.value))
+mergeLocaleMessage('en-US', getLocaleMessage())
 const { appContext } = getCurrentInstance() ?? {}
 if (appContext) {
   appContext.config.globalProperties.t = t
   appContext.config.globalProperties.l = l
 }
-watch(
-  () => locale.value,
-  (locale: any, oldLocale: any) => {
-    emits('changed:locale', { locale, oldLocale })
-  },
-)
 
 // Global Locale Config
 const localeConfig = $ref<Record<string, GlobalConfigProvider>>({
@@ -419,15 +404,6 @@ const localeConfig = $ref<Record<string, GlobalConfigProvider>>({
 // Options Setup
 const setOptions = (value: ArslanEditorOptions): ArslanEditorOptions => {
   options.value = getOpitons(value)
-  // Ensure we respect legacy saved locale and migrate to new key
-  const $newLocale = useStorage('arslan-editor:locale', options.value.locale)
-  const $oldLocale = useStorage('umo-editor:locale', options.value.locale)
-  if ($oldLocale.value && !$newLocale.value) {
-    $newLocale.value = $oldLocale.value
-  }
-  if (!$newLocale.value) {
-    $newLocale.value = options.value.locale
-  }
   return options.value
 }
 
@@ -712,17 +688,6 @@ const getContent = <T extends 'html' | 'json' | 'text' = 'html'>(
   throw new Error('format must be html, text or json')
 }
 
-// Locale Methods
-const setLocale = (params: SupportedLocale) => {
-  if (!['en-US'].includes(params)) {
-    throw new Error('"params" must be one of "en-US".')
-  }
-  if (locale.value === params) {
-    return
-  }
-  $locale.value = params
-  location.reload()
-}
 
 const getLocale = () => locale.value
 const getI18n = () => i18n
@@ -961,7 +926,6 @@ watch(
 
 // Methods Exposed to Descendants
 provide('saveContent', saveContent)
-provide('setLocale', setLocale)
 provide('reset', reset)
 
 // Exposing Methods
@@ -977,7 +941,6 @@ defineExpose({
   startTypewriter,
   stopTypewriter,
   getTypewriterState,
-  setLocale,
   setTheme,
   getPage: () => page.value,
   getContent,
@@ -997,8 +960,6 @@ defineExpose({
     editor.value?.commands.deleteSelectionNode() as boolean | undefined,
   setCurrentNodeSelection: () =>
     editor.value?.commands.setCurrentNodeSelection() as boolean | undefined,
-  getLocale,
-  getI18n,
   setReadOnly(readOnly = true) {
     if (options.value.document) {
       options.value.document.readOnly = readOnly

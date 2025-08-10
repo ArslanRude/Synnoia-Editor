@@ -1,9 +1,9 @@
-﻿import type { Extension, HTMLContent, JSONContent } from '@tiptap/core'
+import type { Extension, HTMLContent, JSONContent } from '@tiptap/core'
 import type { FocusPosition } from '@tiptap/core'
 import { Fragment, Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { AsyncFunction } from '@tool-belt/type-predicates'
 
-export type SupportedLocale = 'en-US' | 'zh-CN' | 'ru-RU'
+export type SupportedLocale = 'en-US'
 export interface MarginOption {
   left: number
   right: number
@@ -90,7 +90,7 @@ export interface DocumentOptions {
   id?: string
   title?: string
   content?: string
-  placeholder?: Record<string, string>
+  placeholder?: string
   enableSpellcheck?: boolean
   enableMarkdown?: boolean
   enableBubbleMenu?: boolean
@@ -104,9 +104,7 @@ export interface DocumentOptions {
   autoSave?: AutoSaveOptions
 }
 
-export type LocaleLabel =
-  | string
-  | { en_US: string; zh_CN: string; ru_RU: string }
+export type LocaleLabel = string
 
 export interface PageSize {
   label: LocaleLabel

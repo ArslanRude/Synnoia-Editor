@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div v-if="!page.preview?.enabled" class="arslan-status-bar">
     <div class="arslan-status-bar-left">
       <tooltip :content="page.showToc ? t('toc.hide') : t('toc.show')">
@@ -59,7 +59,7 @@
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
-          :href="`https://editor.umodoc.com/${locale === 'zh-CN' ? 'cn' : 'en'}/docs`"
+          href="https://editor.umodoc.com/en/docs"
           target="_blank"
         >
           <icon name="home-page" />
@@ -220,23 +220,6 @@
           </t-button>
         </tooltip>
       </div>
-      <t-dropdown
-        :attach="container"
-        :options="langs"
-        placement="top-left"
-        trigger="click"
-        @click="changeLang"
-      >
-        <t-button
-          class="arslan-status-bar-button auto-width arslan-lang-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
-          :class="{ active: page.autoWidth, '!bg-secondary-light dark:!bg-secondary-dark': page.autoWidth }"
-          variant="text"
-          size="small"
-          @click="zoomReset"
-          v-text="lang"
-        >
-        </t-button>
-      </t-dropdown>
     </div>
   </div>
   <div v-else class="arslan-preview-bar">
@@ -314,12 +297,9 @@
 
 <script setup lang="ts">
 import type { UseFullscreenReturn } from '@vueuse/core'
-import type { DropdownOption } from 'tdesign-vue-next'
-
-import type { SupportedLocale } from '@/types'
 import { getShortcut } from '@/utils/shortcut'
 
-const { locale } = useI18n()
+const { t } = useI18n()
 const container = inject('container')
 const editor = inject('editor')
 const page = inject('page')
@@ -472,41 +452,6 @@ watch(
   },
 )
 
-// 多语言
-const langs = [
-  { content: '🇱🇷 English', value: 'en-US' },
-]
-const setLocale = inject('setLocale') as (value: SupportedLocale) => void
-
-const lang = computed(
-  () => langs.find((item) => item.value === locale.value)?.content,
-)
-const changeLang = (dropdownItem: DropdownOption) => {
-  const value = dropdownItem.value as SupportedLocale
-  if (lang.value === value) {
-    return
-  }
-  const dialog = useConfirm({
-    attach: container,
-    theme: 'warning',
-    header: t('changeLocale.title'),
-    body: t('changeLocale.message'),
-    confirmBtn: {
-      theme: 'warning',
-      content: t('changeLocale.confirm'),
-    },
-    onConfirm() {
-      dialog.destroy()
-      setTimeout(() => setLocale(value), 300)
-    },
-  })
-}
-
-const toggleSpellcheck = () => {
-  if ($document.value) {
-    $document.value.enableSpellcheck = !$document.value.enableSpellcheck
-  }
-}
 
 // 快捷键
 watch(

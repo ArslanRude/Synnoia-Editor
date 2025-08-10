@@ -1,9 +1,3 @@
-﻿const locales = {
-  'zh-CN': 'zh',
-  'en-US': 'en',
-  'ru-RU': 'ru',
-}
-
 // https://www.diagrams.com/doc/faq/embed-mode
 class DiagramEditor {
   frame: HTMLIFrameElement | undefined
@@ -69,11 +63,9 @@ class DiagramEditor {
     const params = Object.keys(this.params)
       .map((key) => `${key}=${this.params[key as keyof typeof this.params]}`)
       .join('&')
-    const { locale } = useI18n()
-    const lang = locales[locale.value as keyof typeof locales]
     const frame = document.createElement('iframe')
     frame.setAttribute('class', 'arslan-diagrams-iframe')
-    frame.setAttribute('src', `${this.domain}?${params}&lang=${lang}`)
+    frame.setAttribute('src', `${this.domain}?${params}&lang=en`)
     return frame
   }
 
@@ -161,4 +153,3 @@ class DiagramEditor {
 }
 
 export default DiagramEditor
-

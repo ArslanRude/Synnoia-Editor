@@ -1,21 +1,20 @@
-﻿import { ObjectSchema } from '@eslint/object-schema'
+import { ObjectSchema } from '@eslint/object-schema'
 import {
   type AsyncFunction,
   isAsyncFunction,
   isFunction,
   isNumber,
-  isRecord,
   isString,
 } from '@tool-belt/type-predicates'
 
 import type {
+  ArslanEditorOptions,
   Emoji,
   GraphicSymbol,
   LineHeight,
   LocaleLabel,
   PageSize,
   Template,
-  ArslanEditorOptions,
   WebPageItem,
 } from '@/types'
 
@@ -26,7 +25,7 @@ import { defaultWebPages } from './web-pages'
 // 默认配置
 const defaultOptions: ArslanEditorOptions = {
   editorKey: 'default',
-  locale: 'zh-CN',
+  locale: 'en-US',
   theme: 'light',
   height: '100%',
   fullscreenZIndex: 10,
@@ -77,11 +76,7 @@ const defaultOptions: ArslanEditorOptions = {
   document: {
     title: '',
     content: '',
-    placeholder: {
-      en_US: 'Please enter the document content...',
-      zh_CN: '请输入文档内容...',
-      ru_RU: 'Пожалуйста, введите содержимое документа...',
-    },
+    placeholder: 'Please enter the document content...',
     enableSpellcheck: true,
     enableMarkdown: true,
     enableBubbleMenu: true,
@@ -133,9 +128,7 @@ const defaultOptions: ArslanEditorOptions = {
   users: [],
   extensions: [],
   translations: {
-    en_US: {},
-    zh_CN: {},
-    ru_RU: {},
+    'en-US': {},
   },
   async onSave() {
     return await new Promise((_, reject) => {
@@ -162,18 +155,7 @@ const defaultOptions: ArslanEditorOptions = {
 const propsOptions = Object.keys(defaultOptions)
 
 const isLocale = (value: unknown) => {
-  if (isString(value) && value.length > 0) {
-    return true
-  }
-  if (isRecord(value)) {
-    for (const key of Object.keys(value)) {
-      if (!['en_US', 'zh_CN', 'ru_RU'].includes(key)) {
-        return false
-      }
-    }
-    return true
-  }
-  return false
+  return isString(value) && value.length > 0
 }
 
 const ojbectSchema = new ObjectSchema({
@@ -185,10 +167,8 @@ const ojbectSchema = new ObjectSchema({
   locale: {
     merge: 'replace',
     validate(value) {
-      if (value && !['en-US', 'zh-CN', 'ru-RU'].includes(value)) {
-        throw new Error(
-          'Key "locale": must be one of "en-US", "zh-CN" or "ru-RU".',
-        )
+      if (value && value !== 'en-US') {
+        throw new Error('Key "locale": must be "en-US".')
       }
     },
     required: false,
@@ -257,9 +237,9 @@ const ojbectSchema = new ObjectSchema({
                 `Key "dicts": Key "lineHeights[${index}]": must be a array of objects with "label" and "value" properties.`,
               )
             }
-            if (!isLocale(item.label)) {
+            if (!isString(item.label)) {
               throw new Error(
-                `Key "dicts": Key "lineHeights[${index}]": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                `Key "dicts": Key "lineHeights[${index}]": Key "label" must be a string.`,
               )
             }
           })
@@ -278,9 +258,9 @@ const ojbectSchema = new ObjectSchema({
                 `Key "dicts": Key "symbols[${index}]": must be a array of objects with "label" and "items" properties.`,
               )
             }
-            if (!isLocale(item.label)) {
+            if (!isString(item.label)) {
               throw new Error(
-                `Key "dicts": Key "symbols[${index}]": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                `Key "dicts": Key "symbols[${index}]": Key "label" must be a string.`,
               )
             }
           })
@@ -299,9 +279,9 @@ const ojbectSchema = new ObjectSchema({
                 `Key "dicts": Key "emojis[${index}]": must be a array of objects with "label" and "value" properties.`,
               )
             }
-            if (!isLocale(item.label)) {
+            if (!isString(item.label)) {
               throw new Error(
-                `Key "dicts": Key "emojis[${index}]": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                `Key "dicts": Key "emojis[${index}]": Key "label" must be a string.`,
               )
             }
           })
@@ -325,9 +305,9 @@ const ojbectSchema = new ObjectSchema({
                 `Key "dicts": Key "pageSizes[${index}]" Key: "label" cannot be empty.`,
               )
             }
-            if (!isLocale(item.label)) {
+            if (!isString(item.label)) {
               throw new Error(
-                `Key "dicts": Key "pageSizes[${index}]": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                `Key "dicts": Key "pageSizes[${index}]": Key "label" must be a string.`,
               )
             }
             if (!isNumber(item.width)) {
@@ -563,13 +543,7 @@ const ojbectSchema = new ObjectSchema({
       },
       placeholder: {
         merge: 'replace',
-        validate(value: LocaleLabel) {
-          if (!isLocale(value)) {
-            throw new Error(
-              `Key "document": Key "title": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
-            )
-          }
-        },
+        validate: 'string',
         required: false,
       },
       enableSpellcheck: {
@@ -692,14 +666,14 @@ const ojbectSchema = new ObjectSchema({
                     'Key "assistant": Key "commands" must be a array of objects with "label" and "value" properties.',
                   )
                 }
-                if (!isLocale(item.label)) {
+                if (!isString(item.label)) {
                   throw new Error(
-                    `Key "assistant": Key "commands[${index}]": Key "label" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                    `Key "assistant": Key "commands[${index}]": Key "label" must be a string.`,
                   )
                 }
-                if (!isLocale(item.value)) {
+                if (!isString(item.value)) {
                   throw new Error(
-                    `Key "assistant": Key "commands[${index}]": Key "value" must be string, or a object with "en_US" and "zh_CN" properties.`,
+                    `Key "assistant": Key "commands[${index}]": Key "value" must be a string.`,
                   )
                 }
               })
@@ -916,6 +890,4 @@ const ojbectSchema = new ObjectSchema({
     required: false,
   },
 })
-
 export { defaultOptions, ojbectSchema, propsOptions }
-

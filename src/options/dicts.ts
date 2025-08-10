@@ -1,71 +1,51 @@
 export const defaultDicts = {
   fonts: [
     {
-      label: { en_US: 'Default Font', zh_CN: '默认字体', ru_RU: 'default' },
+      label: 'Default Font',
       value: null,
     },
     {
-      label: { en_US: 'Songti', zh_CN: '宋体', ru_RU: 'Songti' },
+      label: 'Songti',
       value: 'SimSun',
     },
     {
-      label: { en_US: 'Heiti', zh_CN: '黑体', ru_RU: 'Heiti' },
+      label: 'Heiti',
       value: 'SimHei',
     },
     {
-      label: { en_US: 'Kaiti', zh_CN: '楷体', ru_RU: 'Kaiti' },
+      label: 'Kaiti',
       value: 'KaiTi',
     },
     {
-      label: {
-        en_US: 'Kaiti GB2312',
-        zh_CN: '楷体_GB2312',
-        ru_RU: 'Kaiti GB2312',
-      },
+      label: 'Kaiti GB2312',
       value: 'KaiTi_GB2312',
     },
     {
-      label: { en_US: 'Fangsong', zh_CN: '仿宋', ru_RU: 'Fangsong' },
+      label: 'Fangsong',
       value: 'FangSong',
     },
     {
-      label: {
-        en_US: 'Fangsong GB2312',
-        zh_CN: '仿宋_GB2312',
-        ru_RU: 'Fangsong GB2312',
-      },
+      label: 'Fangsong GB2312',
       value: 'FangSong_GB2312',
     },
     {
-      label: { en_US: 'STSong', zh_CN: '华文宋体', ru_RU: 'STSong' },
+      label: 'STSong',
       value: 'STSong',
     },
     {
-      label: { en_US: 'STFangsong', zh_CN: '华文仿宋', ru_RU: 'STFangsong' },
+      label: 'STFangsong',
       value: 'STFangsong',
     },
     {
-      label: {
-        en_US: 'FZ Fangsong Simplified',
-        zh_CN: '方正仿宋简体',
-        ru_RU: 'FZ Fangsong Simplified',
-      },
+      label: 'FZ Fangsong Simplified',
       value: 'FZFangSong-Z02S',
     },
     {
-      label: {
-        en_US: 'FZ Xiaobiao Song',
-        zh_CN: '方正小标宋',
-        ru_RU: 'FZ Xiaobiao Song',
-      },
+      label: 'FZ Xiaobiao Song',
       value: 'FZXiaoBiaoSong-B05S',
     },
     {
-      label: {
-        en_US: 'Microsoft Yahei',
-        zh_CN: '微软雅黑',
-        ru_RU: 'Microsoft Yahei',
-      },
+      label: 'Microsoft Yahei',
       value: 'Microsoft Yahei',
     },
     { label: 'Arial', value: 'Arial' },
@@ -144,128 +124,88 @@ export const defaultDicts = {
     ],
   lineHeights: [
     {
-      label: { en_US: 'Single', zh_CN: '单倍行距', ru_RU: 'Одинарный' },
+      label: 'Single',
       value: 1,
     },
     {
-      label: {
-        en_US: '1.5 Line Spacing',
-        zh_CN: '1.5 倍行距',
-        ru_RU: '1.5 Межстрочных интервала',
-      },
+      label: '1.5 Line Spacing',
       value: 1.5,
       default: true,
     },
     {
-      label: { en_US: 'Double', zh_CN: '2 倍行距', ru_RU: 'Двойной' },
+      label: 'Double',
       value: 2,
     },
     {
-      label: {
-        en_US: '2.5 Line Spacing',
-        zh_CN: '2.5 倍行距',
-        ru_RU: '2.5 Межстрочных интервала',
-      },
+      label: '2.5 Line Spacing',
       value: 2.5,
     },
     {
-      label: { en_US: 'Triple', zh_CN: '3 倍行距', ru_RU: 'Тройной' },
+      label: 'Triple',
       value: 3,
     },
   ],
   symbols: [
     {
-      label: {
-        en_US: 'Plain Text',
-        zh_CN: '普通文本',
-        ru_RU: 'Простой Текст',
-      },
+      label: 'Plain Text',
       items: '‹›«»‘’“”‚„¡¿‥…‡‰‱‼⁈⁉⁇©®™§¶⁋',
     },
     {
-      label: {
-        en_US: 'Currency Symbols',
-        zh_CN: '货币符号',
-        ru_RU: 'Символы Валют',
-      },
+      label: 'Currency Symbols',
       items: '$€¥£¢₠₡₢₣₤¤₿₥₦₧₨₩₪₫₭₮₯₰₱₲₳₴₵₶₷₸₹₺₻₼₽',
     },
     {
-      label: {
-        en_US: 'Mathematical Symbols',
-        zh_CN: '数学符号',
-        ru_RU: 'Математические Символы',
-      },
+      label: 'Mathematical Symbols',
       items: '<>≤≥–—¯‾°−±÷⁄×ƒ∫∑∞√∼≅≈≠≡∈∉∋∏∧∨¬∩∪∂∀∃∅∇∗∝∠¼½¾',
     },
     {
-      label: { en_US: 'Arrows', zh_CN: '箭头', ru_RU: 'Стрелки' },
+      label: 'Arrows',
       items: '←→↑↓⇐⇒⇑⇓⇠⇢⇡⇣⇤⇥⤒⤓↨',
     },
     {
-      label: {
-        en_US: 'Latin Script',
-        zh_CN: '拉丁语',
-        ru_RU: 'Латинская письменность',
-      },
+      label: 'Latin Script',
       items:
         'ĀāĂăĄąĆćĈĉĊċČčĎďĐđĒēĔĕĖėĘęĚěĜĝĞğĠġĢģĤĥĦħĨĩĪīĬĭĮįİıĲĳĴĵĶķĸĹĺĻļĽľĿŀŁłŃńŅņŇňŉŊŋŌōŎŏŐőŒœŔŕŖŗŘřŚśŜŝŞşŠšŢţŤťŦŧŨũŪūŬŭŮůŰűŲųŴŵŶŷŸŹźŻżŽžſ',
     },
   ],
   emojis: [
     {
-      label: {
-        en_US: 'Emotions & People',
-        zh_CN: '表情与角色',
-        ru_RU: 'Эмоции & Люди',
-      },
+      label: 'Emotions & People',
       items:
         '😀 😃 😄 😁 😆 😅 🤣 😂 🙂 🙃 😉 😊 😇 🥰 😍 🤩 😘 😗 😚 😙 😋 😛 😜 🤪 😝 🤑 🤗 🤭 🤫 🤔 🤐 🤨 😐 😑 😶 😶‍ 😏 😒 🙄 😬 😮‍ 🤥 😌 😔 😪 🤤 😴 😷 🤒 🤕 🤢 🤮 🤧 🥵 🥶 🥴 😵 😵‍💫 🤯 🤠 🥳 😎 🤓 🧐 😕 😟 🙁 ☹️ 😮 😯 😲 😳 🥺 😦 😧 😨 😰 😥 😢 😭 😱 😖 😣 😞 😓 😩 😫 🥱 😤 😡 😠 🤬 😈 👿 💀 ☠️ 💩 🤡 👹 👺 👻 👽 👾 🤖 👋 🤚 🖐️ ✋ 🖖 👌 🤏 ✌️ 🤞 🤟 🤘 🤙 👈 👉 👆 🖕 👇 ☝️ 👍 👎 ✊ 👊 🤛 🤜 👏 🙌 👐 🤲 🤝 🙏 ✍️ 💅 🤳 💪 🦾 🦿 🦵 🦶 👂 🦻',
     },
     {
-      label: {
-        en_US: 'Animals & Nature',
-        zh_CN: '动物与自然',
-        ru_RU: 'Животные & Природа',
-      },
+      label: 'Animals & Nature',
       items:
         '🐵 🐒 🦍 🦧 🐶 🐕 🦮 🐕‍🦺 🐩 🐺 🦊 🦝 🐱 🐈 🐈‍⬛ 🦁 🐯 🐅 🐆 🐴 🐎 🦄 🦓 🦌 🐮 🐂 🐃 🐄 🐷 🐖 🐗 🐽 🐏 🐑 🐐 🐪 🐫 🦙 🦒 🐘 🦏 🦛 🐭 🐁 🐀 🐹 🐰 🐇 🐿️ 🦔 🦇 🐻 🐻‍❄️ 🐨 🐼 🦥 🦦 🦨 🦘 🦡 🐾 🦃 🐔 🐓 🐣 🐤 🐥 🐦 🐧 🕊️ 🦅 🦆 🦢 🦉 🦩 🦚 🦜 🐸 🐊 🐢 🦎 🐍 🐲 🐉 🦕 🦖 🐳 🐋 🐬 🦭 🐟 🐠 🐡 🦈 🐙 🐚 🐌 🦋 🐛 🐜 🐝 🐞 🦗 🕷️ 🕸️ 🦂 🦟 🦠 💐 🌸 💮 🏵️ 🌹 🥀 🌺 🌻 🌼 🌷 🌱 🌲 🌳 🌴 🌵 🌾 🌿 ☘️ 🍀 🍁 🍂 🍃 🌒 🌓 🌔 🌕 🌖 🌗 🌘 🌙 🌚 🌛 🌜 ☀️ 🌝 🌞 🪐 🌟 🌠 🌌 ☁️ ⛅ ⛈️ 🌤️ 🌥️ 🌦️ 🌧️ 🌨️ 🌩️ 🌪️ 🌫️ 🌬️ 🌀 🌈 🌂 ☂️ ☔ ⛱️ ⚡ ❄️ ☃️ ⛄ ☄️ 🔥 💧 🌊',
     },
     {
-      label: {
-        en_US: 'Food & Drink',
-        zh_CN: '食物与食品',
-        ru_RU: 'Еда & Напитки',
-      },
+      label: 'Food & Drink',
       items:
         '🍇 🍉 🍊 🍋 🍌 🍍 🥭 🍎 🍏 🍐 🍑 🍒 🍓 🥝 🍅 🥥 🥑 🍆 🥔 🥕 🌽 🌶️ 🥬 🥦 🧄 🧅 🍄 🥜 🌰 🍞 🥐 🥖 🥨 🥯 🥞 🧇 🧀 🍖 🍗 🥩 🥓 🍔 🍟 🍕 🌭 🥪 🌮 🌯 🥙 🧆 🥚 🍳 🥘 🍲 🥣 🥗 🍿 🧈 🧂 🥫 🍱 🍘 🍙 🍚 🍛 🍜 🍝 🍠 🍢 🍣 🍤 🍥 🥮 🍡 🥟 🥠 🥡 🦀 🦞 🦐 🦑 🦪 🍦 🍧 🍨 🍩 🍪 🎂 🍰 🧁 🥧 🍫 🍬 🍭 🍮 🍯 🍼 🥛 ☕ 🍵 🍶 🍾 🍷 🍸 🍹 🍺 🍻 🥂 🥃 🥤 🧃 🧉 🧊 🥢 🍽️ 🍴 🥄 🔪 🏺',
     },
     {
-      label: { en_US: 'Activities', zh_CN: '活动', ru_RU: 'Активность' },
+      label: 'Activities',
       items:
         '🧧 🎁 🎄 🧨 ✨ 🎈 🎉 🏮 🎗️ 🎟️ 🎫 🎖️ 🏆 🏅 🥇 🥈 🥉 ⚽ ⚾ 🥎 🏀 🏐 🏈 🏉 🎾 🥏 🎳 🏏 🏑 🏒 🥍 🏓 🏸 🥊 🥋 🥅 ⛳ ⛸️ 🎣 🤿 🎽 🎿 🛷 🥌 🎯 🪀 🪁 🎱 🔮 🧿 🎮 🕹️ 🎰 🎲 🧩 🧸 ♟️ 🃏 🀄 🎴 🎭 🖼️ 🎨 🧵 🧶',
     },
     {
-      label: {
-        en_US: 'Travel & Places',
-        zh_CN: '旅行与景点',
-        ru_RU: 'Путешествия & Места',
-      },
+      label: 'Travel & Places',
       items:
         '🚈 🚉 🚊 🚝 🚞 🚋 🚌 🚍 🚎 🚐 🚑 🚒 🚓 🚔 🚕 🚖 🚗 🚘 🚙 🚚 🚛 🚜 🏎️ 🏍️ 🛵 🦽 🦼 🛺 🚲 🛴 🛹 🚏 🛣️ 🛤️ 🛢️ ⛽ 🚨 🚥 🚦 🛑 🚧 ⚓ ⛵ 🛶 🚤 🛳️ ⛴️ 🛥️ 🚢 ✈️ 🛩️ 🛫 🛬 🪂 💺 🚁 🚟 🚠 🚡 🛰️ 🚀 🛸 🛎️ 🧳 🧭 ⌚ ⏰ ⏱️ ⏲️ 🕰️ 🕛 🕧 🕐 🕜 🕑 🕝 🕒 🕞 🕓 🕟 🕔 🕠 🕕 🕡 🕖 🕢 🕗 🕣 🕘 🕤 🕙 🕥 🕚 🕦',
     },
     {
-      label: { en_US: 'Objects', zh_CN: '物品', ru_RU: 'Объекты' },
+      label: 'Objects',
       items:
         '📔 📕 📖 📗 📘 📙 📚 📒 📃 📜 📄 📰 🗞️ 📑 🔖 🏷️ 💰 🔍 🔎 💴 💵 💶 💷 💸 💳 🧾 💹 ✉️ 📧 📨 📩 📤 📥 📦 📫 📪 📬 📭 📮 🗳️ ✏️ ✒️ 🖋️ 🖊️ 🖌️ 🖍️ 📝 💼 📁 📂 🗂️ 📅 📆 🗒️ 🗓️ 📇 📈 📉 📊 📋 📌 📍 📎 🖇️ 📏 📐 ✂️ 🗃️ 🗄️ 🗑️ 🔒 🔓 🔏 🔐 🔑 🗝️ 🔨 🪓 ⛏️ ⚒️ 🛠️ 🗡️ ⚔️ 🔫 🏹 🛡️ 🔧 🔩 ⚙️ 🗜️ ⚖️ 🦯 🔗 ⛓️ 🧰 🧲 ⚗️ 🧪 🧫 🧬 🔬 🔭 📡 💉 🩸 💊 🩹 🩺 🚪 🛏️ 🛋️ 🪑 🚽 🚿 🛁 🪒 🧴 🧷 🧹 🧺 🧻 🧼 🧽 🧯 🛒 🚬 ⚰️ ⚱️ 💎 🔇 🔈 🔉 🔊 🔔 🔕 🔋 🔌 💻 🖥️ 🖨️ ⌨️ 🖱️ 🖲️ 📷 🧱',
     },
     {
-      label: { en_US: 'Symbols', zh_CN: '符号', ru_RU: 'Символы' },
+      label: 'Symbols',
       items:
         '💡 ✅ ☑️ ✔️ ❌ ❎ ❓ ❗ ❔ ❕ ⌛ ⏳ 💰 🆒 🆕 🆖 🅾️ 🆗 🆘 🈲 🉑 🈸 ⛔ 🚫 📵 ✳️ ✴️ ❇️ 🔟 🔠 🔡 🔢 🔣 🔤 🅰️ 🆎 🅱️ 🆑 🆒 🆓 ℹ️ 🆔 🆕 🆖 🅾️ 🆗 🅿️ 🆘 🆙 🆚 🈁 🈂️ 🔴 🟠 🟡 🟢 🔵 🟣 🟤 ⚫ ⚪ 🟥 🟧 🟨 🟩 🟦 🟪 🟫 🔶 🔷 🔸 🔹 🔺 🔻 💠 🔘 🔳 🔲 💌 💘 💝 💖 💗 💓 💞 💕 💟 ❣️ 💔 🤍 💯 💢 💥 💬 💤 ➰ ➿ 🔅 📴 ➡️ 🔃 🔄 🔙 🔚 🔛 🔝 🔀 🔁 🔂',
     },
     {
-      label: { en_US: 'Flags', zh_CN: '旗帜', ru_RU: 'Флаги' },
+      label: 'Flags',
       items: '🏁 🚩 🏴 🏳️ 🏳️‍🌈‍',
     },
   ],
@@ -275,56 +215,32 @@ export const defaultDicts = {
     { label: 'A5', width: 14.8, height: 21.0 },
     { label: 'B5', width: 17.6, height: 25.0 },
     {
-      label: {
-        en_US: 'No. 5 Envelope',
-        zh_CN: '5号信封',
-        ru_RU: 'Конверт №5',
-      },
+      label: 'No. 5 Envelope',
       width: 10.9,
       height: 12.9,
     },
     {
-      label: {
-        en_US: 'No. 6 Envelope',
-        zh_CN: '6号信封',
-        ru_RU: 'Конверт №6',
-      },
+      label: 'No. 6 Envelope',
       width: 11.9,
       height: 22.9,
     },
     {
-      label: {
-        en_US: 'No. 7 Envelope',
-        zh_CN: '7号信封',
-        ru_RU: 'Конверт №7',
-      },
+      label: 'No. 7 Envelope',
       width: 16.1,
       height: 22.8,
     },
     {
-      label: {
-        en_US: 'No. 9 Envelope',
-        zh_CN: '9号信封',
-        ru_RU: 'Конверт №9',
-      },
+      label: 'No. 9 Envelope',
       width: 22.8,
       height: 32.3,
     },
     {
-      label: {
-        en_US: 'Legal Paper',
-        zh_CN: '法律用纸',
-        ru_RU: 'Юридическая бумага',
-      },
+      label: 'Legal Paper',
       width: 21.5,
       height: 33.5,
     },
     {
-      label: {
-        en_US: 'Letter Paper',
-        zh_CN: '信纸',
-        ru_RU: 'Бумага для писем',
-      },
+      label: 'Letter Paper',
       width: 21.5,
       height: 27.9,
     },
