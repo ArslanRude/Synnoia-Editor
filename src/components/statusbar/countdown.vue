@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <t-popup
     :visible="visible"
     :attach="container"
@@ -9,8 +9,8 @@
   >
     <slot />
     <template #content>
-      <div class="umo-preview-countdown">
-        <div class="umo-preview-countdown-title ">
+      <div class="arslan-preview-countdown">
+        <div class="arslan-preview-countdown-title ">
           <icon name="time" /> {{ t('preview.countdown.title') }}
         </div>
         <t-form label-align="left" label-width="75px" @submit="startCountdown">
@@ -27,7 +27,7 @@
             />
           </t-form-item>
           <t-form-item :label="t('preview.countdown.custom')" name="custom">
-            <div class="umo-preview-countdown-input" size="small">
+            <div class="arslan-preview-countdown-input" size="small">
               <t-input-number
                 v-model="hours"
                 theme="normal"
@@ -215,7 +215,7 @@ onBeforeUnmount(() => {
 </script>
 
 <style lang="less" scoped>
-.umo-preview-countdown {
+.arslan-preview-countdown {
   padding: 25px;
   width: 320px;
   cursor: default;
@@ -224,23 +224,23 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
-    :deep(.umo-icon) {
+    :deep(.arslan-icon) {
       font-size: 24px;
       margin: -2px 6px 0 0;
     }
   }
-  :deep(.umo-form) {
+  :deep(.arslan-form) {
     &__item {
       &:not(:last-child) {
         margin-bottom: 15px;
       }
-      .umo-radio-group {
+      .arslan-radio-group {
         margin-top: 5px;
       }
-      .umo-button__text {
+      .arslan-button__text {
         display: flex;
         align-items: center;
-        .umo-icon {
+        .arslan-icon {
           font-size: 16px;
           margin-right: 5px;
         }
@@ -254,9 +254,10 @@ onBeforeUnmount(() => {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 5px;
-    :deep(.umo-input-number) {
+    :deep(.arslan-input-number) {
       width: 78px !important;
     }
   }
 }
 </style>
+

@@ -1,11 +1,11 @@
-<template>
-  <div v-if="items.length > 0" class="umo-popup umo-mention-popup">
-    <div class="umo-popup__content umo-dropdown">
-      <div class="umo-dropdown__menu" style="padding: 5px; max-height: 320px">
+﻿<template>
+  <div v-if="items.length > 0" class="arslan-popup arslan-mention-popup">
+    <div class="arslan-popup__content arslan-dropdown">
+      <div class="arslan-dropdown__menu" style="padding: 5px; max-height: 320px">
         <div>
           <li v-for="(item, index) in items" :key="index"
-            class="umo-dropdown__item umo-dropdown__item--theme-default umo-dropdown__item"
-            :class="{ 'umo-dropdown__item--active': index === selectedIndex }" @click="selectItem(index)">
+            class="arslan-dropdown__item arslan-dropdown__item--theme-default arslan-dropdown__item"
+            :class="{ 'arslan-dropdown__item--active': index === selectedIndex }" @click="selectItem(index)">
             {{ item.label }}
           </li>
         </div>
@@ -83,9 +83,9 @@ defineExpose({
 </script>
 
 <style lang="less">
-.umo-node-mention {
+.arslan-node-mention {
   box-decoration-break: clone;
-  color: var(--umo-primary-color);
+  color: var(--arslan-primary-color);
   padding: 0.1em 0.2em;
   margin: 0 0.1em;
   border-radius: 0.2em;
@@ -93,8 +93,8 @@ defineExpose({
   cursor: default;
 }
 
-.umo-mention-popup {
-  .umo-dropdown {
+.arslan-mention-popup {
+  .arslan-dropdown {
     &__item--active {
       font-weight: 600;
     }
@@ -103,7 +103,8 @@ defineExpose({
   &-empty {
     padding: 3px 5px;
     min-width: 100px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
   }
 }
 </style>
+

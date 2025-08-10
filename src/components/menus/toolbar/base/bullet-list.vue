@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="bullet-list"
     :text="t('list.bullet.text')"
@@ -12,19 +12,19 @@
     @menu-click="toggleBulletList(options[0].value)"
   >
     <template #content>
-      <div class="umo-bullet-list-group">
+      <div class="arslan-bullet-list-group">
         <tooltip
           v-for="item in options"
           :key="item.value"
           :content="item.label"
         >
           <div
-            class="umo-bullet-list-item"
+            class="arslan-bullet-list-item"
             :class="{ active: listStyleType === item.value }"
             @click="toggleBulletList(item.value)"
           >
             <icon
-              class="umo-icon-bullet-list"
+              class="arslan-icon-bullet-list"
               :name="`bullet-list-${item.value}`"
             />
           </div>
@@ -74,27 +74,28 @@ const toggleBulletList = (listType: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-bullet-list-group {
+.arslan-bullet-list-group {
   display: flex;
   align-items: center;
   gap: 8px;
-  .umo-bullet-list-item {
+  .arslan-bullet-list-item {
     cursor: pointer;
     padding: 5px;
-    border: solid 1px var(--umo-border-color);
+    border: solid 1px var(--arslan-border-color);
     box-sizing: border-box;
     &:last-child {
       margin-right: 0;
     }
     &:hover {
-      background-color: var(--umo-button-hover-background);
+      background-color: var(--arslan-button-hover-background);
     }
     &.active {
-      border-color: var(--umo-primary-color);
+      border-color: var(--arslan-primary-color);
     }
   }
-  .umo-icon-bullet-list {
+  .arslan-icon-bullet-list {
     font-size: 44px;
   }
 }
 </style>
+

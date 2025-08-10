@@ -1,5 +1,5 @@
-<template>
-  <iframe ref="iframeRef" class="umo-print-iframe" :srcdoc="iframeCode" />
+﻿<template>
+  <iframe ref="iframeRef" class="arslan-print-iframe" :srcdoc="iframeCode" />
 </template>
 
 <script setup lang="ts">
@@ -24,7 +24,7 @@ const getPlyrSprite = () => {
 
 const getContentHtml = () => {
   const originalContent =
-    document.querySelector(`${container} .umo-page-content`)?.outerHTML ?? ''
+    document.querySelector(`${container} .arslan-page-content`)?.outerHTML ?? ''
   return prepareEchartsForPrint(originalContent)
 }
 // Because echarts relies on dynamic rendering of components, it cannot be achieved through html when printing, so we solve it by converting it to an image.
@@ -34,7 +34,7 @@ const prepareEchartsForPrint = (htmlContent: any) => {
   tempDiv.innerHTML = htmlContent
 
   // Find all ECharts instances that need to be converted
-  const charts = tempDiv.querySelectorAll('.umo-node-echarts-body')
+  const charts = tempDiv.querySelectorAll('.arslan-node-echarts-body')
   for (const chartElement of charts) {
     const chartInstance = echarts.getInstanceByDom(chartElement)
     if (chartInstance) {
@@ -87,7 +87,7 @@ const getIframeCode = () => {
         background-color: ${background};
         -webkit-print-color-adjust: exact;
       }
-      .umo-page-content{
+      .arslan-page-content{
         transform: scale(1) !important;
         overflow: hidden;
       }
@@ -109,8 +109,8 @@ const getIframeCode = () => {
       <div id="sprite-plyr" style="display: none;">
       ${getPlyrSprite()}
       </div>
-      <div class="umo-editor-container" style="line-height: ${defaultLineHeight};" aria-expanded="false">
-        <div class="tiptap umo-editor" translate="no">
+      <div class="arslan-editor-container" style="line-height: ${defaultLineHeight};" aria-expanded="false">
+        <div class="tiptap arslan-editor" translate="no">
           ${getContentHtml()}
         </div>
       </div>
@@ -120,7 +120,7 @@ const getIframeCode = () => {
             mutations.forEach(mutation => {
               if (mutation.removedNodes) {
                 Array.from(mutation.removedNodes).forEach(node => {
-                  if (node?.classList?.contains('umo-page-watermark')) {
+                  if (node?.classList?.contains('arslan-page-watermark')) {
                     location.reload();
                   }
                 });
@@ -169,7 +169,7 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-print-iframe {
+.arslan-print-iframe {
   position: absolute;
   width: 0;
   height: 0;
@@ -177,3 +177,4 @@ watch(
   overflow: auto;
 }
 </style>
+

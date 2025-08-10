@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :ico="'echarts'"
     :text="t('tools.echarts.text')"
@@ -15,8 +15,8 @@
       @confirm="setConfirm"
       @close="dialogVisible = false"
     >
-      <div class="umo-echarts-container">
-        <div class="umo-echarts-header">
+      <div class="arslan-echarts-container">
+        <div class="arslan-echarts-header">
           <t-radio-group
             v-if="modelMode === 1"
             v-model="baseModeSet"
@@ -43,25 +43,25 @@
             }}</t-radio-button>
           </t-radio-group>
         </div>
-        <div v-if="modelMode === 0" class="umo-echarts-source-center">
+        <div v-if="modelMode === 0" class="arslan-echarts-source-center">
           <t-textarea
             v-model="sourceOptions"
-            class="umo-echarts-code"
+            class="arslan-echarts-code"
             autofocus
             :placeholder="t('tools.echarts.placeholder')"
           />
-          <div class="umo-echarts-render">
-            <div id="echartsSourceModeId" class="umo-echarts-svg"></div>
+          <div class="arslan-echarts-render">
+            <div id="echartsSourceModeId" class="arslan-echarts-svg"></div>
           </div>
         </div>
         <div
           v-if="modelMode === 1 && baseModeSet === 0"
-          class="umo-echarts-source-center"
+          class="arslan-echarts-source-center"
         >
-          <div class="umo-echarts-render">
-            <div id="echartsSettingModeId" class="umo-echarts-svg"></div>
+          <div class="arslan-echarts-render">
+            <div id="echartsSettingModeId" class="arslan-echarts-svg"></div>
           </div>
-          <div class="umo-echarts-settting">
+          <div class="arslan-echarts-settting">
             <t-form label-align="top">
               <!--图形类型-->
               <t-form-item
@@ -191,12 +191,12 @@
         </div>
         <div
           v-if="modelMode === 1 && baseModeSet === 1"
-          class="umo-echarts-source-center"
+          class="arslan-echarts-source-center"
         >
-          <div class="umo-echarts-render" style="margin-left: 2px">
+          <div class="arslan-echarts-render" style="margin-left: 2px">
             <t-table
               id="echartsSettingGridId"
-              class="umo-echarts-table"
+              class="arslan-echarts-table"
               row-key="tabkey"
               :columns="baseData.Columns"
               :data="baseConfig.data"
@@ -609,44 +609,44 @@ const editableCellState = () => {
 <style lang="less" scoped>
 @import '@/assets/styles/_mixins.less';
 
-.umo-echarts-container {
+.arslan-echarts-container {
   min-height: 300px;
 
-  .umo-echarts-header {
+  .arslan-echarts-header {
     display: flex;
     justify-content: space-between;
     :only-child {
       margin-left: auto;
     }
   }
-  .umo-echarts-source-center {
+  .arslan-echarts-source-center {
     display: flex;
     height: calc(100% - 30px);
     width: 100%;
     margin-top: 10px;
     overflow: visible;
 
-    .umo-echarts-code {
+    .arslan-echarts-code {
       width: 320px;
       margin-right: 10px;
 
-      :deep(.umo-textarea__inner) {
+      :deep(.arslan-textarea__inner) {
         height: 100%;
         resize: none;
       }
     }
 
-    .umo-echarts-settting {
+    .arslan-echarts-settting {
       --td-comp-margin-xxl: 10px;
       width: 360px;
       padding: 20px;
       margin-left: 10px;
-      border: solid 1px var(--umo-border-color);
-      border-radius: var(--umo-radius);
+      border: solid 1px var(--arslan-border-color);
+      border-radius: var(--arslan-radius);
       max-height: 420px;
       overflow: auto;
-      .umo-scrollbar();
-      :deep(.umo-form__controls) {
+      .arslan-scrollbar();
+      :deep(.arslan-form__controls) {
         &,
         &-content {
           min-height: auto;
@@ -654,15 +654,15 @@ const editableCellState = () => {
       }
     }
 
-    .umo-echarts-render {
+    .arslan-echarts-render {
       flex: 1;
-      border: solid 1px var(--umo-border-color);
-      border-radius: var(--umo-radius);
+      border: solid 1px var(--arslan-border-color);
+      border-radius: var(--arslan-radius);
       position: relative;
       overflow: hidden;
       box-sizing: border-box;
 
-      .umo-echarts-svg {
+      .arslan-echarts-svg {
         box-sizing: border-box;
         height: 420px;
         padding: 20px 15px 15px;
@@ -671,11 +671,11 @@ const editableCellState = () => {
         justify-content: center;
       }
 
-      .umo-echarts-table {
+      .arslan-echarts-table {
         --td-comp-paddingTB-s: 3px;
         --td-comp-paddingLR-s: 5px;
         --td-comp-size-m: 18px;
-        --td-component-border: var(--umo-border-color);
+        --td-component-border: var(--arslan-border-color);
         box-sizing: border-box;
         height: 420px;
         padding: 0px;
@@ -683,7 +683,7 @@ const editableCellState = () => {
         overflow: auto;
         display: flex;
         justify-content: center;
-        :deep(.umo-table) {
+        :deep(.arslan-table) {
           &__content {
             border: none;
           }
@@ -704,3 +704,4 @@ const editableCellState = () => {
   }
 }
 </style>
+

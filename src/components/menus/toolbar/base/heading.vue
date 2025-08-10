@@ -1,6 +1,6 @@
-<template>
-  <div v-if="$toolbar.mode !== 'classic'" class="umo-toolbar-headding" :disabled="!editor?.isEditable">
-    <div class="umo-heading-container">
+﻿<template>
+  <div v-if="$toolbar.mode !== 'classic'" class="arslan-toolbar-headding" :disabled="!editor?.isEditable">
+    <div class="arslan-heading-container">
       <div class="card custom-style-card" @click="showCustomStyleForm = true" title="Create a custom heading style">
         <div class="title">+</div>
         <div class="subtitle">Custom</div>
@@ -95,7 +95,7 @@
   </div>
   <menus-button v-else :text="t('base.heading.tip')" hide-text menu-type="select" :style="{ width: '76px' }"
     :placeholder="t('base.heading.text')" borderless :select-value="currentValue" @menu-click="setHeading">
-    <t-option v-for="item in options" :key="item.value" class="umo-heading-select-option" :value="item.value"
+    <t-option v-for="item in options" :key="item.value" class="arslan-heading-select-option" :value="item.value"
       :label="item.label">
       <div class="heading-size" :class="item.desc">{{ item.label }}</div>
     </t-option>
@@ -319,7 +319,7 @@ const confirmDeleteStyle = (styleValue: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-toolbar-headding {
+.arslan-toolbar-headding {
   width: 318px;
   height: 100%;
   position: relative;
@@ -335,14 +335,14 @@ const confirmDeleteStyle = (styleValue: string) => {
   }
 }
 
-.umo-heading-container {
+.arslan-heading-container {
   display: flex;
   flex-flow: row nowrap;
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   align-content: flex-start;
-  border-radius: var(--umo-radius);
+  border-radius: var(--arslan-radius);
   box-sizing: border-box;
   white-space: nowrap;
   height: 100%;
@@ -357,21 +357,21 @@ const confirmDeleteStyle = (styleValue: string) => {
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(--umo-scrollbar-thumb-color);
+    background: var(--arslan-scrollbar-thumb-color);
     border-radius: 2px;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background: var(--umo-scrollbar-thumb-hover-color);
+    background: var(--arslan-scrollbar-thumb-hover-color);
   }
 
   /* For Firefox */
   scrollbar-width: thin;
-  scrollbar-color: var(--umo-scrollbar-thumb-color) transparent;
+  scrollbar-color: var(--arslan-scrollbar-thumb-color) transparent;
 
   .card {
-    border: solid 1px var(--umo-border-color-light);
-    border-radius: var(--umo-radius);
+    border: solid 1px var(--arslan-border-color-light);
+    border-radius: var(--arslan-radius);
     margin: 2px 4px;
     text-align: center;
     padding: 5px 8px;
@@ -383,7 +383,7 @@ const confirmDeleteStyle = (styleValue: string) => {
 
     &:hover,
     &.active {
-      border-color: var(--umo-primary-color);
+      border-color: var(--arslan-primary-color);
     }
 
     .title {
@@ -423,7 +423,7 @@ const confirmDeleteStyle = (styleValue: string) => {
 
     .subtitle {
       font-size: 8px;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       text-transform: capitalize;
       margin-top: 3px;
       line-height: 1;
@@ -434,7 +434,7 @@ const confirmDeleteStyle = (styleValue: string) => {
       top: 2px;
       right: 2px;
       font-size: 10px;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       cursor: pointer;
       display: none;
       background-color: var(--color-secondary-light);
@@ -457,7 +457,7 @@ const confirmDeleteStyle = (styleValue: string) => {
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.1);
-      border-color: var(--umo-primary-color);
+      border-color: var(--arslan-primary-color);
       opacity: 1;
     }
   }
@@ -493,14 +493,14 @@ const confirmDeleteStyle = (styleValue: string) => {
 </style>
 
 <style lang="less">
-.umo-heading-select-option {
+.arslan-heading-select-option {
   height: auto !important;
 
   .heading-size {
     line-height: 2em;
     font-weight: 600;
     min-width: 100px;
-    color: var(--umo-text-color);
+    color: var(--arslan-text-color);
   }
 
   .text {
@@ -534,3 +534,4 @@ const confirmDeleteStyle = (styleValue: string) => {
   }
 }
 </style>
+

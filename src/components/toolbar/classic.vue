@@ -1,7 +1,7 @@
-<template>
-  <toolbar-scrollable ref="scrollableRef" class="umo-scrollable-container">
-    <div class="umo-classic-menu">
-      <div v-if="menus.length > 1" class="umo-virtual-group">
+﻿<template>
+  <toolbar-scrollable ref="scrollableRef" class="arslan-scrollable-container">
+    <div class="arslan-classic-menu">
+      <div v-if="menus.length > 1" class="arslan-virtual-group">
         <t-select
           v-if="selectVisible"
           v-model="currentMenu"
@@ -26,13 +26,13 @@
         </t-select>
       </div>
       <template v-if="currentMenu === 'base'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-base-undo />
           <menus-toolbar-base-redo />
           <menus-toolbar-base-format-painter />
           <menus-toolbar-base-clear-format />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-base-heading />
           <menus-toolbar-base-font-family borderless />
           <menus-toolbar-base-font-size borderless />
@@ -46,7 +46,7 @@
           <menus-toolbar-base-background-color />
           <menus-toolbar-base-highlight v-if="!disableItem('highlight')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-base-ordered-list
             v-if="!disableItem('ordered-list')"
           />
@@ -61,12 +61,12 @@
           <menus-toolbar-base-code v-if="!disableItem('code')" />
           <menus-toolbar-base-select-all v-if="!disableItem('select-all')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-base-import-word />
           <menus-toolbar-base-markdown v-if="!disableItem('markdown')" />
           <menus-toolbar-base-search-replace />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-base-print v-if="!disableItem('print')" />
         </div>
         <div class="virtual-group is-slot">
@@ -74,7 +74,7 @@
         </div>
       </template>
       <template v-if="currentMenu === 'insert'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-insert-link v-if="!disableItem('link')" />
           <menus-toolbar-insert-image v-if="!disableItem('image')" />
           <menus-toolbar-insert-video v-if="!disableItem('video')" />
@@ -88,20 +88,20 @@
           <menus-toolbar-insert-emoji v-if="!disableItem('emoji')" />
           <menus-toolbar-insert-math v-if="!disableItem('math')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-insert-columns v-if="!disableItem('columns')" />
           <menus-toolbar-insert-tag v-if="!disableItem('tag')" />
           <menus-toolbar-insert-callout v-if="!disableItem('callout')" />
           <menus-toolbar-insert-mention v-if="!disableItem('mention')" />
           <menus-toolbar-insert-bookmark v-if="!disableItem('bookmark')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-insert-hard-break v-if="!disableItem('hard-break')" />
           <menus-toolbar-insert-hr v-if="!disableItem('hr')" />
           <menus-toolbar-insert-toc v-if="!disableItem('toc')" />
           <menus-toolbar-insert-text-box v-if="!disableItem('textBox')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-insert-template v-if="!disableItem('template')" />
           <menus-toolbar-insert-web-page v-if="!disableItem('webPage')" />
         </div>
@@ -110,39 +110,39 @@
         </div>
       </template>
       <template v-if="currentMenu === 'table'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-insert />
           <menus-toolbar-table-fix />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-cells-align />
           <menus-toolbar-table-cells-background />
           <!-- <menus-toolbar-table-border-color /> -->
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-add-row-before :huge="false" />
           <menus-toolbar-table-add-row-after :huge="false" />
           <menus-toolbar-table-add-column-before :huge="false" />
           <menus-toolbar-table-add-column-after :huge="false" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-delete-row :huge="false" />
           <menus-toolbar-table-delete-column :huge="false" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-merge-cells :huge="false" />
           <menus-toolbar-table-split-cell :huge="false" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-toggle-header-row :huge="false" />
           <menus-toolbar-table-toggle-header-column :huge="false" />
           <menus-toolbar-table-toggle-header-cell :huge="false" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-next-cell :huge="false" />
           <menus-toolbar-table-previous-cell :huge="false" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-table-delete />
         </div>
         <div class="virtual-group is-slot">
@@ -150,21 +150,21 @@
         </div>
       </template>
       <template v-if="currentMenu === 'tools'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-tools-qrcode v-if="!disableItem('qrcode')" />
           <menus-toolbar-tools-barcode v-if="!disableItem('barcode')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-tools-signature v-if="!disableItem('signature')" />
           <menus-toolbar-tools-seal v-if="!disableItem('seal')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-tools-diagrams v-if="!disableItem('diagrams')" />
           <menus-toolbar-tools-echarts v-if="!disableItem('echarts')" />
           <!-- <menus-toolbar-tools-mind-map v-if="!disableItem('mind-map')" /> -->
           <menus-toolbar-tools-mermaid v-if="!disableItem('mermaid')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-tools-chinese-case
             v-if="!disableItem('chineseCase')"
           />
@@ -174,22 +174,22 @@
         </div>
       </template>
       <template v-if="currentMenu === 'page'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-page-toggle-toc />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-page-margin />
           <menus-toolbar-page-size />
           <menus-toolbar-page-orientation />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-page-break />
           <menus-toolbar-page-break-marks />
           <menus-toolbar-page-line-number />
           <menus-toolbar-page-watermark v-if="!disableItem('watermark')" />
           <menus-toolbar-page-background v-if="!disableItem('background')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-page-preview v-if="!disableItem('preview')" />
         </div>
         <div class="virtual-group is-slot">
@@ -197,12 +197,12 @@
         </div>
       </template>
       <template v-if="currentMenu === 'export'">
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-export-image v-if="!disableItem('exportImage')" />
           <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-text v-if="!disableItem('exportText')" />
         </div>
-        <div class="umo-virtual-group">
+        <div class="arslan-virtual-group">
           <menus-toolbar-export-share v-if="!disableItem('share')" />
           <menus-toolbar-export-embed v-if="!disableItem('embed')" />
         </div>
@@ -255,14 +255,14 @@ const toggoleMenu = async (menu: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-scrollable-container {
+.arslan-scrollable-container {
   padding: 10px;
 }
-.umo-classic-menu {
+.arslan-classic-menu {
   display: flex;
   align-items: center;
   flex: 1;
-  .umo-virtual-group {
+  .arslan-virtual-group {
     display: flex;
     align-items: center;
     &:empty {
@@ -275,15 +275,15 @@ const toggoleMenu = async (menu: string) => {
         display: block;
         height: 18px;
         width: 1px;
-        background-color: var(--umo-border-color-light);
+        background-color: var(--arslan-border-color-light);
         margin: 0 10px;
       }
     }
     &:first-child::before {
       display: none;
     }
-    :deep(.umo-menu-button .umo-button--shape-square) {
-      .umo-icon {
+    :deep(.arslan-menu-button .arslan-button--shape-square) {
+      .arslan-icon {
         font-size: 14px;
       }
     }
@@ -293,3 +293,4 @@ const toggoleMenu = async (menu: string) => {
   }
 }
 </style>
+

@@ -1,4 +1,4 @@
-const locales = {
+﻿const locales = {
   'zh-CN': 'zh',
   'en-US': 'en',
   'ru-RU': 'ru',
@@ -72,7 +72,7 @@ class DiagramEditor {
     const { locale } = useI18n()
     const lang = locales[locale.value as keyof typeof locales]
     const frame = document.createElement('iframe')
-    frame.setAttribute('class', 'umo-diagrams-iframe')
+    frame.setAttribute('class', 'arslan-diagrams-iframe')
     frame.setAttribute('src', `${this.domain}?${params}&lang=${lang}`)
     return frame
   }
@@ -161,3 +161,4 @@ class DiagramEditor {
 }
 
 export default DiagramEditor
+

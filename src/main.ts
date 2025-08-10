@@ -1,11 +1,12 @@
-import type { UmoEditorOptions } from '@/types'
+import type { ArslanEditorOptions } from '@/types'
 
 import App from './app.vue'
-import { useUmoEditor } from './components'
+import { useArslanEditor } from './components'
 const app = createApp(App)
 
 const options = {}
 
-app.use(useUmoEditor, options as UmoEditorOptions)
+app.use(useArslanEditor, options as ArslanEditorOptions)
 
 app.mount('#app')
+

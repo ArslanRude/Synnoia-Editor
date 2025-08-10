@@ -1,4 +1,4 @@
-import Mention from '@tiptap/extension-mention'
+﻿import Mention from '@tiptap/extension-mention'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -32,9 +32,10 @@ const CustomMention = Mention.extend({
   },
 })
 
-// 配置并导出扩展
+// Configure and export the extension
 export default CustomMention.configure({
   HTMLAttributes: {
-    class: 'umo-node-mention',
+    class: 'arslan-node-mention',
   },
 })
+

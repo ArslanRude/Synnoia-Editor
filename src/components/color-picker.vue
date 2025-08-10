@@ -1,6 +1,6 @@
-<template>
-  <div class="umo-color-picker-container">
-    <div class="umo-color-picker-default-button">
+﻿<template>
+  <div class="arslan-color-picker-container">
+    <div class="arslan-color-picker-default-button">
       <t-button
         theme="default"
         variant="outline"
@@ -11,55 +11,55 @@
       >
       </t-button>
     </div>
-    <div class="umo-color-picker-group">
+    <div class="arslan-color-picker-group">
       <div
         v-for="(item, index) in options.dicts?.colors"
         :key="index"
-        class="umo-color-picker-item"
+        class="arslan-color-picker-item"
         :style="{ backgroundColor: item }"
         @click="selectColor(item)"
       ></div>
     </div>
     <div
-      class="umo-color-picker-group-title"
+      class="arslan-color-picker-group-title"
       v-text="t('colorPicker.standard')"
     ></div>
-    <div class="umo-color-picker-group">
+    <div class="arslan-color-picker-group">
       <div
         v-for="(item, index) in standardColors"
         :key="index"
-        class="umo-color-picker-item"
+        class="arslan-color-picker-item"
         :style="{ backgroundColor: item }"
         @click="selectColor(item)"
       ></div>
     </div>
     <div
       v-if="$recent.colors.length > 0"
-      class="umo-color-picker-group-title"
+      class="arslan-color-picker-group-title"
       v-text="t('colorPicker.recent')"
     ></div>
-    <div v-if="$recent.colors.length > 0" class="umo-color-picker-group">
+    <div v-if="$recent.colors.length > 0" class="arslan-color-picker-group">
       <div
         v-for="(item, index) in $recent.colors"
         :key="index"
-        class="umo-color-picker-item"
+        class="arslan-color-picker-item"
         :style="{ backgroundColor: item }"
         @click="selectColor(item)"
       ></div>
     </div>
-    <div class="umo-color-picker-divider"></div>
+    <div class="arslan-color-picker-divider"></div>
     <t-popup
       :attach="container"
       trigger="click"
       placement="right-bottom"
       @visible-change="(visible: boolean) => (moreColorPicker = visible)"
     >
-      <div class="umo-color-picker-more" :class="{ active: moreColorPicker }">
-        <div class="umo-color-picker-more-menu">
+      <div class="arslan-color-picker-more" :class="{ active: moreColorPicker }">
+        <div class="arslan-color-picker-more-menu">
           <icon name="palette-color" />
           <span v-text="t('colorPicker.more')"></span>
         </div>
-        <div class="umo-color-picker-more-arrow">
+        <div class="arslan-color-picker-more-arrow">
           <icon name="arrow-down" />
         </div>
       </div>
@@ -129,12 +129,12 @@ const selectColor = (color: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-color-picker {
+.arslan-color-picker {
   &-container {
     width: 236px;
   }
   &-default-button {
-    .umo-button {
+    .arslan-button {
       height: 28px;
     }
   }
@@ -144,7 +144,7 @@ const selectColor = (color: string) => {
     margin: 8px 0;
     gap: 4px;
     &-title {
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       font-size: 12px;
       margin: 5px 0 2px;
     }
@@ -166,7 +166,7 @@ const selectColor = (color: string) => {
   }
   &-divider {
     height: 1px;
-    background-color: var(--umo-border-color-light);
+    background-color: var(--arslan-border-color-light);
     margin: 10px 0;
   }
   &-more {
@@ -178,24 +178,25 @@ const selectColor = (color: string) => {
     &:hover,
     &.active {
       background-color: var(--td-bg-color-container-hover);
-      border-radius: var(--umo-radius);
+      border-radius: var(--arslan-radius);
     }
     &-menu {
       display: flex;
       align-items: center;
       font-size: 12px;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       cursor: pointer;
-      .umo-icon {
+      .arslan-icon {
         margin-right: 5px;
         font-size: 18px;
       }
     }
     &-arrow {
-      .umo-icon {
+      .arslan-icon {
         transform: rotate(-90deg);
       }
     }
   }
 }
 </style>
+

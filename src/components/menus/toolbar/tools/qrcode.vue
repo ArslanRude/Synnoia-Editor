@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :ico="content ? 'edit' : 'qrcode'"
     :text="content ? t('tools.qrcode.edit') : t('tools.qrcode.text')"
@@ -13,8 +13,8 @@
       @confirm="setQrcode"
       @close="dialogVisible = false"
     >
-      <div class="umo-qrcode-container">
-        <div class="umo-qrcode-toolbar">
+      <div class="arslan-qrcode-container">
+        <div class="arslan-qrcode-toolbar">
           <menus-button
             style="width: 126px"
             :text="t('tools.qrcode.level')"
@@ -74,7 +74,7 @@
             @change="(value: any) => (config.background = value)"
           />
         </div>
-        <div class="umo-qrcode-code">
+        <div class="arslan-qrcode-code">
           <t-textarea
             v-model="config.content"
             maxlength="200"
@@ -86,22 +86,22 @@
           </t-textarea>
           <div
             v-if="renderError && config.content !== ''"
-            class="umo-barcode-error"
+            class="arslan-barcode-error"
             v-text="t('tools.qrcode.renderError')"
           ></div>
         </div>
-        <div class="umo-qrcode-render">
+        <div class="arslan-qrcode-render">
           <div
-            class="umo-qrcode-title"
+            class="arslan-qrcode-title"
             v-text="t('tools.qrcode.preview')"
           ></div>
-          <div class="umo-qrcode-svg narrow-scrollbar">
+          <div class="arslan-qrcode-svg narrow-scrollbar">
             <div
               v-if="!svgCode"
-              class="umo-qrcode-empty"
+              class="arslan-qrcode-empty"
               v-text="t('tools.qrcode.notEmpty')"
             ></div>
-            <div v-else class="umo-svg-render" v-html="svgCode"></div>
+            <div v-else class="arslan-svg-render" v-html="svgCode"></div>
           </div>
         </div>
       </div>
@@ -243,53 +243,53 @@ const setQrcode = () => {
 </script>
 
 <style lang="less" scoped>
-.umo-qrcode-container {
+.arslan-qrcode-container {
   padding: 2px;
-  .umo-qrcode-toolbar {
+  .arslan-qrcode-toolbar {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
   }
-  .umo-qrcode-code {
+  .arslan-qrcode-code {
     margin-bottom: 10px;
-    :deep(.umo-textarea__inner) {
+    :deep(.arslan-textarea__inner) {
       height: 100%;
       resize: none;
     }
-    .umo-barcode-error {
+    .arslan-barcode-error {
       font-size: 12px;
-      color: var(--umo-error-color);
+      color: var(--arslan-error-color);
     }
   }
-  .umo-qrcode-render {
+  .arslan-qrcode-render {
     border: solid 1px var(--td-border-level-2-color);
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-    .umo-qrcode-title {
-      background-color: var(--umo-button-hover-background);
+    .arslan-qrcode-title {
+      background-color: var(--arslan-button-hover-background);
       padding: 0 10px;
       position: absolute;
       font-size: 12px;
-      border-bottom-right-radius: var(--umo-radius);
+      border-bottom-right-radius: var(--arslan-radius);
     }
-    .umo-qrcode-empty {
-      color: var(--umo-text-color-light);
+    .arslan-qrcode-empty {
+      color: var(--arslan-text-color-light);
       font-size: 12px;
       margin: 40px;
     }
-    .umo-qrcode-svg {
+    .arslan-qrcode-svg {
       box-sizing: border-box;
       padding: 30px 10px;
       min-height: 100px;
       overflow: auto;
-      color: var(--umo-text-color);
+      color: var(--arslan-text-color);
       display: flex;
       align-items: center;
       justify-content: center;
-      > .umo-svg-render {
-        border: solid 1px var(--umo-border-color-light);
+      > .arslan-svg-render {
+        border: solid 1px var(--arslan-border-color-light);
         :deep(svg) {
           display: block;
           width: 256px;
@@ -300,3 +300,4 @@ const setQrcode = () => {
   }
 }
 </style>
+

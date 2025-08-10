@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :ico="content ? 'edit' : 'mermaid'"
     :text="content ? t('tools.mermaid.edit') : t('tools.mermaid.text')"
@@ -13,21 +13,21 @@
       @confirm="setMermaid"
       @close="dialogVisible = false"
     >
-      <div class="umo-mermaid-container">
+      <div class="arslan-mermaid-container">
         <t-textarea
           v-model="mermaidCode"
-          class="umo-mermaid-code"
+          class="arslan-mermaid-code"
           autofocus
           :placeholder="t('tools.mermaid.placeholder')"
         />
-        <div class="umo-mermaid-render">
+        <div class="arslan-mermaid-render">
           <div
-            class="umo-mermaid-title"
+            class="arslan-mermaid-title"
             v-text="t('tools.mermaid.preview')"
           ></div>
           <div
             ref="mermaidRef"
-            class="umo-mermaid-svg narrow-scrollbar"
+            class="arslan-mermaid-svg narrow-scrollbar"
             v-html="svgCode"
           ></div>
         </div>
@@ -148,32 +148,32 @@ const setMermaid = () => {
 </script>
 
 <style lang="less" scoped>
-.umo-mermaid-container {
+.arslan-mermaid-container {
   display: flex;
-  .umo-mermaid-code {
+  .arslan-mermaid-code {
     width: 320px;
     margin-left: 2px;
-    :deep(.umo-textarea__inner) {
+    :deep(.arslan-textarea__inner) {
       height: 100%;
       resize: none;
     }
   }
-  .umo-mermaid-render {
+  .arslan-mermaid-render {
     flex: 1;
     margin-left: 20px;
     border: solid 1px var(--td-border-level-2-color);
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
-    .umo-mermaid-title {
-      background-color: var(--umo-button-hover-background);
+    .arslan-mermaid-title {
+      background-color: var(--arslan-button-hover-background);
       padding: 0 10px;
       position: absolute;
       font-size: 12px;
-      border-bottom-right-radius: var(--umo-radius);
+      border-bottom-right-radius: var(--arslan-radius);
     }
-    .umo-mermaid-svg {
+    .arslan-mermaid-svg {
       box-sizing: border-box;
       height: 320px;
       padding: 40px 20px 20px;
@@ -184,3 +184,4 @@ const setMermaid = () => {
   }
 }
 </style>
+

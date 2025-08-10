@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <modal
     :visible="visible"
     icon="page-margin"
@@ -7,7 +7,7 @@
     @close="emits('close')"
     @confirm="onConfirm"
   >
-    <div class="umo-page-options-container">
+    <div class="arslan-page-options-container">
       <t-form label-align="left">
         <t-form-item :label="t('page.orientation.text')">
           <t-radio-group
@@ -27,7 +27,7 @@
         <t-form-item :label="t('page.size.text')">
           <t-select
             :popup-props="{
-              overlayClassName: 'umo-page-size-select',
+              overlayClassName: 'arslan-page-size-select',
               destroyOnClose: true,
               attach: container,
             }"
@@ -51,12 +51,12 @@
           </t-select>
         </t-form-item>
         <t-form-item :label="t('pageOptions.size.text')">
-          <div class="umo-page-setting">
+          <div class="arslan-page-setting">
             <div class="item">
               <t-input-number
                 v-if="pageOptions?.size"
                 v-model="pageOptions.size.width"
-                class="umo-page-setting-number"
+                class="arslan-page-setting-number"
                 theme="normal"
                 align="center"
                 :min="10"
@@ -73,7 +73,7 @@
               <t-input-number
                 v-if="pageOptions?.size"
                 v-model="pageOptions.size.height"
-                class="umo-page-setting-number"
+                class="arslan-page-setting-number"
                 theme="normal"
                 align="center"
                 :min="10"
@@ -91,7 +91,7 @@
         </t-form-item>
         <t-form-item :label="t('pageOptions.margin.text')" name="name">
           <div>
-            <div class="umo-page-margin-inbuilt">
+            <div class="arslan-page-margin-inbuilt">
               <div
                 class="item"
                 :class="{ active: !pageOptions.margin?.layout }"
@@ -141,12 +141,12 @@
                 v-text="t('pageOptions.margin.wide')"
               ></div>
             </div>
-            <div class="umo-page-setting">
+            <div class="arslan-page-setting">
               <div class="item">
                 <t-input-number
                   v-if="pageOptions?.margin"
                   v-model="pageOptions.margin.top"
-                  class="umo-page-setting-number"
+                  class="arslan-page-setting-number"
                   theme="normal"
                   align="center"
                   :min="0"
@@ -165,7 +165,7 @@
                 <t-input-number
                   v-if="pageOptions?.margin"
                   v-model="pageOptions.margin.bottom"
-                  class="umo-page-setting-number"
+                  class="arslan-page-setting-number"
                   theme="normal"
                   align="center"
                   :min="0"
@@ -184,7 +184,7 @@
                 <t-input-number
                   v-if="pageOptions?.margin"
                   v-model="pageOptions.margin.left"
-                  class="umo-page-setting-number"
+                  class="arslan-page-setting-number"
                   theme="normal"
                   align="center"
                   :min="0"
@@ -203,7 +203,7 @@
                 <t-input-number
                   v-if="pageOptions?.margin"
                   v-model="pageOptions.margin.right"
-                  class="umo-page-setting-number"
+                  class="arslan-page-setting-number"
                   theme="normal"
                   align="center"
                   :min="0"
@@ -307,13 +307,13 @@ const onConfirm = () => {
 </script>
 
 <style lang="less" scoped>
-.umo-page-options-container {
+.arslan-page-options-container {
   width: 400px;
   margin-top: 15px;
-  :deep(.umo-radio-button__label) {
+  :deep(.arslan-radio-button__label) {
     display: flex;
     align-items: center;
-    .umo-icon {
+    .arslan-icon {
       margin-right: 5px;
       font-size: 20px;
       &.icon-rotate {
@@ -323,19 +323,19 @@ const onConfirm = () => {
   }
 }
 
-.umo-page-margin-inbuilt {
+.arslan-page-margin-inbuilt {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
   .item {
     width: 60px;
     height: 80px;
-    border: solid 1px var(--umo-border-color);
-    border-radius: var(--umo-radius);
+    border: solid 1px var(--arslan-border-color);
+    border-radius: var(--arslan-radius);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--umo-button-hover-background);
+    background-color: var(--arslan-button-hover-background);
     position: relative;
     cursor: pointer;
     overflow: hidden;
@@ -348,7 +348,7 @@ const onConfirm = () => {
       right: 0;
       top: 0;
       bottom: 0;
-      border: solid 8px var(--umo-color-white);
+      border: solid 8px var(--arslan-color-white);
       border-left-width: 10px;
       border-right-width: 10px;
     }
@@ -365,11 +365,11 @@ const onConfirm = () => {
     }
     &:hover,
     &.active {
-      border-color: var(--umo-primary-color);
+      border-color: var(--arslan-primary-color);
     }
   }
 }
-.umo-page-setting {
+.arslan-page-setting {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -386,7 +386,7 @@ const onConfirm = () => {
   }
   &-number {
     width: 140px;
-    :deep(.umo-input__suffix) {
+    :deep(.arslan-input__suffix) {
       opacity: 0.4;
     }
   }
@@ -394,8 +394,8 @@ const onConfirm = () => {
 </style>
 
 <style lang="less">
-.umo-page-size-select {
-  .umo-select-option {
+.arslan-page-size-select {
+  .arslan-select-option {
     padding: 0 8px;
     > span {
       display: flex;
@@ -404,8 +404,9 @@ const onConfirm = () => {
     }
     .desc {
       font-size: 12px;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
     }
   }
 }
 </style>
+

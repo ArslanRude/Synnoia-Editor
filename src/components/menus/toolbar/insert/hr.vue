@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="hr"
     :text="t('insert.hr.text')"
@@ -8,20 +8,20 @@
     @toggle-popup="togglePopup"
   >
     <template #content>
-      <div class="umo-page-divider-dropdown">
-        <div class="umo-page-divider-item-title">
+      <div class="arslan-page-divider-dropdown">
+        <div class="arslan-page-divider-item-title">
           <span v-text="t('insert.hr.title')"></span>
         </div>
         <div
           v-for="item in options"
           :key="item.value"
-          class="umo-page-divider-item"
+          class="arslan-page-divider-item"
           :value="item.value"
           :title="item.label"
           @click="setHr(item)"
         >
           <hr
-            class="umo-page-divider"
+            class="arslan-page-divider"
             :data-type="item.value"
             :style="{ color: currentColor }"
           />
@@ -33,7 +33,7 @@
           trigger="click"
         >
           <div
-            class="umo-page-divider-item umo-open-color-picker"
+            class="arslan-page-divider-item arslan-open-color-picker"
             :class="{ active: colorPickerVisible }"
           >
             <span v-text="t('insert.hr.color')"></span>
@@ -42,7 +42,7 @@
             </div>
           </div>
           <template #content>
-            <div class="umo-page-divider-color-picker">
+            <div class="arslan-page-divider-color-picker">
               <color-picker default-color="#000" @change="colorChange" />
             </div>
           </template>
@@ -88,45 +88,46 @@ const setHr = ({ value }: { value: string }) => {
 <style lang="less" scoped>
 @import '@/assets/styles/_mixins.less';
 
-.umo-page-divider-dropdown {
+.arslan-page-divider-dropdown {
   width: 200px;
-  .umo-page-divider-item {
+  .arslan-page-divider-item {
     padding: 2px 5px;
     cursor: pointer;
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
     &:hover {
       background-color: var(--td-bg-color-container-hover);
     }
-    &.umo-open-color-picker {
+    &.arslan-open-color-picker {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 5px 6px;
       cursor: pointer;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       &:hover,
       &.active {
         background-color: var(--td-bg-color-container-hover);
-        border-radius: var(--umo-radius);
+        border-radius: var(--arslan-radius);
       }
       .arrow {
-        .umo-icon {
+        .arslan-icon {
           transform: rotate(-90deg);
         }
       }
     }
     &-title {
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       padding: 5px 6px;
     }
   }
-  .umo-page-divider {
-    .umo-page-divider();
+  .arslan-page-divider {
+    .arslan-page-divider();
     margin: 3px;
     width: auto;
   }
 }
-:global(.umo-page-divider-color-picker) {
+:global(.arslan-page-divider-color-picker) {
   padding: 12px;
 }
 </style>
+

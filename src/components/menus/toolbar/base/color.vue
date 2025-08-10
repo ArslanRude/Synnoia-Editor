@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="color"
     :text="text || t('base.color')"
@@ -10,7 +10,7 @@
     @menu-click="colorChange(currentColor)"
   >
     <div
-      class="umo-current-color"
+      class="arslan-current-color"
       :style="{
         background: editor?.getAttributes('textStyle')?.color || currentColor,
       }"
@@ -60,10 +60,11 @@ const colorChange = (color: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-current-color {
+.arslan-current-color {
   width: 12px;
   height: 2px;
   position: absolute;
   margin: 0 0 -22px 2px;
 }
 </style>
+

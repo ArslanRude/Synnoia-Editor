@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="signature"
     :text="t('tools.signature.text')"
@@ -13,7 +13,7 @@
       @confirm="setSignature"
       @close="dialogVisible = false"
     >
-      <div class="umo-signature-toolbar">
+      <div class="arslan-signature-toolbar">
         <menus-button
           ico="undo"
           :text="t('base.undo')"
@@ -58,7 +58,7 @@
           @menu-click="reuseOptions"
         />
       </div>
-      <div class="umo-signature-container" :data-tip="t('tools.signature.tip')">
+      <div class="arslan-signature-container" :data-tip="t('tools.signature.tip')">
         <canvas ref="signatureRef" />
       </div>
     </modal>
@@ -171,15 +171,15 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-signature-toolbar {
+.arslan-signature-toolbar {
   margin-bottom: 10px;
   display: flex;
   align-items: center;
 }
-.umo-signature-container {
-  border: solid 1px var(--umo-primary-color);
+.arslan-signature-container {
+  border: solid 1px var(--arslan-primary-color);
   box-sizing: border-box;
-  border-radius: var(--umo-radius);
+  border-radius: var(--arslan-radius);
   overflow: hidden;
   position: relative;
   display: flex;
@@ -194,7 +194,7 @@ watch(
     align-items: center;
     justify-content: center;
     z-index: 1;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     opacity: 0.5;
     pointer-events: none;
   }
@@ -204,3 +204,4 @@ watch(
   }
 }
 </style>
+

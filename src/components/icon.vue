@@ -1,6 +1,6 @@
-<template>
-  <svg class="umo-icon" aria-hidden="true" :width="size" :height="size">
-    <use :xlink:href="`#umo-icon-${props.name}`" :fill="color" />
+﻿<template>
+  <svg class="arslan-icon" aria-hidden="true" :width="size" :height="size">
+    <use :xlink:href="`#arslan-icon-${props.name}`" :fill="color" />
   </svg>
 </template>
 
@@ -22,7 +22,8 @@ const props = defineProps({
 </script>
 
 <style lang="less">
-.umo-icon {
+.arslan-icon {
   display: flex;
 }
 </style>
+

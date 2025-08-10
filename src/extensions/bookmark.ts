@@ -1,4 +1,4 @@
-import { Mark, mergeAttributes } from '@tiptap/core'
+﻿import { Mark, mergeAttributes } from '@tiptap/core'
 import { TextSelection } from '@tiptap/pm/state'
 
 import { shortId } from '@/utils/short-id'
@@ -6,7 +6,7 @@ import { shortId } from '@/utils/short-id'
 export interface BookmarkOptions {
   /**
    *样式 左右有括号 {}
-   * @default umo-editor-bookmark
+   * @default arslan-editor-bookmark
    * @example
    */
   class: string | undefined
@@ -48,7 +48,7 @@ export default Mark.create<BookmarkOptions>({
   addOptions() {
     return {
       bookmarkName: '',
-      class: 'umo-editor-bookmark',
+      class: 'arslan-editor-bookmark',
     }
   },
   addAttributes() {
@@ -144,3 +144,4 @@ export default Mark.create<BookmarkOptions>({
     }
   },
 })
+

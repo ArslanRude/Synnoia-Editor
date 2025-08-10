@@ -1,4 +1,4 @@
-import { mergeAttributes, Node } from '@tiptap/core'
+﻿import { mergeAttributes, Node } from '@tiptap/core'
 
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
@@ -14,14 +14,14 @@ export default Node.create({
   addOptions() {
     return {
       HTMLAttributes: {
-        class: 'umo-page-break',
+        class: 'arslan-page-break',
         'data-line-number': false,
         'data-content': t('page.break'),
       },
     }
   },
   parseHTML() {
-    return [{ tag: 'div[class*="umo-page-break"]' }]
+    return [{ tag: 'div[class*="arslan-page-break"]' }]
   },
   renderHTML({ HTMLAttributes }) {
     return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
@@ -42,3 +42,4 @@ export default Node.create({
     }
   },
 })
+

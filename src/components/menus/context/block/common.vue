@@ -1,21 +1,21 @@
-<template>
+﻿<template>
   <t-dropdown
-    :attach="`${container} .umo-page-container`"
+    :attach="`${container} .arslan-page-container`"
     placement="bottom-right"
-    overlay-class-name="umo-block-menu-dropdown"
+    overlay-class-name="arslan-block-menu-dropdown"
     trigger="click"
     :destroy-on-close="false"
     :popup-props="popupProps"
   >
     <menus-button
-      class="umo-block-menu-button"
+      class="arslan-block-menu-button"
       :menu-active="menuActive"
       ico="block-menu"
       hide-text
       style="cursor: grab"
     />
     <t-dropdown-menu>
-      <t-dropdown-item class="umo-block-menu-group-name" disabled>
+      <t-dropdown-item class="arslan-block-menu-group-name" disabled>
         {{ t('blockMenu.common') }}
       </t-dropdown-item>
       <t-dropdown-item
@@ -27,7 +27,7 @@
           :tooltip="false"
         />
         <t-dropdown-menu
-          overlay-class-name="umo-block-menu-dropdown"
+          overlay-class-name="arslan-block-menu-dropdown"
           placement="right"
         >
           <t-dropdown-item>
@@ -46,7 +46,7 @@
               :tooltip="false"
             />
             <t-dropdown-menu
-              overlay-class-name="umo-block-menu-dropdown"
+              overlay-class-name="arslan-block-menu-dropdown"
               placement="right"
             >
               <t-dropdown-item
@@ -61,7 +61,7 @@
                     toggleNodeType('heading', { level: item as Level })
                   "
                 >
-                  <span class="umo-heading">
+                  <span class="arslan-heading">
                     <span class="icon-heading">H{{ item }}</span>
                     {{ t('base.heading.text', { level: item }) }}
                   </span>
@@ -143,7 +143,7 @@
           @menu-click="cutNodeToClipboard"
         />
       </t-dropdown-item>
-      <t-dropdown-item class="umo-delete-node">
+      <t-dropdown-item class="arslan-delete-node">
         <menus-button
           ico="node-delete-2"
           :text="t('blockMenu.delete')"
@@ -245,3 +245,4 @@ const deleteNode = () => {
 </script>
 
 <style lang="less" scoped></style>
+

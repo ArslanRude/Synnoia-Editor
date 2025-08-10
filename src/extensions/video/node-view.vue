@@ -1,6 +1,6 @@
-<template>
-  <node-view-wrapper :id="node.attrs.id" ref="containerRef" class="umo-node-view" :style="nodeStyle">
-    <div class="umo-node-container umo-hover-shadow umo-node-video">
+﻿<template>
+  <node-view-wrapper :id="node.attrs.id" ref="containerRef" class="arslan-node-view" :style="nodeStyle">
+    <div class="arslan-node-container arslan-hover-shadow arslan-node-video">
       <drager :selected="selected" :rotatable="false" :boundary="false" :width="Number(node.attrs.width)"
         :height="Number(node.attrs.height)" :min-width="300" :min-height="200" :max-width="maxWidth"
         :max-height="maxHeight" :equal-proportion="true" @resize="onResize" @focus="selected = true">
@@ -100,11 +100,11 @@ onClickOutside(containerRef, () => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-video {
+.arslan-node-view {
+  .arslan-node-video {
     max-width: 100%;
     pointer-events: none;
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
 
     .es-drager {
       max-width: 100%;
@@ -120,7 +120,7 @@ onClickOutside(containerRef, () => {
 
       video {
         display: block;
-        border-radius: var(--umo-radius);
+        border-radius: var(--arslan-radius);
         overflow: hidden;
         pointer-events: auto;
         outline: none;
@@ -142,14 +142,14 @@ onClickOutside(containerRef, () => {
       background: rgba(255, 255, 255, 0.7);
       height: 2px;
       left: 0;
-      border-top-left-radius: var(--umo-radius);
-      border-top-right-radius: var(--umo-radius);
+      border-top-left-radius: var(--arslan-radius);
+      border-top-right-radius: var(--arslan-radius);
 
       &:after {
         content: '';
         display: block;
         height: 100%;
-        background-color: var(--umo-primary-color);
+        background-color: var(--arslan-primary-color);
         animation: progress 1s linear infinite;
       }
     }
@@ -166,3 +166,4 @@ onClickOutside(containerRef, () => {
   }
 }
 </style>
+

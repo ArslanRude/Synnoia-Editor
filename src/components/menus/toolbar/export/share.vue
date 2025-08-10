@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="share"
     :text="t('export.share.text')"
@@ -14,10 +14,10 @@
     @confirm="copyLink"
     @close="dialogVisible = false"
   >
-    <div class="umo-share-container">
-      <div class="umo-share-tip" v-text="t('export.share.tip')"></div>
+    <div class="arslan-share-container">
+      <div class="arslan-share-tip" v-text="t('export.share.tip')"></div>
       <t-textarea
-        class="umo-share-textarea"
+        class="arslan-share-textarea"
         :value="options.shareUrl"
         readonly
         autosize
@@ -43,15 +43,15 @@ const copyLink = () => {
 </script>
 
 <style lang="less" scoped>
-.umo-share-container {
+.arslan-share-container {
   padding: 2px;
-  .umo-share-tip {
+  .arslan-share-tip {
     font-size: 12px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     margin-bottom: 6px;
     line-height: 1.4;
   }
-  .umo-share-textarea {
+  .arslan-share-textarea {
     :deep(textarea) {
       word-break: break-all;
       word-wrap: break-word;
@@ -59,3 +59,4 @@ const copyLink = () => {
   }
 }
 </style>
+

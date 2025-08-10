@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="link"
     :text="t('insert.link.text')"
@@ -8,7 +8,7 @@
     @toggle-popup="togglePopup"
   >
     <template #content>
-      <div class="umo-link-container">
+      <div class="arslan-link-container">
         <t-form label-align="top">
           <t-form-item :label="t('insert.link.hrefText')">
             <t-input
@@ -97,11 +97,11 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-link-container {
+.arslan-link-container {
   padding: 0 2px 2px;
   margin-top: -6px;
   width: 320px;
-  :deep(.umo-form__item) {
+  :deep(.arslan-form__item) {
     margin-bottom: 5px;
     &:last-child {
       margin-top: 15px;
@@ -109,3 +109,4 @@ watch(
   }
 }
 </style>
+

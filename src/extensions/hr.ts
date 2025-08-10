@@ -1,4 +1,4 @@
-import { nodeInputRule } from '@tiptap/core'
+﻿import { nodeInputRule } from '@tiptap/core'
 import hr from '@tiptap/extension-horizontal-rule'
 import { NodeSelection, TextSelection } from '@tiptap/pm/state'
 
@@ -13,7 +13,7 @@ export default hr.extend({
   addOptions() {
     return {
       HTMLAttributes: {
-        class: 'umo-page-divider',
+        class: 'arslan-page-divider',
         'data-line-number': false,
       },
     }
@@ -99,3 +99,4 @@ export default hr.extend({
     ]
   },
 })
+

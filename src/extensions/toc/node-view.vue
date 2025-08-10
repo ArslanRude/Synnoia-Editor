@@ -1,9 +1,9 @@
-<template>
-  <node-view-wrapper :id="node.attrs.id" class="umo-node-view">
-    <div class="umo-node-container umo-hover-shadow umo-select-outline umo-node-toc">
-      <p class="umo-node-toc-head" v-text="t('toc.title')"></p>
-      <div class="umo-node-toc-body">
-        <t-tree class="umo-toc-tree" :data="tocTreeData" :keys="{
+﻿<template>
+  <node-view-wrapper :id="node.attrs.id" class="arslan-node-view">
+    <div class="arslan-node-container arslan-hover-shadow arslan-select-outline arslan-node-toc">
+      <p class="arslan-node-toc-head" v-text="t('toc.title')"></p>
+      <div class="arslan-node-toc-body">
+        <t-tree class="arslan-toc-tree" :data="tocTreeData" :keys="{
           label: 'textContent',
           value: 'id',
         }" :empty="t('toc.empty')" :transition="false" activable hover expand-all line @active="headingActive" />
@@ -76,10 +76,10 @@ const headingActive = (value: any) => {
     `[data-toc-id="${value[0]}"]`,
   )
   const pageContainer = document.querySelector(
-    `${container} .umo-zoomable-container`,
+    `${container} .arslan-zoomable-container`,
   ) as HTMLElement
   const pageHeader = pageContainer?.querySelector(
-    '.umo-page-node-header',
+    '.arslan-page-node-header',
   ) as HTMLElement
   pageContainer.scrollTo({
     top: nodeElement.offsetTop + pageHeader.offsetHeight,
@@ -93,12 +93,12 @@ const headingActive = (value: any) => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-toc {
+.arslan-node-view {
+  .arslan-node-toc {
     padding: 44px 24px 24px 10px;
     position: relative;
-    outline: solid 1px var(--umo-content-node-border);
-    border-radius: var(--umo-content-node-radius);
+    outline: solid 1px var(--arslan-content-node-border);
+    border-radius: var(--arslan-content-node-radius);
     background-color: #fff;
     width: 100%;
 
@@ -113,21 +113,22 @@ const headingActive = (value: any) => {
       border-bottom-right-radius: 3px;
       font-size: 16px;
       background: rgba(black, 0.05);
-      color: var(--umo-primary-color);
+      color: var(--arslan-primary-color);
     }
 
     &-body {
-      .umo-tree__label {
+      .arslan-tree__label {
         margin-left: 0 !important;
         font-weight: 600;
         font-size: 16px;
         padding: 5px;
 
         &:hover {
-          color: var(--umo-primary-color);
+          color: var(--arslan-primary-color);
         }
       }
     }
   }
 }
 </style>
+

@@ -1,50 +1,50 @@
-<template>
-  <div class="umo-page-container">
+﻿<template>
+  <div class="arslan-page-container">
     <container-toc v-if="pageOptions.showToc" @close="pageOptions.showToc = false" />
-    <div class="umo-zoomable-container umo-scrollbar">
-      <div class="umo-zoomable-content bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark"
+    <div class="arslan-zoomable-container arslan-scrollbar">
+      <div class="arslan-zoomable-content bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark"
         :style="{
           width: pageZoomWidth,
           height: pageZoomHeight,
         }">
-        <t-watermark class="umo-page-content" :alpha="pageOptions.watermark.alpha" v-bind="watermarkOptions"
+        <t-watermark class="arslan-page-content" :alpha="pageOptions.watermark.alpha" v-bind="watermarkOptions"
           :watermark-content="pageOptions.watermark" :style="{
-            '--umo-page-background': pageOptions.background,
-            '--umo-page-margin-top': (pageOptions.margin?.top ?? '0') + 'cm',
-            '--umo-page-margin-bottom':
+            '--arslan-page-background': pageOptions.background,
+            '--arslan-page-margin-top': (pageOptions.margin?.top ?? '0') + 'cm',
+            '--arslan-page-margin-bottom':
               (pageOptions.margin?.bottom ?? '0') + 'cm',
-            '--umo-page-margin-left': (pageOptions.margin?.left ?? '0') + 'cm',
-            '--umo-page-margin-right':
+            '--arslan-page-margin-left': (pageOptions.margin?.left ?? '0') + 'cm',
+            '--arslan-page-margin-right':
               (pageOptions.margin?.right ?? '0') + 'cm',
-            '--umo-page-width': pageSize.width + 'cm',
-            '--umo-page-height': pageSize.height + 'cm',
+            '--arslan-page-width': pageSize.width + 'cm',
+            '--arslan-page-height': pageSize.height + 'cm',
             width: pageSize.width + 'cm',
             transform: `scale(${pageOptions.zoomLevel ? pageOptions.zoomLevel / 100 : 1})`,
           }">
-          <div class="umo-page-node-header" contenteditable="false">
-            <div class="umo-page-corner corner-tl" style="width: var(--umo-page-margin-left)"></div>
+          <div class="arslan-page-node-header" contenteditable="false">
+            <div class="arslan-page-corner corner-tl" style="width: var(--arslan-page-margin-left)"></div>
 
-            <div class="umo-page-node-header-content"></div>
-            <div class="umo-page-corner corner-tr" style="width: var(--umo-page-margin-right)"></div>
+            <div class="arslan-page-node-header-content"></div>
+            <div class="arslan-page-corner corner-tr" style="width: var(--arslan-page-margin-right)"></div>
           </div>
-          <div class="umo-page-node-content">
+          <div class="arslan-page-node-content">
             <editor>
               <template #bubble_menu="props">
                 <slot name="bubble_menu" v-bind="props" />
               </template>
             </editor>
           </div>
-          <div class="umo-page-node-footer" contenteditable="false">
-            <div class="umo-page-corner corner-bl" style="width: var(--umo-page-margin-left)"></div>
-            <div class="umo-page-node-footer-content"></div>
-            <div class="umo-page-corner corner-br" style="width: var(--umo-page-margin-right)"></div>
+          <div class="arslan-page-node-footer" contenteditable="false">
+            <div class="arslan-page-corner corner-bl" style="width: var(--arslan-page-margin-left)"></div>
+            <div class="arslan-page-node-footer-content"></div>
+            <div class="arslan-page-corner corner-br" style="width: var(--arslan-page-margin-right)"></div>
           </div>
         </t-watermark>
       </div>
     </div>
     <t-image-viewer v-model:visible="imageViewer.visible" v-model:index="currentImageIndex" :images="previewImages"
       @close="imageViewer.visible = false" />
-    <t-back-top :container="`${container} .umo-zoomable-container`" :visible-height="300" size="small"
+    <t-back-top :container="`${container} .arslan-zoomable-container`" :visible-height="300" size="small"
       :offset="['25px', '30px']">
       <div
         class="w-full h-full flex items-center justify-center bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-115">
@@ -79,9 +79,9 @@ const pageZoomWidth = $computed(() => {
 // Update page height when content changes
 let pageZoomHeight = $ref('')
 const setPageZoomHeight = () => {
-  const el = document.querySelector(`${container} .umo-page-content`)
+  const el = document.querySelector(`${container} .arslan-page-content`)
   if (!el) {
-    console.warn('The element <.umo-page-content> does not exist.')
+    console.warn('The element <.arslan-page-content> does not exist.')
     return
   }
   pageZoomHeight = `${(el.clientHeight * (pageOptions.value.zoomLevel ?? 1)) / 100}px`
@@ -149,7 +149,7 @@ watch(
     }
     await nextTick()
     const images = document.querySelectorAll(
-      `${container} .umo-page-node-content img[src]:not(.umo-icon)`,
+      `${container} .arslan-page-node-content img[src]:not(.arslan-icon)`,
     )
     Array.from(images).forEach((image, index) => {
       const src = image.getAttribute('src')
@@ -164,32 +164,32 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-page-container {
+.arslan-page-container {
   height: 100%;
   display: flex;
   position: relative;
 }
 
-.umo-zoomable-container {
+.arslan-zoomable-container {
   flex: 1;
   padding: 20px 50px;
   scroll-behavior: smooth;
 
-  .umo-zoomable-content {
+  .arslan-zoomable-content {
     margin: 0 auto;
     box-shadow:
       rgba(0, 0, 0, 0.06) 0px 0px 10px 0px,
       rgba(0, 0, 0, 0.04) 0px 0px 0px 1px;
 
-    .umo-page-content {
+    .arslan-page-content {
       transform-origin: 0 0;
       box-sizing: border-box;
       display: flex;
       position: relative;
       box-sizing: border-box;
-      // background-color: var(--umo-page-background);
-      width: var(--umo-page-width);
-      min-height: var(--umo-page-height);
+      // background-color: var(--arslan-page-background);
+      width: var(--arslan-page-width);
+      min-height: var(--arslan-page-height);
       overflow: visible !important;
       display: flex;
       flex-direction: column;
@@ -201,23 +201,23 @@ watch(
   }
 }
 
-.umo-page-node-header {
-  height: var(--umo-page-margin-top);
+.arslan-page-node-header {
+  height: var(--arslan-page-margin-top);
   overflow: hidden;
 }
 
-.umo-page-node-footer {
-  height: var(--umo-page-margin-bottom);
+.arslan-page-node-footer {
+  height: var(--arslan-page-margin-bottom);
   overflow: hidden;
 }
 
-.umo-page-node-header,
-.umo-page-node-footer {
+.arslan-page-node-header,
+.arslan-page-node-footer {
   display: flex;
   justify-content: space-between;
 }
 
-.umo-page-corner {
+.arslan-page-corner {
   box-sizing: border-box;
   position: relative;
   z-index: 10;
@@ -264,21 +264,22 @@ watch(
   }
 }
 
-.umo-page-node-header-content,
-.umo-page-node-footer-content {
+.arslan-page-node-header-content,
+.arslan-page-node-footer-content {
   flex: 1;
 }
 
-.umo-page-node-content {
+.arslan-page-node-content {
   position: relative;
   box-sizing: border-box;
   flex-shrink: 1;
 }
 
-:deep(.umo-back-top) {
+:deep(.arslan-back-top) {
   position: absolute;
   border: none;
   border-radius: 20%;
   background: transparent;
 }
 </style>
+

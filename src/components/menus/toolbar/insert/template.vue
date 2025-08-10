@@ -1,11 +1,11 @@
-<template>
+﻿<template>
   <menus-button
     v-if="options.templates && options.templates.length"
     ico="template"
     :text="t('insert.template')"
     menu-type="dropdown"
     huge
-    overlay-class-name="umo-templates-dropdown"
+    overlay-class-name="arslan-templates-dropdown"
   >
     <template #dropmenu>
       <t-dropdown-menu>
@@ -45,8 +45,8 @@ const setTemplate = ({ content }: { content: string }) => {
 </script>
 
 <style lang="less">
-.umo-templates-dropdown {
-  .umo-dropdown__item-text {
+.arslan-templates-dropdown {
+  .arslan-dropdown__item-text {
     padding: 5px 5px;
     min-width: 200px;
     max-width: 320px;
@@ -57,7 +57,7 @@ const setTemplate = ({ content }: { content: string }) => {
     font-size: 14px;
   }
   .description {
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     white-space: normal;
     line-height: 1.4;
     margin-top: 3px;
@@ -70,3 +70,4 @@ const setTemplate = ({ content }: { content: string }) => {
   }
 }
 </style>
+

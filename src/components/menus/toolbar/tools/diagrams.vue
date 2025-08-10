@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :ico="content ? 'edit' : 'diagrams'"
     :text="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')"
@@ -10,14 +10,14 @@
       icon="diagrams"
       :header="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')"
       :footer="false"
-      class="umo-diagrams-dialog"
+      class="arslan-diagrams-dialog"
       mode="full-screen"
       @close="dialogVisible = false"
     >
-      <div v-if="loading" class="umo-diagrams-loading">
+      <div v-if="loading" class="arslan-diagrams-loading">
         <t-loading :text="t('tools.diagrams.loading')" size="small" />
       </div>
-      <div class="umo-diagrams-container"></div>
+      <div class="arslan-diagrams-container"></div>
     </modal>
   </menus-button>
 </template>
@@ -43,7 +43,7 @@ let loading = $ref(false)
 const diagramEditor = new DiagramEditor({
   domain: (options.value.diagrams?.domain ?? '') as string,
   params: (options.value.diagrams?.params ?? {}) as Record<string, any>,
-  container: `${container} .umo-diagrams-container`,
+  container: `${container} .arslan-diagrams-container`,
 })
 
 let image = $ref<
@@ -120,19 +120,19 @@ watch(
 </script>
 
 <style lang="less">
-.umo-diagrams-dialog {
-  .umo-dialog {
+.arslan-diagrams-dialog {
+  .arslan-dialog {
     padding: 0 !important;
   }
-  .umo-dialog__header {
-    background: var(--umo-color-white);
+  .arslan-dialog__header {
+    background: var(--arslan-color-white);
     height: var(--td-comp-size-xxxl);
   }
-  .umo-dialog__body {
+  .arslan-dialog__body {
     padding: 0;
   }
 }
-.umo-diagrams-loading {
+.arslan-diagrams-loading {
   width: 100%;
   height: calc(100% - var(--td-comp-size-xxxl));
   box-sizing: border-box;
@@ -140,11 +140,11 @@ watch(
   align-items: center;
   justify-content: center;
   position: absolute;
-  background-color: var(--umo-container-background);
+  background-color: var(--arslan-container-background);
 }
-.umo-diagrams-container {
+.arslan-diagrams-container {
   height: 100%;
-  .umo-diagrams-iframe {
+  .arslan-diagrams-iframe {
     width: 100%;
     height: 100%;
     border: none;
@@ -152,3 +152,4 @@ watch(
   }
 }
 </style>
+

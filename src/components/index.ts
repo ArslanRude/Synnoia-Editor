@@ -1,21 +1,21 @@
 import 'virtual:svg-icons-register'
-import UmoEditor from './index.vue'
-import UmoMenuButton from './menus/button.vue'
-import UmoDialog from './modal.vue'
-import UmoTooltip from './tooltip.vue'
-import type { UmoEditorOptions } from '@/types'
-const useUmoEditor = {
-  install: (app: any, options: UmoEditorOptions) => {
+import type { ArslanEditorOptions } from '@/types'
+import ArslanEditor from './index.vue'
+import ArslanMenuButton from './menus/button.vue'
+import ArslanDialog from './modal.vue'
+import ArslanTooltip from './tooltip.vue'
+const useArslanEditor = {
+  install: (app: any, options: ArslanEditorOptions) => {
     app.provide('defaultOptions', options)
-    app.component(UmoEditor.name ?? 'UmoEditor', UmoEditor)
+    app.component(ArslanEditor.name ?? 'ArslanEditor', ArslanEditor)
   },
 }
 
+export default ArslanEditor
 export {
-  UmoEditor as default,
-  UmoDialog,
-  UmoEditor,
-  UmoMenuButton,
-  UmoTooltip,
-  useUmoEditor,
+  ArslanDialog,
+  ArslanEditor,
+  ArslanMenuButton,
+  ArslanTooltip,
+  useArslanEditor,
 }

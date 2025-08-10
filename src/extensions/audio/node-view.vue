@@ -1,12 +1,12 @@
-<template>
+﻿<template>
   <node-view-wrapper
     :id="node.attrs.id"
     ref="containerRef"
-    class="umo-node-view"
+    class="arslan-node-view"
     :style="nodeStyle"
   >
     <div
-      class="umo-node-container umo-hover-shadow umo-select-outline umo-node-audio"
+      class="arslan-node-container arslan-hover-shadow arslan-select-outline arslan-node-audio"
     >
       <audio
         ref="audiorRef"
@@ -89,14 +89,14 @@ onClickOutside(containerRef, () => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-audio {
+.arslan-node-view {
+  .arslan-node-audio {
     max-width: 100%;
     width: 360px;
     position: relative;
     display: flex;
-    border-radius: var(--umo-radius);
-    outline: solid 1px var(--umo-border-color);
+    border-radius: var(--arslan-radius);
+    outline: solid 1px var(--arslan-border-color);
     audio {
       width: 100%;
       outline: none;
@@ -109,13 +109,13 @@ onClickOutside(containerRef, () => {
       background: rgba(0, 0, 0, 0.2);
       height: 2px;
       left: 0;
-      border-top-left-radius: var(--umo-radius);
-      border-top-right-radius: var(--umo-radius);
+      border-top-left-radius: var(--arslan-radius);
+      border-top-right-radius: var(--arslan-radius);
       &:after {
         content: '';
         display: block;
         height: 100%;
-        background-color: var(--umo-primary-color);
+        background-color: var(--arslan-primary-color);
         animation: progress 1s linear infinite;
       }
     }
@@ -130,3 +130,4 @@ onClickOutside(containerRef, () => {
   }
 }
 </style>
+

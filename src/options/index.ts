@@ -1,4 +1,4 @@
-import { ObjectSchema } from '@eslint/object-schema'
+﻿import { ObjectSchema } from '@eslint/object-schema'
 import {
   type AsyncFunction,
   isAsyncFunction,
@@ -15,7 +15,7 @@ import type {
   LocaleLabel,
   PageSize,
   Template,
-  UmoEditorOptions,
+  ArslanEditorOptions,
   WebPageItem,
 } from '@/types'
 
@@ -24,7 +24,7 @@ import { defaultDicts } from './dicts'
 import { defaultWebPages } from './web-pages'
 
 // 默认配置
-const defaultOptions: UmoEditorOptions = {
+const defaultOptions: ArslanEditorOptions = {
   editorKey: 'default',
   locale: 'zh-CN',
   theme: 'light',
@@ -918,3 +918,4 @@ const ojbectSchema = new ObjectSchema({
 })
 
 export { defaultOptions, ojbectSchema, propsOptions }
+

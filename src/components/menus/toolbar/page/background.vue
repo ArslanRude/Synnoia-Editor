@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="page-background"
     :text="t('page.bg.text')"
@@ -8,11 +8,11 @@
     @toggle-popup="togglePopup"
   >
     <template #content>
-      <div class="umo-background-container">
+      <div class="arslan-background-container">
         <div
           v-for="(item, index) in backgrounds"
           :key="index"
-          class="umo-background-item"
+          class="arslan-background-item"
           :class="{ active: page.background === item.value }"
           :style="{ backgroundColor: item.value }"
           @click="backgroundChange(item.value ?? '')"
@@ -26,12 +26,12 @@
         placement="right-bottom"
         @visible-change="(visible: boolean) => (moreColorPicker = visible)"
       >
-        <div class="umo-background-more" :class="{ active: moreColorPicker }">
-          <div class="umo-background-more-menu">
+        <div class="arslan-background-more" :class="{ active: moreColorPicker }">
+          <div class="arslan-background-more-menu">
             <icon name="palette-color" />
             <span v-text="t('page.bg.custom')"></span>
           </div>
-          <div class="umo-background-more-arrow">
+          <div class="arslan-background-more-arrow">
             <icon name="arrow-down" />
           </div>
         </div>
@@ -71,23 +71,23 @@ const backgroundChange = (color: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-background-container {
+.arslan-background-container {
   display: flex;
   flex-wrap: wrap;
   width: 234px;
   justify-content: space-between;
   gap: 9px;
   user-select: none;
-  .umo-background-item {
+  .arslan-background-item {
     width: 70px;
     height: 90px;
     border: solid 1px rgba(0, 0, 0, 0.1);
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     text-align: center;
     cursor: pointer;
     white-space: pre;
@@ -97,12 +97,12 @@ const backgroundChange = (color: string) => {
       transform: scale(1.02);
     }
     &.active {
-      color: var(--umo-primary-color);
-      border-color: var(--umo-primary-color);
+      color: var(--arslan-primary-color);
+      border-color: var(--arslan-primary-color);
     }
   }
 }
-.umo-background-more {
+.arslan-background-more {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -112,22 +112,23 @@ const backgroundChange = (color: string) => {
   &:hover,
   &.active {
     background-color: var(--td-bg-color-container-hover);
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
   }
   &-menu {
     display: flex;
     align-items: center;
     font-size: 12px;
     cursor: pointer;
-    .umo-icon {
+    .arslan-icon {
       margin-right: 5px;
       font-size: 16px;
     }
   }
   &-arrow {
-    .umo-icon {
+    .arslan-icon {
       transform: rotate(-90deg);
     }
   }
 }
 </style>
+

@@ -1,14 +1,14 @@
-<template>
+﻿<template>
   <drag-handle
     :editor="editor"
     :tippy-options="tippyOpitons"
-    class="umo-block-menu-drag-handle"
+    class="arslan-block-menu-drag-handle"
     :class="{ 'is-empty': editor.isEmpty }"
     @node-change="nodeChange"
   >
     <div
-      class="umo-block-menu-hander"
-      :class="`umo-selected-node-${selectedNode?.type?.name || 'unknown'} `"
+      class="arslan-block-menu-hander"
+      :class="`arslan-selected-node-${selectedNode?.type?.name || 'unknown'} `"
     >
       <menus-context-block-node @dropdown-visible="dropdownVisible" />
       <menus-context-block-common
@@ -84,12 +84,12 @@ const dropdownVisible = (visible: boolean) => {
 </script>
 
 <style lang="less">
-.umo-block-menu {
-  .umo-menu-button {
-    color: var(--umo-text-color-light) !important;
+.arslan-block-menu {
+  .arslan-menu-button {
+    color: var(--arslan-text-color-light) !important;
   }
   &-drag-handle.is-empty {
-    .umo-block-menu-hander {
+    .arslan-block-menu-hander {
       margin-top: 2px;
     }
   }
@@ -102,7 +102,7 @@ const dropdownVisible = (visible: boolean) => {
     @media print {
       display: none;
     }
-    &.umo-selected-node {
+    &.arslan-selected-node {
       &-table,
       &-horizontalRule,
       &-ProseMirror-gapcursor {
@@ -112,40 +112,40 @@ const dropdownVisible = (visible: boolean) => {
         margin-top: -6px;
       }
     }
-    .umo-menu-button {
-      background-color: var(--umo-page-background);
-      .umo-button-content {
+    .arslan-menu-button {
+      background-color: var(--arslan-page-background);
+      .arslan-button-content {
         color: rgba(0, 0, 0, 0.5);
       }
       &:not(.active):hover {
-        background-color: var(--umo-content-node-selected-background);
+        background-color: var(--arslan-content-node-selected-background);
       }
       &.active {
         &:hover {
           opacity: 0.8;
         }
-        .umo-button-content {
-          color: var(--umo-text-color-light);
+        .arslan-button-content {
+          color: var(--arslan-text-color-light);
         }
       }
     }
   }
   &-dropdown {
-    .umo-block-menu-group-name {
+    .arslan-block-menu-group-name {
       padding-left: 15px !important;
     }
-    .umo-dropdown__menu,
-    .umo-dropdown__submenu {
+    .arslan-dropdown__menu,
+    .arslan-dropdown__submenu {
       --td-radius-default: 0;
       padding: 8px 0 !important;
-      .umo-divider {
+      .arslan-divider {
         margin: 4px 0 2px;
         opacity: 0.5;
       }
-      .umo-dropdown__item {
+      .arslan-dropdown__item {
         padding: 2px 0;
         min-width: 140px !important;
-        .umo-menu-button {
+        .arslan-menu-button {
           background-color: transparent;
           padding: 0 15px;
           box-sizing: border-box;
@@ -154,31 +154,31 @@ const dropdownVisible = (visible: boolean) => {
           &-wrap {
             display: block !important;
           }
-          .umo-button__text {
+          .arslan-button__text {
             width: 100%;
           }
         }
-        .umo-button-content {
+        .arslan-button-content {
           width: 100%;
           justify-content: flex-start;
-          .umo-button-text {
-            color: var(--umo-text-color);
+          .arslan-button-text {
+            color: var(--arslan-text-color);
           }
-          .umo-button-icon {
+          .arslan-button-icon {
             margin-right: 3px;
             font-size: 16px;
             color: #666;
           }
-          .umo-button-kbd {
+          .arslan-button-kbd {
             flex: 1;
             text-align: right;
-            color: var(--umo-text-color-light);
+            color: var(--arslan-text-color-light);
             font-family: Arial, Helvetica, sans-serif;
             font-size: 9px;
           }
-          .umo-heading {
+          .arslan-heading {
             display: flex;
-            color: var(--umo-text-color);
+            color: var(--arslan-text-color);
             .icon-heading {
               font-size: 12px;
               display: inline-block;
@@ -187,7 +187,7 @@ const dropdownVisible = (visible: boolean) => {
           }
         }
         &--disabled {
-          .umo-button-content {
+          .arslan-button-content {
             opacity: 0.6;
           }
         }
@@ -196,7 +196,7 @@ const dropdownVisible = (visible: boolean) => {
           font-size: 12px !important;
           margin-right: 8px;
         }
-        .umo-dropdown-item-label {
+        .arslan-dropdown-item-label {
           padding: 1px 15px;
           overflow: hidden;
           text-overflow: ellipsis;
@@ -208,10 +208,10 @@ const dropdownVisible = (visible: boolean) => {
       }
     }
 
-    .umo-delete-node {
-      .umo-button {
+    .arslan-delete-node {
+      .arslan-button {
         * {
-          color: var(--umo-error-color) !important;
+          color: var(--arslan-error-color) !important;
         }
       }
     }
@@ -227,3 +227,4 @@ const dropdownVisible = (visible: boolean) => {
   }
 }
 </style>
+

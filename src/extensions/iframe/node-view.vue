@@ -1,12 +1,12 @@
-<template>
+﻿<template>
   <node-view-wrapper
     :id="node.attrs.id"
     ref="containerRef"
-    class="umo-node-view"
+    class="arslan-node-view"
     :style="nodeStyle"
   >
     <div
-      class="umo-node-container umo-hover-shadow umo-select-outline umo-node-iframe"
+      class="arslan-node-container arslan-hover-shadow arslan-select-outline arslan-node-iframe"
     >
       <drager
         :selected="selected"
@@ -71,12 +71,12 @@ onClickOutside(containerRef, () => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-iframe {
+.arslan-node-view {
+  .arslan-node-iframe {
     max-width: 100%;
     .es-drager {
       &:not(.selected) {
-        outline: solid 1px var(--umo-content-node-border);
+        outline: solid 1px var(--arslan-content-node-border);
       }
     }
     iframe {
@@ -86,8 +86,9 @@ onClickOutside(containerRef, () => {
       width: 100%;
       height: 100%;
       border: none;
-      background-color: var(--umo-color-white);
+      background-color: var(--arslan-color-white);
     }
   }
 }
 </style>
+

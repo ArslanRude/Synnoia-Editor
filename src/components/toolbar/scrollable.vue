@@ -1,7 +1,7 @@
-<template>
+﻿<template>
   <div
     ref="wraperRef"
-    class="umo-scrollable-container"
+    class="arslan-scrollable-container"
     :style="{
       paddingLeft: hidePrev ? '10px' : '32px',
       paddingRight: hideNext ? '10px' : '32px',
@@ -9,17 +9,17 @@
   >
     <div
       v-if="!hidePrev"
-      class="umo-scrollable-control scrollable-left"
+      class="arslan-scrollable-control scrollable-left"
       @click="scrollLeft"
     >
       <icon name="arrow-down" />
     </div>
-    <div ref="contentRef" class="umo-scrollable-content">
+    <div ref="contentRef" class="arslan-scrollable-content">
       <slot />
     </div>
     <div
       v-if="!hideNext"
-      class="umo-scrollable-control scrollable-right"
+      class="arslan-scrollable-control scrollable-right"
       @click="scrollRight"
     >
       <icon name="arrow-down" />
@@ -76,20 +76,20 @@ defineExpose({
 </script>
 
 <style lang="less" scoped>
-.umo-scrollable-container {
+.arslan-scrollable-container {
   width: 100%;
   overflow: hidden;
   position: relative;
-  .umo-scrollable-control {
+  .arslan-scrollable-control {
     display: flex;
     align-items: center;
     justify-content: center;
-    border: solid 1px var(--umo-border-color);
-    border-radius: var(--umo-radius);
+    border: solid 1px var(--arslan-border-color);
+    border-radius: var(--arslan-radius);
     cursor: pointer;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     overflow: visible;
-    background-color: var(--umo-button-hover-background);
+    background-color: var(--arslan-button-hover-background);
     z-index: 10;
     font-size: 20px;
     box-sizing: border-box;
@@ -98,13 +98,13 @@ defineExpose({
     transform: translateY(-50%);
     height: calc(100% - 20px);
     &:hover {
-      border-color: var(--umo-primary-color);
-      background-color: var(--umo-primary-color);
-      color: var(--umo-color-white);
+      border-color: var(--arslan-primary-color);
+      background-color: var(--arslan-primary-color);
+      color: var(--arslan-color-white);
     }
     &.scrollable-left {
       left: 10px;
-      :deep(.umo-icon) {
+      :deep(.arslan-icon) {
         transform: rotate(90deg);
       }
       &::before {
@@ -113,7 +113,7 @@ defineExpose({
         background: linear-gradient(
           to left,
           transparent,
-          var(--umo-color-white)
+          var(--arslan-color-white)
         );
         position: absolute;
         left: 21px;
@@ -125,7 +125,7 @@ defineExpose({
     }
     &.scrollable-right {
       right: 10px;
-      :deep(.umo-icon) {
+      :deep(.arslan-icon) {
         transform: rotate(-90deg);
       }
       &::before {
@@ -134,7 +134,7 @@ defineExpose({
         background: linear-gradient(
           to right,
           transparent,
-          var(--umo-color-white)
+          var(--arslan-color-white)
         );
         position: absolute;
         right: 21px;
@@ -145,7 +145,7 @@ defineExpose({
       }
     }
   }
-  .umo-scrollable-content {
+  .arslan-scrollable-content {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
@@ -156,3 +156,4 @@ defineExpose({
   }
 }
 </style>
+

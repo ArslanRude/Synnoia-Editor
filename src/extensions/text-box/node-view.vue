@@ -1,18 +1,18 @@
-<template>
-  <node-view-wrapper :id="node.attrs.id" ref="containerRef" class="umo-node-view umo-floating-node" :style="{
+﻿<template>
+  <node-view-wrapper :id="node.attrs.id" ref="containerRef" class="arslan-node-view arslan-floating-node" :style="{
     zIndex: 90,
-    '--umo-textbox-border-color': node.attrs.borderColor,
-    '--umo-textbox-border-width': node.attrs.borderWidth + 'px',
-    '--umo-textbox-border-style': node.attrs.borderStyle,
-    '--umo-textbox-background-color': node.attrs.backgroundColor,
+    '--arslan-textbox-border-color': node.attrs.borderColor,
+    '--arslan-textbox-border-width': node.attrs.borderWidth + 'px',
+    '--arslan-textbox-border-style': node.attrs.borderStyle,
+    '--arslan-textbox-background-color': node.attrs.backgroundColor,
   }">
-    <div class="umo-node-container umo-node-text-box">
+    <div class="arslan-node-container arslan-node-text-box">
       <drager :selected="selected" :disabled="disabled" :draggable="!options?.document?.readOnly" :rotatable="true"
         :boundary="false" :angle="node.attrs.angle" :width="node.attrs.width" :height="node.attrs.height"
         :left="node.attrs.left" :top="node.attrs.top" :min-width="14" :min-height="14" :title="t('node.textBox.tip')"
         @rotate="onRotate" @resize="onResize" @drag="onDrag" @blur="disabled = false" @click="selected = true"
         @dblclick="editTextBox">
-        <node-view-content ref="contentRef" class="umo-node-text-box-content" />
+        <node-view-content ref="contentRef" class="arslan-node-text-box-content" />
       </drager>
     </div>
   </node-view-wrapper>
@@ -58,15 +58,15 @@ const editTextBox = () => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-text-box {
+.arslan-node-view {
+  .arslan-node-text-box {
     position: relative;
 
     .es-drager {
       user-select: text !important;
       cursor: default !important;
       z-index: 90 !important;
-      background-color: var(--umo-textbox-background-color);
+      background-color: var(--arslan-textbox-background-color);
 
       &.dragging {
         caret-color: transparent;
@@ -81,20 +81,20 @@ const editTextBox = () => {
       }
 
       &.selected {
-        .umo-node-text-box-content {
+        .arslan-node-text-box-content {
           outline: none;
         }
       }
 
       &.disabled.selected {
-        .umo-node-text-box-content {
-          outline: var(--umo-textbox-border-style) var(--umo-textbox-border-width) var(--umo-textbox-border-color);
+        .arslan-node-text-box-content {
+          outline: var(--arslan-textbox-border-style) var(--arslan-textbox-border-width) var(--arslan-textbox-border-color);
         }
       }
     }
 
-    .umo-node-text-box-content {
-      outline: var(--umo-textbox-border-style) var(--umo-textbox-border-width) var(--umo-textbox-border-color);
+    .arslan-node-text-box-content {
+      outline: var(--arslan-textbox-border-style) var(--arslan-textbox-border-width) var(--arslan-textbox-border-color);
       height: 100%;
       padding: 5px;
       box-sizing: border-box;
@@ -103,3 +103,4 @@ const editTextBox = () => {
   }
 }
 </style>
+

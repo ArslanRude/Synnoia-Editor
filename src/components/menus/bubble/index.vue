@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <bubble-menu
-    class="umo-editor-bubble-menu"
+    class="arslan-editor-bubble-menu"
     :class="{ assistant }"
     :editor="editor!"
     :tippy-options="tippyOpitons"
@@ -63,35 +63,35 @@ onUnmounted(() => {
 </script>
 
 <style lang="less">
-.umo-editor-bubble-menu {
-  border-radius: var(--umo-radius);
+.arslan-editor-bubble-menu {
+  border-radius: var(--arslan-radius);
   display: flex;
   align-items: center;
   flex-wrap: wrap;
 
   &:not(.assistant) {
     padding: 8px 10px;
-    box-shadow: var(--umo-shadow);
-    border: 1px solid var(--umo-border-color);
-    background-color: var(--umo-color-white);
+    box-shadow: var(--arslan-shadow);
+    border: 1px solid var(--arslan-border-color);
+    background-color: var(--arslan-color-white);
   }
 
   &:empty {
     display: none;
   }
 
-  .umo-menu-button.show-text .umo-button-content .umo-button-text {
+  .arslan-menu-button.show-text .arslan-button-content .arslan-button-text {
     display: none !important;
   }
 
-  .umo-menu-button.huge {
+  .arslan-menu-button.huge {
     height: var(--td-comp-size-xs);
     min-width: unset;
 
-    .umo-button-content {
+    .arslan-button-content {
       min-width: unset !important;
 
-      .umo-icon {
+      .arslan-icon {
         font-size: 16px;
         margin-top: 0;
       }
@@ -99,3 +99,4 @@ onUnmounted(() => {
   }
 }
 </style>
+

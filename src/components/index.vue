@@ -1,14 +1,14 @@
 <template>
   <t-config-provider :key="options.editorKey" :global-config="{
     ...localeConfig[locale],
-    classPrefix: 'umo',
+    classPrefix: 'arslan',
   }">
-    <div :id="container.substr(1)" class="umo-editor-container" :class="{
+    <div :id="container.substr(1)" class="arslan-editor-container" :class="{
       'toolbar-classic': isRecord($toolbar) && $toolbar.mode === 'classic',
       'toolbar-ribbon': isRecord($toolbar) && $toolbar.mode === 'ribbon',
       'preview-mode': page.preview?.enabled,
       'laser-pointer': page.preview?.enabled && page.preview?.laserPointer,
-      'umo-editor-is-fullscreen': fullscreen,
+      'arslan-editor-is-fullscreen': fullscreen,
     }" :style="{
         height: options.height,
         zIndex: fullscreen ? options.fullscreenZIndex : 'unset',
@@ -20,14 +20,14 @@
           </template>
         </toolbar>
       </header>
-      <main class="umo-main bg-secondary-light dark:bg-secondary-dark">
+      <main class="arslan-main bg-secondary-light dark:bg-secondary-dark">
         <container-page>
           <template #bubble_menu="slotProps">
             <slot name="bubble_menu" v-bind="slotProps" />
           </template>
         </container-page>
       </main>
-      <footer class="umo-footer bg-highlight-light dark:bg-highlight-dark text-text-light dark:text-text-dark">
+      <footer class="arslan-footer bg-highlight-light dark:bg-highlight-dark text-text-light dark:text-text-dark">
         <statusbar />
       </footer>
     </div>
@@ -61,7 +61,7 @@ import type {
   PageOption,
   SetContentOptions,
   SetContentType,
-  UmoEditorOptions,
+  ArslanEditorOptions,
 } from '@/types'
 import type {
   AutoSaveOptions,
@@ -78,7 +78,7 @@ import ruConfig from '../locales/tdesign/ru-RU'
 
 const { toBlob, toJpeg, toPng } = domToImage
 
-defineOptions({ name: 'UmoEditor' })
+defineOptions({ name: 'ArslanEditor' })
 
 // Props and Emits
 const props = defineProps(propsOptions)
@@ -110,9 +110,9 @@ const emits = defineEmits([
 ])
 
 // state Setup
-const container = $ref(`#umo-editor-${shortId(4)}`)
+const container = $ref(`#arslan-editor-${shortId(4)}`)
 const defaultOptions = inject('defaultOptions', {})
-const options = ref<UmoEditorOptions>(getOpitons(props, defaultOptions))
+const options = ref<ArslanEditorOptions>(getOpitons(props, defaultOptions))
 const editor = ref<Editor | null>(null)
 const savedAt = ref(null)
 const page = ref({})
@@ -382,7 +382,13 @@ watch(
 // i18n Setup
 // @ts-ignore
 const { t, locale, mergeLocaleMessage } = useI18n()
-const $locale = useStorage('umo-editor:locale', options.value.locale)
+// Preserve previously saved locale from legacy key and migrate to new key
+const $newLocale = useStorage('arslan-editor:locale', options.value.locale)
+const $oldLocale = useStorage('umo-editor:locale', options.value.locale)
+if ($oldLocale.value && !$newLocale.value) {
+  $newLocale.value = $oldLocale.value
+}
+const $locale = $newLocale
 locale.value = $locale.value
 consoleCopyright()
 const getLocaleMessage = (lang: SupportedLocale) => {
@@ -411,11 +417,16 @@ const localeConfig = $ref<Record<string, GlobalConfigProvider>>({
 })
 
 // Options Setup
-const setOptions = (value: UmoEditorOptions): UmoEditorOptions => {
+const setOptions = (value: ArslanEditorOptions): ArslanEditorOptions => {
   options.value = getOpitons(value)
-  const $locale = useStorage('umo-editor:locale', options.value.locale)
-  if (!$locale.value) {
-    $locale.value = options.value.locale
+  // Ensure we respect legacy saved locale and migrate to new key
+  const $newLocale = useStorage('arslan-editor:locale', options.value.locale)
+  const $oldLocale = useStorage('umo-editor:locale', options.value.locale)
+  if ($oldLocale.value && !$newLocale.value) {
+    $newLocale.value = $oldLocale.value
+  }
+  if (!$newLocale.value) {
+    $newLocale.value = options.value.locale
   }
   return options.value
 }
@@ -722,7 +733,7 @@ const getImage = async (format: 'blob' | 'jpeg' | 'png' = 'blob') => {
   try {
     page.value.zoomLevel = 100
     const node = document.querySelector(
-      `${container} .umo-page-content`,
+      `${container} .arslan-page-content`,
     ) as HTMLElement
     if (format === 'blob') {
       return await toBlob(node)
@@ -955,7 +966,7 @@ provide('reset', reset)
 
 // Exposing Methods
 defineExpose({
-  getOptions: () => options.value as UmoEditorOptions,
+  getOptions: () => options.value as ArslanEditorOptions,
   setOptions,
   setToolbar,
   setPage,
@@ -1018,45 +1029,45 @@ defineExpose({
 <style lang="less">
 @import '@/assets/styles/index.less';
 
-.umo-editor-container {
-  --td-brand-color: var(--umo-primary-color);
-  --td-warning-color: var(--umo-warning-color);
-  --td-error-color: var(--umo-error-color);
-  --td-text-color-primary: var(--umo-text-color);
-  --td-text-color-disabled: var(--umo-text-color-disabled);
+.arslan-editor-container {
+  --td-brand-color: var(--arslan-primary-color);
+  --td-warning-color: var(--arslan-warning-color);
+  --td-error-color: var(--arslan-error-color);
+  --td-text-color-primary: var(--arslan-text-color);
+  --td-text-color-disabled: var(--arslan-text-color-disabled);
   width: 100%;
   height: 100%;
   min-height: 400px;
   display: flex;
   flex-direction: column;
-  color: var(--umo-text-color);
-  font-family: var(--umo-font-family);
+  color: var(--arslan-text-color);
+  font-family: var(--arslan-font-family);
   position: relative !important;
 
-  .umo-toolbar,
-  .umo-footer {
-    // background-color: var(--umo-color-white);
+  .arslan-toolbar,
+  .arslan-footer {
+    // background-color: var(--arslan-color-white);
   }
 
-  .umo-main {
+  .arslan-main {
     flex: 1;
-    // background-color: var(--umo-container-background);
+    // background-color: var(--arslan-container-background);
     overflow: hidden;
   }
 
   &.preview-mode {
     &.laser-pointer {
-      .umo-main {
+      .arslan-main {
         cursor: url('@/assets/images/laser-pointer.svg'), auto;
       }
     }
 
-    .umo-toolbar {
+    .arslan-toolbar {
       display: none;
     }
   }
 
-  &.umo-editor-is-fullscreen {
+  &.arslan-editor-is-fullscreen {
     position: fixed !important;
     top: 0;
     left: 0;
@@ -1065,3 +1076,5 @@ defineExpose({
   }
 }
 </style>
+
+

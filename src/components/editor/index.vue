@@ -1,6 +1,6 @@
-<template>
+﻿<template>
   <editor-content
-    class="umo-editor-content"
+    class="arslan-editor-content"
     :class="{
       'show-bookmark': page.showBookmark,
       'show-line-number': page.showLineNumber,
@@ -64,7 +64,7 @@ const editorInstance: Editor = new Editor({
   enablePasteRules: inputAndPasteRules(options),
   editorProps: {
     attributes: {
-      class: 'umo-editor',
+      class: 'arslan-editor',
     },
     ...options.value.document?.editorProps,
   },
@@ -117,3 +117,4 @@ onBeforeUnmount(() => {
 @import '@/assets/styles/editor.less';
 @import '@/assets/styles/drager.less';
 </style>
+

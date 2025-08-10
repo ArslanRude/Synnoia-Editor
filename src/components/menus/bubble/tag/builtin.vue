@@ -1,9 +1,9 @@
-<template>
-  <div class="umo-bubble-tag-builtin">
+﻿<template>
+  <div class="arslan-bubble-tag-builtin">
     <div
       v-for="item in tags"
       :key="item.type"
-      class="umo-bubble-tag-item"
+      class="arslan-bubble-tag-item"
       :style="{
         color: item.color,
         backgroundColor: item.backgroundColor,
@@ -15,7 +15,7 @@
         name="selected"
         size="14"
       />
-      <span v-else class="umo-bubble-tag-item-text">A</span>
+      <span v-else class="arslan-bubble-tag-item-text">A</span>
     </div>
   </div>
 </template>
@@ -64,12 +64,12 @@ const selectStyle = (item: (typeof tags)[0]) => {
 </script>
 
 <style lang="less">
-.umo-bubble-tag-builtin {
+.arslan-bubble-tag-builtin {
   margin-right: 5px;
   display: flex;
   align-items: center;
 }
-.umo-bubble-tag-item {
+.arslan-bubble-tag-item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,3 +85,4 @@ const selectStyle = (item: (typeof tags)[0]) => {
   }
 }
 </style>
+

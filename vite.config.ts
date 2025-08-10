@@ -1,4 +1,4 @@
-import tailwindcss from '@tailwindcss/vite'
+﻿import tailwindcss from '@tailwindcss/vite'
 import Vue from '@vitejs/plugin-vue'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import AutoImport from 'unplugin-auto-import/vite'
@@ -35,8 +35,8 @@ const vuePlugins = {
   }),
   SvgIcons: createSvgIconsPlugin({
     iconDirs: [`${process.cwd()}/src/assets/icons`],
-    symbolId: 'umo-icon-[name]',
-    customDomId: 'umo-icons',
+    symbolId: 'arslan-icon-[name]',
+    customDomId: 'arslan-icons',
   }),
 }
 
@@ -76,7 +76,7 @@ const buildConfig = {
 const cssConfig = {
   preprocessorOptions: {
     less: {
-      modifyVars: { '@prefix': 'umo' },
+      modifyVars: { '@prefix': 'arslan' },
       javascriptEnabled: true,
     },
   },
@@ -129,3 +129,4 @@ export default defineConfig({
     },
   },
 })
+

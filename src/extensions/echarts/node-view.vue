@@ -1,16 +1,16 @@
-<template>
+﻿<template>
   <node-view-wrapper
     :id="'chartNode-' + node.attrs.id"
     ref="containerRef"
-    class="umo-node-view"
+    class="arslan-node-view"
     :style="nodeStyle"
   >
     <div
-      class="umo-node-container umo-node-echarts"
+      class="arslan-node-container arslan-node-echarts"
       :class="{
         'is-draggable': node.attrs.draggable,
-        'umo-hover-shadow': !options.document?.readOnly,
-        'umo-select-outline': !node.attrs.draggable,
+        'arslan-hover-shadow': !options.document?.readOnly,
+        'arslan-select-outline': !node.attrs.draggable,
       }"
     >
       <drager
@@ -31,7 +31,7 @@
         @resize="onResize"
         @focus="selected = true"
       >
-        <div :id="'chart-' + node.attrs.id" class="umo-node-echarts-body"></div>
+        <div :id="'chart-' + node.attrs.id" class="arslan-node-echarts-body"></div>
       </drager>
     </div>
   </node-view-wrapper>
@@ -156,8 +156,8 @@ watch(
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-echarts {
+.arslan-node-view {
+  .arslan-node-echarts {
     max-width: 100%;
     position: relative;
     &:not(.is-draggable) .es-drager {
@@ -165,7 +165,7 @@ watch(
       max-height: 100%;
       transform: translateX(0px) translateY(0px) rotate(0deg) !important;
     }
-    .umo-node-echarts-body {
+    .arslan-node-echarts-body {
       display: block;
       min-width: 400px;
       min-height: 200px;
@@ -173,8 +173,9 @@ watch(
       height: 100%;
       border: none;
       /* pointer-events: none; */
-      background-color: var(--umo-color-white);
+      background-color: var(--arslan-color-white);
     }
   }
 }
 </style>
+

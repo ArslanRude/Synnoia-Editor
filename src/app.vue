@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- Navbar - fixed height -->
     <div class="flex-shrink-0">
@@ -10,7 +10,7 @@
     </div>
 
     <!-- <div class="box">
-      <UmoEditorComponent editor-key="testaaa" :toolbar="{ defaultMode: 'classic' }" />
+      <ArslanEditorComponent editor-key="testaaa" :toolbar="{ defaultMode: 'classic' }" />
     </div> -->
   </div>
 </template>
@@ -137,3 +137,4 @@ body {
   overflow: hidden;
 }
 </style>
+

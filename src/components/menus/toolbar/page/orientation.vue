@@ -1,9 +1,9 @@
-<template>
+﻿<template>
   <menus-button
     ico="page-orientation"
     :text="t('page.orientation.text')"
     menu-type="dropdown"
-    overlay-class-name="umo-page-orientation-dropdown"
+    overlay-class-name="arslan-page-orientation-dropdown"
   >
     <template #dropmenu>
       <t-dropdown-menu>
@@ -37,8 +37,8 @@ const orientations = [
 </script>
 
 <style lang="less">
-.umo-page-orientation-dropdown {
-  .umo-dropdown__item {
+.arslan-page-orientation-dropdown {
+  .arslan-dropdown__item {
     max-width: unset !important;
     &-text {
       display: flex;
@@ -52,9 +52,10 @@ const orientations = [
       }
       .label {
         font-size: 14px;
-        color: var(--umo-text-color);
+        color: var(--arslan-text-color);
       }
     }
   }
 }
 </style>
+

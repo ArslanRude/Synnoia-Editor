@@ -1,19 +1,19 @@
-<template>
+﻿<template>
   <node-view-wrapper
     ref="containerRef"
-    class="umo-node-view"
-    :class="{ 'umo-floating-node': node.attrs.draggable }"
+    class="arslan-node-view"
+    :class="{ 'arslan-floating-node': node.attrs.draggable }"
     :style="nodeStyle"
     @dblclick="openImageViewer"
   >
     <div
-      class="umo-node-container umo-node-image"
+      class="arslan-node-container arslan-node-image"
       :class="{
         'is-loading': node.attrs.src && isLoading,
         'is-error': node.attrs.src && error,
         'is-draggable': node.attrs.draggable,
-        'umo-hover-shadow': !options.document?.readOnly,
-        'umo-select-outline': !node.attrs.draggable,
+        'arslan-hover-shadow': !options.document?.readOnly,
+        'arslan-select-outline': !node.attrs.draggable,
       }"
     >
       <div
@@ -241,8 +241,8 @@ watch(
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-image {
+.arslan-node-view {
+  .arslan-node-image {
     max-width: 100%;
     width: auto;
     position: relative;
@@ -268,12 +268,12 @@ watch(
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       font-size: 12px;
       gap: 10px;
 
       .loading-icon {
-        color: var(--umo-primary-color);
+        color: var(--arslan-primary-color);
         font-size: 22px;
         animation: turn 1s linear infinite;
       }
@@ -286,7 +286,7 @@ watch(
       align-items: center;
       justify-content: center;
       flex-direction: column;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       font-size: 12px;
 
       .error-icon {
@@ -319,7 +319,7 @@ watch(
           content: '';
           display: block;
           height: 100%;
-          background-color: var(--umo-primary-color);
+          background-color: var(--arslan-primary-color);
           animation: progress 1s linear infinite;
         }
       }
@@ -345,3 +345,4 @@ watch(
   }
 }
 </style>
+

@@ -1,10 +1,10 @@
-<template>
-  <node-view-wrapper ref="containerRef" class="umo-node-view umo-code-block">
+﻿<template>
+  <node-view-wrapper ref="containerRef" class="arslan-node-view arslan-code-block">
     <div
-      :class="`umo-node-container hover-shadow umo-node-code-block umo-node-code-block-theme-${node.attrs.theme}`"
+      :class="`arslan-node-container hover-shadow arslan-node-code-block arslan-node-code-block-theme-${node.attrs.theme}`"
     >
-      <div class="umo-node-code-block-toolbar">
-        <div class="umo-node-code-block-toolbar-left">
+      <div class="arslan-node-code-block-toolbar">
+        <div class="arslan-node-code-block-toolbar-left">
           <menus-button
             :text="t('bubbleMenu.code.languages')"
             menu-type="select"
@@ -13,7 +13,7 @@
             :select-value="node.attrs.language"
             :popup-props="{
               attach: container,
-              overlayClassName: 'umo-code-block-language',
+              overlayClassName: 'arslan-code-block-language',
             }"
             filterable
             borderless
@@ -30,7 +30,7 @@
             @menu-click="(value: string) => updateAttribute('theme', value)"
           />
         </div>
-        <div class="umo-node-code-block-toolbar-right">
+        <div class="arslan-node-code-block-toolbar-right">
           <menus-button
             :text="t('bubbleMenu.code.wordWrap')"
             ico="code-word-wrap"
@@ -56,9 +56,9 @@
         </div>
       </div>
       <pre
-        class="umo-node-code-block-content"
+        class="arslan-node-code-block-content"
         :class="{
-          'umo-node-code-block-word-wrap': node.attrs.wordWrap,
+          'arslan-node-code-block-word-wrap': node.attrs.wordWrap,
         }"
       ><node-view-content
         :class="`hljs language-${node.attrs.language}`"
@@ -107,47 +107,47 @@ const copyCode = () => {
 <style lang="less">
 @import '@/assets/styles/_mixins.less';
 
-.umo-code-block {
+.arslan-code-block {
   display: block !important;
-  .umo-node-code-block {
-    border: solid 1px var(--umo-content-node-border);
+  .arslan-node-code-block {
+    border: solid 1px var(--arslan-content-node-border);
     border-radius: 3px;
     &-toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 10px;
-      border-bottom: 1px solid var(--umo-content-node-border);
+      border-bottom: 1px solid var(--arslan-content-node-border);
       height: 36px;
       border-top-left-radius: 2px;
       border-top-right-radius: 2px;
-      background-color: var(--umo-content-node-selected-background);
+      background-color: var(--arslan-content-node-selected-background);
       &-right {
         display: flex;
         align-items: center;
         display: none;
       }
-      .umo-button-content {
-        color: var(--umo-text-color-light);
+      .arslan-button-content {
+        color: var(--arslan-text-color-light);
         &:hover {
-          color: var(--umo-text-color);
+          color: var(--arslan-text-color);
         }
       }
     }
     &:hover {
-      .umo-node-code-block-toolbar {
+      .arslan-node-code-block-toolbar {
         &-right {
           display: flex;
         }
       }
     }
     &-theme-dark {
-      .umo-node-code-block-toolbar {
+      .arslan-node-code-block-toolbar {
         filter: invert(1);
       }
     }
     &-content {
-      font-family: var(--umo-content-code-family);
+      font-family: var(--arslan-content-code-family);
       margin: 0 !important;
       padding: 0 !important;
       overflow: hidden;
@@ -155,7 +155,7 @@ const copyCode = () => {
       border-radius: 0;
       border-bottom-left-radius: 2px;
       border-bottom-right-radius: 2px;
-      .umo-scrollbar();
+      .arslan-scrollbar();
 
       code {
         display: block;
@@ -172,21 +172,21 @@ const copyCode = () => {
       }
     }
   }
-  &.umo-node-focused {
-    .umo-node-code-block {
-      border-color: var(--umo-primary-color);
+  &.arslan-node-focused {
+    .arslan-node-code-block {
+      border-color: var(--arslan-primary-color);
     }
   }
 }
-.umo-code-block-language {
-  .umo-select__list {
+.arslan-code-block-language {
+  .arslan-select__list {
     max-height: 200px;
   }
 }
 </style>
 
 <style lang="less">
-.umo-node-code-block-theme {
+.arslan-node-code-block-theme {
   &-light {
     pre {
       color: #24292e;
@@ -348,3 +348,4 @@ const copyCode = () => {
   }
 }
 </style>
+

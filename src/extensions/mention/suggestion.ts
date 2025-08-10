@@ -1,4 +1,4 @@
-import { VueRenderer } from '@tiptap/vue-3'
+﻿import { VueRenderer } from '@tiptap/vue-3'
 import tippy from 'tippy.js'
 
 import type { UserItem } from '@/types'
@@ -43,7 +43,7 @@ export default (users: UserItem[], container: string) => {
           popup = tippy('body', {
             getReferenceClientRect: props.clientRect,
             appendTo: document.querySelector(
-              `${container} .umo-zoomable-container`,
+              `${container} .arslan-zoomable-container`,
             ) as HTMLElement,
             content: component.element,
             showOnCreate: true,
@@ -76,3 +76,4 @@ export default (users: UserItem[], container: string) => {
     },
   }
 }
+

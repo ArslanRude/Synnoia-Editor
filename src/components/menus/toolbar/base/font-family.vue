@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :text="t('base.fontFamily.text')"
     menu-type="select"
@@ -21,7 +21,7 @@
       <t-option
         v-for="item in group.children"
         :key="item.value ?? ''"
-        class="umo-font-family-item"
+        class="arslan-font-family-item"
         :value="item.value ?? ''"
         :label="l(item.label)"
       >
@@ -31,7 +31,7 @@
         ></span>
         <span
           v-if="!fontDetect(item.value ?? '')"
-          class="umo-font-family-unsupport"
+          class="arslan-font-family-unsupport"
           :title="t('base.fontFamily.unsupport')"
           >!</span
         >
@@ -176,7 +176,7 @@ watch(
 </script>
 
 <style lang="less">
-.umo-font-family-item {
+.arslan-font-family-item {
   > span {
     display: flex;
     align-items: center;
@@ -184,10 +184,11 @@ watch(
     font-size: 14px;
     width: 100%;
 
-    .umo-font-family-unsupport {
-      color: var(--umo-error-color);
+    .arslan-font-family-unsupport {
+      color: var(--arslan-error-color);
       font-size: 14px;
     }
   }
 }
 </style>
+

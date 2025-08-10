@@ -1,4 +1,4 @@
-import SearchReplace from '@sereneinserenade/tiptap-search-and-replace'
+﻿import SearchReplace from '@sereneinserenade/tiptap-search-and-replace'
 import Bold from '@tiptap/extension-bold'
 import CharacterCount from '@tiptap/extension-character-count'
 import Color from '@tiptap/extension-color'
@@ -23,7 +23,7 @@ import NodeRange from '@tiptap-pro/extension-node-range'
 import { getHierarchicalIndexes } from '@tiptap-pro/extension-table-of-contents'
 import { TableOfContents } from '@tiptap-pro/extension-table-of-contents'
 
-import type { UmoEditorOptions } from '@/types'
+import type { ArslanEditorOptions } from '@/types'
 import { shortId } from '@/utils/short-id'
 
 import Audio from './audio'
@@ -67,7 +67,7 @@ export const getDefaultExtensions = ({
   uploadFileMap,
 }: {
   container: string
-  options: { value: UmoEditorOptions }
+  options: { value: ArslanEditorOptions }
   uploadFileMap: { value: any }
 }) => {
   const { dicts, page, document: doc, users, file } = options.value
@@ -85,7 +85,7 @@ export const getDefaultExtensions = ({
       placeholder: () => String(l(doc?.placeholder ?? '')),
     }),
     Focus.configure({
-      className: 'umo-node-focused',
+      className: 'arslan-node-focused',
       mode: 'all',
     }),
     FormatPainter,
@@ -110,7 +110,7 @@ export const getDefaultExtensions = ({
     TaskItem.configure({ nested: true }),
     TaskList.configure({
       HTMLAttributes: {
-        class: 'umo-task-list',
+        class: 'arslan-task-list',
       },
     }),
     LineHeight.configure({
@@ -121,7 +121,7 @@ export const getDefaultExtensions = ({
     }),
     Margin,
     SearchReplace.configure({
-      searchResultClass: 'umo-search-result',
+      searchResultClass: 'arslan-search-result',
     }),
     Link,
     Image,
@@ -138,7 +138,7 @@ export const getDefaultExtensions = ({
     Callout,
     Datetime,
     Bookmark.configure({
-      class: 'umo-editor-bookmark',
+      class: 'arslan-editor-bookmark',
     }),
 
     // 表格
@@ -164,7 +164,7 @@ export const getDefaultExtensions = ({
       getIndex: getHierarchicalIndexes,
       scrollParent: () =>
         document.querySelector(
-          `${container} .umo-zoomable-container`,
+          `${container} .arslan-zoomable-container`,
         ) as HTMLElement,
       getId: () => shortId(6),
     }),
@@ -177,7 +177,7 @@ export const getDefaultExtensions = ({
       onPaste(editor: Editor, files: any) {
         // 记录 已有位置
         const pageContainer = document.querySelector(
-          `${container} .umo-zoomable-container`,
+          `${container} .arslan-zoomable-container`,
         ) as HTMLElement
         const scrollTop = pageContainer?.scrollTop || 0
         for (const file of files) {
@@ -207,7 +207,7 @@ export const getDefaultExtensions = ({
       },
     }),
     Dropcursor.configure({
-      color: 'var(--umo-primary-color)',
+      color: 'var(--arslan-primary-color)',
     }),
     Echarts,
     typeWriter,
@@ -227,3 +227,5 @@ export const inputAndPasteRules = (options: any) => {
   }
   return enableRules
 }
+
+

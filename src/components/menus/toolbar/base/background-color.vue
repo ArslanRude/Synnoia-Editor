@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     :text="text || t('base.bgColor')"
     menu-type="popup"
@@ -9,7 +9,7 @@
   >
     <icon
       name="background-color"
-      class="umo-icon-background-color"
+      class="arslan-icon-background-color"
       :style="{
         background: editor?.getAttributes('highlight')?.color || currentColor,
       }"
@@ -60,7 +60,8 @@ const colorChange = (color: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-icon-background-color {
+.arslan-icon-background-color {
   border-radius: 2px;
 }
 </style>
+

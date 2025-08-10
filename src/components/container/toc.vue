@@ -1,14 +1,14 @@
-<template>
-  <div class="umo-toc-container bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark border border-solid border-primary-light dark:border-primary-dark ">
-    <div class="umo-toc-title">
+﻿<template>
+  <div class="arslan-toc-container bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark border border-solid border-primary-light dark:border-primary-dark ">
+    <div class="arslan-toc-title">
       <icon class="icon-toc" name="toc" /> {{ t('toc.title') }}
       <div class="absolute right-[15px] hover:bg-primary-light dark:hover:bg-primary-dark  rounded-[3px]" @click="$emit('close')">
         <icon name="close" />
       </div>
     </div>
-    <div class="umo-toc-content umo-scrollbar">
+    <div class="arslan-toc-content arslan-scrollbar">
       <t-tree
-        class="umo-toc-tree "
+        class="arslan-toc-tree "
         :data="tocTreeData"
         :keys="{
           label: 'textContent',
@@ -22,7 +22,7 @@
         @active="headingActive"
       />
     </div>
-    <div class="umo-toc-resize-handle" @mousedown="startResize"></div>
+    <div class="arslan-toc-resize-handle" @mousedown="startResize"></div>
   </div>
 </template>
 
@@ -97,10 +97,10 @@ const headingActive = (value: any) => {
     `[data-toc-id="${value[0]}"]`,
   )
   const pageContainer = document.querySelector(
-    `${container} .umo-zoomable-container`,
+    `${container} .arslan-zoomable-container`,
   ) as HTMLElement
   const pageHeader = pageContainer?.querySelector(
-    '.umo-page-node-header',
+    '.arslan-page-node-header',
   ) as HTMLElement
   if (!nodeElement || !pageContainer || !pageHeader) {
     return
@@ -115,27 +115,27 @@ const headingActive = (value: any) => {
   editor.value.view.focus()
 }
 
-const umoPageContainer = document.querySelector(
-  '.umo-page-container',
+const arslanPageContainer = document.querySelector(
+  '.arslan-page-container',
 ) as HTMLElement
 const baseTocWidth = 320
 const isResizing = ref(false)
 const startX = ref(0)
 const initialWidth = ref(baseTocWidth)
 const startResize = (e: MouseEvent) => {
-  if (!umoPageContainer) {
+  if (!arslanPageContainer) {
     return
   }
   isResizing.value = true
   startX.value = e.clientX
   initialWidth.value = parseInt(
     getComputedStyle(
-      umoPageContainer?.querySelector('.umo-toc-container') as HTMLElement,
+      arslanPageContainer?.querySelector('.arslan-toc-container') as HTMLElement,
     ).width,
     10,
   )
-  umoPageContainer.addEventListener('mousemove', resize)
-  umoPageContainer.addEventListener('mouseup', stopResize)
+  arslanPageContainer.addEventListener('mousemove', resize)
+  arslanPageContainer.addEventListener('mouseup', stopResize)
 }
 
 const resize = (e: MouseEvent) => {
@@ -145,8 +145,8 @@ const resize = (e: MouseEvent) => {
     const minWidth = baseTocWidth / 1.5
     const maxWidth = baseTocWidth * 2
     if (newWidth >= minWidth && newWidth <= maxWidth) {
-      const tocContainer = umoPageContainer.querySelector(
-        '.umo-toc-container',
+      const tocContainer = arslanPageContainer.querySelector(
+        '.arslan-toc-container',
       ) as HTMLElement
       tocContainer.style.width = `${newWidth}px`
     }
@@ -155,21 +155,21 @@ const resize = (e: MouseEvent) => {
 
 const stopResize = () => {
   isResizing.value = false
-  umoPageContainer.removeEventListener('mousemove', resize)
-  umoPageContainer.removeEventListener('mouseup', stopResize)
+  arslanPageContainer.removeEventListener('mousemove', resize)
+  arslanPageContainer.removeEventListener('mouseup', stopResize)
 }
 </script>
 
 <style lang="less" scoped>
-.umo-toc-container {
-  // background-color: var(--umo-color-white);
-  // border-right: solid 1px var(--umo-border-color);
+.arslan-toc-container {
+  // background-color: var(--arslan-color-white);
+  // border-right: solid 1px var(--arslan-border-color);
   width: 320px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   position: relative;
-  .umo-toc-resize-handle {
+  .arslan-toc-resize-handle {
     position: absolute;
     top: 0;
     right: -2px;
@@ -181,8 +181,8 @@ const stopResize = () => {
       cursor: col-resize;
     }
   }
-  .umo-toc-title {
-    border-bottom: solid 1px var(--umo-border-color-light);
+  .arslan-toc-title {
+    border-bottom: solid 1px var(--arslan-border-color-light);
     display: flex;
     align-items: center;
     position: relative;
@@ -191,7 +191,7 @@ const stopResize = () => {
       margin-right: 5px;
       font-size: 20px;
     }
-    .umo-dialog__close {
+    .arslan-dialog__close {
       position: absolute;
       right: 15px;
       display: flex;
@@ -199,31 +199,33 @@ const stopResize = () => {
       justify-content: center;
     }
   }
-  .umo-toc-content {
+  .arslan-toc-content {
     flex: 1;
     display: flex;
     padding: 10px;
     flex-direction: column;
-    .umo-toc-tree {
+    .arslan-toc-tree {
       --td-comp-size-m: 28px;
       --td-comp-paddingLR-xs: 8px;
       --td-comp-margin-xs: 0;
-      // --td-brand-color-light: var(--umo-button-hover-background);
+      // --td-brand-color-light: var(--arslan-button-hover-background);
       user-select: none;
-      :deep(.umo-tree__empty) {
+      :deep(.arslan-tree__empty) {
         height: 60px;
         font-size: 12px;
         flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
-        // color: var(--umo-text-color-light);
+        // color: var(--arslan-text-color-light);
       }
-      :deep(.umo-is-active) {
+      :deep(.arslan-is-active) {
         font-weight: 400;
-        color: var(--umo-primary-color);
+        color: var(--arslan-primary-color);
       }
     }
   }
 }
 </style>
+
+

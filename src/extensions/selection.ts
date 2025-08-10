@@ -1,4 +1,4 @@
-import { type Editor, Extension } from '@tiptap/core'
+﻿import { type Editor, Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { TextSelection } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
@@ -33,7 +33,7 @@ export default Extension.create({
 
             return DecorationSet.create(state.doc, [
               Decoration.inline(state.selection.from, state.selection.to, {
-                class: 'umo-text-selection',
+                class: 'arslan-text-selection',
               }),
             ])
           },
@@ -119,3 +119,4 @@ export function setSelectionText(
     editor?.commands.focus()
   }
 }
+

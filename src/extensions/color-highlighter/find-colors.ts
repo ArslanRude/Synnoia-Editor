@@ -1,4 +1,4 @@
-import { Node } from '@tiptap/pm/model'
+﻿import { Node } from '@tiptap/pm/model'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 
 export default function (doc: Node): DecorationSet {
@@ -17,7 +17,7 @@ export default function (doc: Node): DecorationSet {
       const from = position + index
       const to = from + color.length
       const decoration = Decoration.inline(from, to, {
-        class: 'umo-color-highlighter',
+        class: 'arslan-color-highlighter',
         style: `--color: ${color}`,
       })
 
@@ -27,3 +27,4 @@ export default function (doc: Node): DecorationSet {
 
   return DecorationSet.create(doc, decorations)
 }
+

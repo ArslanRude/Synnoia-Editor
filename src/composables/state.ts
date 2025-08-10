@@ -1,4 +1,4 @@
-import type { RemovableRef } from '@vueuse/core'
+﻿import type { RemovableRef } from '@vueuse/core'
 
 import type { DocumentOptions, SupportedLocale } from '@/types'
 
@@ -28,7 +28,7 @@ export function useState<T extends StateKey>(
   key: T,
   options: any,
 ): RemovableRef<StateValue<T>> {
-  const storageKey = `umo-editor:${options?.value?.editorKey || 'default'}:${key}`
+  const storageKey = `arslan-editor:${options?.value?.editorKey || 'default'}:${key}`
 
   if (key === 'document') {
     return useStorage<StateValue<T>>(
@@ -56,3 +56,4 @@ export function useState<T extends StateKey>(
   }
   throw new Error('[useStorage]', { cause: 'Key is not valid' })
 }
+

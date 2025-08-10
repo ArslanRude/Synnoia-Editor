@@ -1,4 +1,4 @@
-import 'plyr/dist/plyr.css'
+﻿import 'plyr/dist/plyr.css'
 import '@/assets/styles/plyr.less'
 
 import Plyr from 'plyr'
@@ -119,7 +119,8 @@ export const mediaPlayer = (container: HTMLElement) => {
     i18n: locales[locale.value as keyof typeof locales],
     settings: [],
     tooltips: { controls: true },
-    storage: { key: 'umo-editor:player' },
+    storage: { key: 'arslan-editor:player' },
     disableContextMenu: false,
   })
 }
+

@@ -1,17 +1,17 @@
-<template>
+﻿<template>
   <modal
     :visible="searchReplace"
     icon="search-replace"
     :header="t('search.title')"
     :footer="false"
-    class="umo-search-replace-dialog"
+    class="arslan-search-replace-dialog"
     width="420px"
     mode="modeless"
     :z-index="200"
     @close="searchReplace = false"
   >
     <div class="">
-      <div class="umo-search-text flex mt-1">
+      <div class="arslan-search-text flex mt-1">
         <t-input
           v-model="searchText"
           :placeholder="t('search.searchText')"
@@ -49,7 +49,7 @@
           <icon name="arrow-down" class="icon-prev text-xl" />
         </t-button>
       </div>
-      <div class="umo-replace-text mt-3">
+      <div class="arslan-replace-text mt-3">
         <t-input
           v-model="replaceText"
           :placeholder="t('search.replaceText')"
@@ -57,7 +57,7 @@
           class="w-full p-2 bg-transparent border-gray-300 dark:border-gray-600 rounded-lg text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-400/70"
         />
       </div>
-      <div class="umo-advanced-options mt-3">
+      <div class="arslan-advanced-options mt-3">
         <t-checkbox
           v-model="caseSensitive"
           class="mr-4 text-blue-500 focus:ring-blue-400/50"
@@ -65,7 +65,7 @@
           {{ t('search.caseSensitive') }}
         </t-checkbox>
       </div>
-      <div class="umo-button-actions mt-3 text-right space-x-2">
+      <div class="arslan-button-actions mt-3 text-right space-x-2">
         <t-button
           :disabled="resultLength === 0"
           theme="default"
@@ -195,8 +195,8 @@ watch(
 </script>
 
 <style lang="less">
-.umo-search-replace-dialog {
-  .umo-dialog {
+.arslan-search-replace-dialog {
+  .arslan-dialog {
     position: absolute;
     right: 25px;
     top: 131px;
@@ -207,8 +207,8 @@ watch(
   }
 }
 
-.umo-editor-container.toolbar-classic {
-  .umo-dialog {
+.arslan-editor-container.toolbar-classic {
+  .arslan-dialog {
     top: 65px;
   }
 }
@@ -219,3 +219,4 @@ watch(
   transform: rotate(-180deg);
 }
 </style>
+

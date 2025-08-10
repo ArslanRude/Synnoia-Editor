@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     v-if="hasRemoveBackgroundFunction"
     ico="seal"
@@ -15,13 +15,13 @@
       @confirm="setSeal"
       @close="dialogVisible = false"
     >
-      <div class="umo-seal-container" @click="selectImage">
-        <div class="umo-seal-tip" v-text="t('tools.seal.tip')"></div>
-        <div class="umo-seal-uploader">
+      <div class="arslan-seal-container" @click="selectImage">
+        <div class="arslan-seal-tip" v-text="t('tools.seal.tip')"></div>
+        <div class="arslan-seal-uploader">
           <span v-if="!sealImg">{{
             converting ? converting : t('tools.seal.insertTip')
           }}</span>
-          <img v-else class="umo-seal-img" :src="sealImg" />
+          <img v-else class="arslan-seal-img" :src="sealImg" />
         </div>
       </div>
     </modal>
@@ -128,26 +128,26 @@ const setSeal = async () => {
 </script>
 
 <style lang="less" scoped>
-.umo-seal-container {
-  .umo-seal-tip {
+.arslan-seal-container {
+  .arslan-seal-tip {
     font-size: 12px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     margin-bottom: 6px;
     line-height: 1.4;
   }
-  .umo-seal-uploader {
+  .arslan-seal-uploader {
     margin-top: 20px;
     height: 240px;
-    border: solid 1px var(--umo-primary-color);
-    border-radius: var(--umo-radius);
+    border: solid 1px var(--arslan-primary-color);
+    border-radius: var(--arslan-radius);
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
     position: relative;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     cursor: pointer;
-    .umo-seal-img {
+    .arslan-seal-img {
       max-height: 100%;
       max-width: 100%;
       background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIHZpZXdCb3g9IjAgMCAxNiAxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBvcGFjaXR5PSIwLjEiPgo8cmVjdCB3aWR0aD0iMTYiIGhlaWdodD0iMTYiIGZpbGw9IndoaXRlIi8+CjxyZWN0IHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9ImJsYWNrIi8+CjxyZWN0IHg9IjgiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9ImJsYWNrIi8+CjxyZWN0IHg9IjQiIHk9IjQiIHdpZHRoPSI0IiBoZWlnaHQ9IjQiIGZpbGw9ImJsYWNrIi8+CjxyZWN0IHg9IjEyIiB5PSI0IiB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIvPgo8cmVjdCB5PSI4IiB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIvPgo8cmVjdCB4PSI4IiB5PSI4IiB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIvPgo8cmVjdCB4PSI0IiB5PSIxMiIgd2lkdGg9IjQiIGhlaWdodD0iNCIgZmlsbD0iYmxhY2siLz4KPHJlY3QgeD0iMTIiIHk9IjEyIiB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSJibGFjayIvPgo8L3N2Zz4K);
@@ -156,3 +156,4 @@ const setSeal = async () => {
   }
 }
 </style>
+

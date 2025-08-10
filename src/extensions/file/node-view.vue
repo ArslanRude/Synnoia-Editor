@@ -1,29 +1,29 @@
-<template>
+﻿<template>
   <node-view-wrapper
     :id="node.attrs.id"
     ref="containerRef"
-    class="umo-node-view"
+    class="arslan-node-view"
     :style="nodeStyle"
   >
     <div
-      class="umo-node-container hover-shadow umo-select-outline umo-node-file"
+      class="arslan-node-container hover-shadow arslan-select-outline arslan-node-file"
     >
-      <div class="umo-file-icon">
+      <div class="arslan-file-icon">
         <img :src="fileIcon" class="icon-file" />
       </div>
       <div
-        class="umo-file-info"
+        class="arslan-file-info"
         :style="{
           width: supportPreview ? '200px' : '237px',
         }"
       >
         <div
-          class="umo-file-name"
+          class="arslan-file-name"
           :title="node.attrs.name || t('file.unknownName')"
         >
           {{ node.attrs.name || t('file.unknownName') }}
         </div>
-        <div class="umo-file-meta">
+        <div class="arslan-file-meta">
           {{
             node.attrs.size
               ? prettyBytes(node.attrs.size)
@@ -31,10 +31,10 @@
           }}
         </div>
       </div>
-      <div class="umo-file-action">
+      <div class="arslan-file-action">
         <div
           v-if="!node.attrs.uploaded && node.attrs.id !== null"
-          class="umo-action-item"
+          class="arslan-action-item"
           :title="t('file.uploading')"
         >
           <icon class="loading" name="loading" />
@@ -42,7 +42,7 @@
         <template v-else>
           <div
             v-if="supportPreview"
-            class="umo-action-item"
+            class="arslan-action-item"
             :title="t('file.preview')"
             @click.stop="togglePreview"
           >
@@ -52,7 +52,7 @@
             :href="node.attrs.url"
             :download="node.attrs.name"
             target="_blank"
-            class="umo-action-item"
+            class="arslan-action-item"
             :title="t('file.download')"
           >
             <icon name="download" />
@@ -61,13 +61,13 @@
       </div>
     </div>
     <modal
-      dialog-class-name="umo-file-preview-modal"
+      dialog-class-name="arslan-file-preview-modal"
       :visible="previewModal"
       :header="false"
       :footer="false"
       width="90vw"
     >
-      <div class="umo-file-preview-modal-header">
+      <div class="arslan-file-preview-modal-header">
         <img :src="fileIcon" class="file-icon" />
         <h3>{{ node.attrs.name || t('file.unknownName') }}</h3>
         <t-button
@@ -80,7 +80,7 @@
           <icon name="close" size="18" />
         </t-button>
       </div>
-      <div class="umo-file-preview-modal-body">
+      <div class="arslan-file-preview-modal-body">
         <iframe :src="previewURL"></iframe>
       </div>
     </modal>
@@ -178,17 +178,17 @@ const togglePreview = () => {
 </script>
 
 <style lang="less">
-.umo-node-view {
-  .umo-node-file {
+.arslan-node-view {
+  .arslan-node-file {
     display: inline-flex;
     align-items: center;
     padding: 12px;
-    outline: solid 1px var(--umo-content-node-border);
+    outline: solid 1px var(--arslan-content-node-border);
     overflow: hidden;
-    background-color: var(--umo-color-white);
-    border-radius: var(--umo-content-node-radius);
+    background-color: var(--arslan-color-white);
+    border-radius: var(--arslan-content-node-radius);
 
-    .umo-file-icon {
+    .arslan-file-icon {
       width: 32px;
       height: 32px;
       margin-right: 8px;
@@ -199,7 +199,7 @@ const togglePreview = () => {
       }
     }
 
-    .umo-file-name {
+    .arslan-file-name {
       font-size: 12px;
       font-weight: 500;
       line-height: 1.2;
@@ -212,36 +212,36 @@ const togglePreview = () => {
       box-sizing: border-box;
     }
 
-    .umo-file-meta {
+    .arslan-file-meta {
       font-size: 12px;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       line-height: 1;
       margin-top: 6px;
     }
 
-    .umo-file-action {
+    .arslan-file-action {
       flex: 1;
       display: flex;
       align-items: center;
-      color: var(--umo-text-color-light);
+      color: var(--arslan-text-color-light);
       gap: 5px;
 
-      .umo-action-item {
+      .arslan-action-item {
         font-size: 18px;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 32px;
         width: 32px;
-        background-color: var(--umo-color-white);
+        background-color: var(--arslan-color-white);
         box-sizing: border-box;
         cursor: pointer;
         border-radius: 50%;
-        color: var(--umo-text-color-light);
+        color: var(--arslan-text-color-light);
 
         &:hover {
-          border: solid 1px var(--umo-primary-color);
-          color: var(--umo-primary-color);
+          border: solid 1px var(--arslan-primary-color);
+          color: var(--arslan-primary-color);
         }
 
         .loading {
@@ -252,10 +252,10 @@ const togglePreview = () => {
   }
 }
 
-.umo-file-preview-modal {
+.arslan-file-preview-modal {
   padding: 0 !important;
   overflow: hidden;
-  .umo-dialog {
+  .arslan-dialog {
     &__header {
       display: none !important;
     }
@@ -293,7 +293,7 @@ const togglePreview = () => {
       display: block;
       width: 100%;
       height: calc(90vh - 164px);
-      border: solid 1px var(--umo-border-color-light);
+      border: solid 1px var(--arslan-border-color-light);
       box-sizing: border-box;
     }
   }
@@ -308,3 +308,4 @@ const togglePreview = () => {
   }
 }
 </style>
+

@@ -1,8 +1,8 @@
-<template>
-  <node-view-wrapper as="span" class="umo-node-datetime">
+﻿<template>
+  <node-view-wrapper as="span" class="arslan-node-datetime">
     <t-popup
       v-model="popupVisible"
-      :attach="`${container} .umo-zoomable-container`"
+      :attach="`${container} .arslan-zoomable-container`"
       trigger="click"
       placement="bottom-start"
       :disabled="
@@ -11,8 +11,8 @@
         !editor?.isEditable
       "
     >
-      <span class="umo-node-datetime-text">
-        <icon name="date" class="umo-node-datetime-icon" />
+      <span class="arslan-node-datetime-text">
+        <icon name="date" class="arslan-node-datetime-icon" />
         <span>{{ node.attrs.text }}</span>
       </span>
       <template #content>
@@ -87,7 +87,7 @@ const datetimeChange = (value: any) => {
 </script>
 
 <style lang="less" scoped>
-.umo-node-datetime {
+.arslan-node-datetime {
   margin: 0 0.2em;
   background-color: transparent !important;
   vertical-align: middle;
@@ -101,11 +101,12 @@ const datetimeChange = (value: any) => {
     white-space: nowrap;
   }
   &-icon {
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     margin-right: 0.3em;
   }
   &:hover {
-    color: var(--umo-primary-color);
+    color: var(--arslan-primary-color);
   }
 }
 </style>
+

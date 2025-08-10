@@ -1,8 +1,8 @@
-<template>
-  <node-view-wrapper class="umo-node-view">
+﻿<template>
+  <node-view-wrapper class="arslan-node-view">
     <t-popup
-      :attach="`${container} .umo-zoomable-container`"
-      overlay-inner-class-name="umo-editor-bubble-menu"
+      :attach="`${container} .arslan-zoomable-container`"
+      overlay-inner-class-name="arslan-editor-bubble-menu"
       trigger="click"
       :visible="
         editor?.isEditable &&
@@ -12,7 +12,7 @@
       @visible-change="(visible: boolean) => (bubbleMenu = visible)"
     >
       <div
-        class="umo-node-container hover-shadow umo-node-callout"
+        class="arslan-node-container hover-shadow arslan-node-callout"
         :style="{
           color: node.attrs.fontColor,
           backgroundColor: node.attrs.backgroundColor,
@@ -20,27 +20,27 @@
       >
         <span
           v-if="node.attrs.icon"
-          class="umo-node-callout-icon"
+          class="arslan-node-callout-icon"
           contenteditable="false"
           >{{ node.attrs.icon }}</span
         >
         <node-view-content
-          class="umo-node-callout-content"
+          class="arslan-node-callout-content"
           :class="{
-            'umo-node-callout-empty': node.content.size <= 2,
+            'arslan-node-callout-empty': node.content.size <= 2,
           }"
           :data-placeholder="t('callout.placeholder')"
         />
       </div>
       <template #content>
         <menus-bubble-callout-builtin />
-        <div class="umo-bubble-menu-divider"></div>
+        <div class="arslan-bubble-menu-divider"></div>
         <menus-toolbar-insert-emoji @select-emoji="selectEmoji" />
         <menus-bubble-callout-emoji-remove
           v-if="editor.getAttributes('callout').icon"
         />
         <menus-bubble-callout-background />
-        <div class="umo-bubble-menu-divider"></div>
+        <div class="arslan-bubble-menu-divider"></div>
         <menus-bubble-node-delete />
       </template>
     </t-popup>
@@ -62,9 +62,9 @@ const selectEmoji = (emoji: string) => {
 </script>
 
 <style lang="less" scoped>
-.umo-node-callout {
+.arslan-node-callout {
   padding: 6px 12px;
-  border-radius: var(--umo-radius);
+  border-radius: var(--arslan-radius);
   display: flex;
   width: 100%;
   min-height: 38px;
@@ -79,7 +79,7 @@ const selectEmoji = (emoji: string) => {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    &.umo-node-callout-empty {
+    &.arslan-node-callout-empty {
       display: flex;
       align-items: center;
       &::after {
@@ -97,3 +97,4 @@ const selectEmoji = (emoji: string) => {
   }
 }
 </style>
+

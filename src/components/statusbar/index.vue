@@ -1,9 +1,9 @@
-<template>
-  <div v-if="!page.preview?.enabled" class="umo-status-bar">
-    <div class="umo-status-bar-left">
+﻿<template>
+  <div v-if="!page.preview?.enabled" class="arslan-status-bar">
+    <div class="arslan-status-bar-left">
       <tooltip :content="page.showToc ? t('toc.hide') : t('toc.show')">
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: page.showToc, '!bg-secondary-light dark:!bg-secondary-dark': page.showToc }"
           variant="text"
           size="small"
@@ -21,7 +21,7 @@
         "
       >
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: $document.enableSpellcheck, '!bg-secondary-light dark:!bg-secondary-dark': $document.enableSpellcheck }"
           variant="text"
           size="small"
@@ -32,7 +32,7 @@
       </tooltip>
       <tooltip :content="t('shortcut.title')">
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
@@ -43,7 +43,7 @@
       </tooltip>
       <tooltip :content="t('resetAll.title')">
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
@@ -55,7 +55,7 @@
       <div class="bar-split"></div>
       <tooltip :content="t('Powered By Nexus')">
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
@@ -67,7 +67,7 @@
       </tooltip>
       <tooltip :content="t('feedback')">
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
@@ -77,7 +77,7 @@
           <icon name="message" />
         </t-button>
       </tooltip>
-      <div class="umo-status-bar-split"></div>
+      <div class="arslan-status-bar-split"></div>
       <t-popup
         v-if="editor"
         v-model="showWordCount"
@@ -85,7 +85,7 @@
         placement="top-left"
       >
         <t-button
-          class="umo-status-bar-button auto-width word-count !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button auto-width word-count !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           variant="text"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           size="small"
@@ -93,7 +93,7 @@
           <span v-if="selectionCharacters > 0">
             {{ selectionCharacters }}/
           </span>
-          <span class="umo-word-count">
+          <span class="arslan-word-count">
             {{ editor.storage.characterCount.characters() }}</span
           >
           {{ t('wordCount.characters') }}
@@ -103,8 +103,8 @@
           />
         </t-button>
         <template #content>
-          <div v-if="showWordCount" class="umo-word-count-detail">
-            <div class="umo-word-count-title">{{ t('wordCount.title') }}</div>
+          <div v-if="showWordCount" class="arslan-word-count-detail">
+            <div class="arslan-word-count-title">{{ t('wordCount.title') }}</div>
             <ul>
               <li>
                 {{ t('wordCount.input') }}
@@ -127,14 +127,14 @@
         </template>
       </t-popup>
     </div>
-    <div class="umo-status-bar-right">
+    <div class="arslan-status-bar-right">
       <tooltip
         :content="
           page.preview?.enabled ? t('preview.disable') : t('preview.title')
         "
       >
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: page.preview?.enabled, '!bg-secondary-light dark:!bg-secondary-dark': page.preview?.enabled }"
           variant="text"
           size="small"
@@ -147,7 +147,7 @@
         :content="`${fullscreen?.isFullscreen ? t('fullscreen.disable') : t('fullscreen.title')} (${getShortcut('Ctrl+F11')})`"
       >
         <t-button
-          class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: fullscreen?.isFullscreen, '!bg-secondary-light dark:!bg-secondary-dark': fullscreen?.isFullscreen }"
           variant="text"
           size="small"
@@ -156,11 +156,11 @@
           <icon :name="fullscreen ? 'full-screen-exit' : 'full-screen'" />
         </t-button>
       </tooltip>
-      <div class="umo-status-bar-split"></div>
-      <div class="umo-zoom-level-bar">
+      <div class="arslan-status-bar-split"></div>
+      <div class="arslan-zoom-level-bar">
         <tooltip :content="`${t('zoom.zoomOut')} (${getShortcut('Ctrl-')})`">
           <t-button
-            class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+            class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
             :class="{ active: (page.zoomLevel ?? 21) <= 20, '!bg-secondary-light dark:!bg-secondary-dark': (page.zoomLevel ?? 21) <= 20 }"
             variant="text"
             size="small"
@@ -172,7 +172,7 @@
         </tooltip>
         <t-slider
           v-model="page.zoomLevel"
-          class="umo-zoom-level-slider"
+          class="arslan-zoom-level-slider"
           :min="20"
           :max="500"
           :step="10"
@@ -187,7 +187,7 @@
         />
         <tooltip :content="`${t('zoom.zoomIn')} (${getShortcut('Ctrl+')})`">
           <t-button
-            class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+            class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
             :class="{ active: !!page.zoomLevel && page.zoomLevel >= 500, '!bg-secondary-light dark:!bg-secondary-dark': !!page.zoomLevel && page.zoomLevel >= 500 }"
             variant="text"
             size="small"
@@ -199,7 +199,7 @@
         </tooltip>
         <tooltip :content="`${t('zoom.autoWidth')} (${getShortcut('Ctrl0')})`">
           <t-button
-            class="umo-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+            class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
             :class="{ active: page.autoWidth, '!bg-secondary-light dark:!bg-secondary-dark': page.autoWidth }"
             variant="text"
             size="small"
@@ -210,7 +210,7 @@
         </tooltip>
         <tooltip :content="`${t('zoom.reset')} (${getShortcut('Ctrl1')})`">
           <t-button
-            class="umo-status-bar-button auto-width !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+            class="arslan-status-bar-button auto-width !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
             :class="{ active: page.autoWidth, '!bg-secondary-light dark:!bg-secondary-dark': page.autoWidth }"
             variant="text"
             size="small"
@@ -228,7 +228,7 @@
         @click="changeLang"
       >
         <t-button
-          class="umo-status-bar-button auto-width umo-lang-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
+          class="arslan-status-bar-button auto-width arslan-lang-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: page.autoWidth, '!bg-secondary-light dark:!bg-secondary-dark': page.autoWidth }"
           variant="text"
           size="small"
@@ -239,8 +239,8 @@
       </t-dropdown>
     </div>
   </div>
-  <div v-else class="umo-preview-bar">
-    <div v-if="countdownValue !== ''" class="umo-preview-countdown">
+  <div v-else class="arslan-preview-bar">
+    <div v-if="countdownValue !== ''" class="arslan-preview-countdown">
       {{ countdownValue }}
     </div>
     <statusbar-countdown
@@ -303,7 +303,7 @@
     show-in-attached-element
   >
     <template #header>
-      <div class="umo-shortcuts-drawer-header">
+      <div class="arslan-shortcuts-drawer-header">
         <icon name="shortcut" />
         {{ t('shortcut.title') }}
       </div>
@@ -364,7 +364,7 @@ const togglePreview = () => {
   page.value.preview.enabled = !page.value.preview.enabled
 
   const zoomableContainer = document.querySelector(
-    `${container} .umo-zoomable-container`,
+    `${container} .arslan-zoomable-container`,
   )
   if (zoomableContainer && page.value.preview.enabled) {
     zoomableContainer.scrollTop = 0
@@ -443,9 +443,9 @@ const autoWidth = (auto = true, padding = 50) => {
   }
   try {
     const editorEl = document.querySelector(
-      `${container} .umo-zoomable-container`,
+      `${container} .arslan-zoomable-container`,
     )
-    const pageEl = editorEl?.querySelector('.umo-page-content')
+    const pageEl = editorEl?.querySelector('.arslan-page-content')
     const editorWidth = editorEl?.clientWidth ?? 0
     const pageWidth = pageEl?.clientWidth ?? 0
     page.value.zoomLevel = Math.floor(
@@ -525,12 +525,12 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-status-bar {
+.arslan-status-bar {
   padding: 6px 10px;
   display: flex;
   justify-content: space-between;
-  font-size: var(--umo-font-size-small);
-  border-top: solid 1px var(--umo-border-color);
+  font-size: var(--arslan-font-size-small);
+  border-top: solid 1px var(--arslan-border-color);
 
   @media screen and (max-width: 640px) {
     overflow-x: auto;
@@ -538,47 +538,47 @@ watch(
       display: none;
     }
   }
-  .umo-status-bar-split {
+  .arslan-status-bar-split {
     height: 16px;
     width: 1px;
-    background-color: var(--umo-border-color);
+    background-color: var(--arslan-border-color);
     margin: 0 10px;
   }
-  .umo-status-bar-button {
+  .arslan-status-bar-button {
     --td-comp-size-xs: 18px;
     --td-comp-paddingLR-l: 8px;
     --td-radius-default: 2px;
     font-size: 14px;
     margin: 0 4px;
     border: none;
-    // color: var(--umo-text-color);
+    // color: var(--arslan-text-color);
     &:not(.auto-width) {
       width: var(--td-comp-size-xs);
     }
     &.auto-width {
-      font-size: var(--umo-font-size-small);
+      font-size: var(--arslan-font-size-small);
       padding-left: 6px;
       padding-right: 6px;
     }
     &.word-count {
       padding-left: 2px;
       padding-right: 0;
-      :deep(.umo-button__text) {
+      :deep(.arslan-button__text) {
         display: flex;
         align-items: center;
-        .umo-icon {
+        .arslan-icon {
           margin-left: 3px;
           transform: rotate(180deg);
         }
       }
     }
-    :deep(.umo-button__text) {
+    :deep(.arslan-button__text) {
       padding: 0 5px;
     }
     &.active {
-      background-color: var(--umo-button-hover-background);
-      border-color: var(--umo-button-hover-background);
-      color: var(--umo-primary-color);
+      background-color: var(--arslan-button-hover-background);
+      border-color: var(--arslan-button-hover-background);
+      color: var(--arslan-primary-color);
     }
   }
   &-left {
@@ -589,68 +589,68 @@ watch(
   &-right {
     display: flex;
     align-items: center;
-    .umo-zoom-level-bar {
+    .arslan-zoom-level-bar {
       width: 240px;
       display: flex;
       --td-comp-size-xxxs: 8px;
       --td-size-2: 3px;
-      --td-brand-color: var(--umo-text-color);
-      .umo-zoom-level-slider {
-        :deep(.umo-slider__button) {
+      --td-brand-color: var(--arslan-text-color);
+      .arslan-zoom-level-slider {
+        :deep(.arslan-slider__button) {
           background: var(--td-brand-color);
           border: none;
           box-shadow: none;
         }
-        :deep(.umo-slider__track) {
+        :deep(.arslan-slider__track) {
           background: none;
         }
       }
     }
-    .umo-lang-button {
-      :deep(.umo-button__text) {
+    .arslan-lang-button {
+      :deep(.arslan-button__text) {
         display: flex;
         align-items: center;
-        .umo-icon {
+        .arslan-icon {
           font-size: 16px;
           margin-right: 3px;
         }
       }
     }
     @media screen and (max-width: 720px) {
-      .umo-zoom-level-bar {
+      .arslan-zoom-level-bar {
         width: auto;
       }
-      .umo-zoom-level-slider,
-      .umo-lang-button {
+      .arslan-zoom-level-slider,
+      .arslan-lang-button {
         display: none !important;
       }
     }
   }
 }
-.umo-preview-bar {
+.arslan-preview-bar {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
   bottom: 30px;
-  border-radius: var(--umo-radius-medium);
+  border-radius: var(--arslan-radius-medium);
   padding: 8px;
   overflow: hidden;
   user-select: none;
   display: flex;
-  background: var(--umo-color-white);
+  background: var(--arslan-color-white);
   box-shadow:
     var(--td-shadow-2), var(--td-shadow-inset-top),
     var(--td-shadow-inset-right), var(--td-shadow-inset-bottom),
     var(--td-shadow-inset-left);
   gap: 5px;
-  .umo-preview-countdown {
+  .arslan-preview-countdown {
     display: flex;
     align-items: center;
     padding: 0 12px;
-    background-color: var(--umo-button-hover-background);
-    border-radius: var(--umo-radius-medium);
+    background-color: var(--arslan-button-hover-background);
+    border-radius: var(--arslan-radius-medium);
     font-size: 14px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
   }
   .item {
     padding: 6px;
@@ -667,18 +667,18 @@ watch(
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--umo-text-color-light);
-    border-radius: var(--umo-radius-medium);
+    color: var(--arslan-text-color-light);
+    border-radius: var(--arslan-radius-medium);
     cursor: pointer;
     &:hover {
-      background-color: var(--umo-button-hover-background);
-      color: var(--umo-text-color);
+      background-color: var(--arslan-button-hover-background);
+      color: var(--arslan-text-color);
     }
     &.active {
-      background-color: var(--umo-button-hover-background);
-      color: var(--umo-primary-color);
+      background-color: var(--arslan-button-hover-background);
+      color: var(--arslan-primary-color);
     }
-    :deep(.umo-icon) {
+    :deep(.arslan-icon) {
       font-size: 20px;
     }
   }
@@ -686,27 +686,27 @@ watch(
 </style>
 
 <style lang="less">
-.umo-shortcuts-drawer-header {
+.arslan-shortcuts-drawer-header {
   display: flex;
   align-items: center;
   font-weight: 400;
-  color: var(--umo-text-color);
-  .umo-icon {
+  color: var(--arslan-text-color);
+  .arslan-icon {
     font-size: 20px;
     margin-right: 6px;
   }
 }
-.umo-drawer__close-btn {
+.arslan-drawer__close-btn {
   margin-right: 3px;
 }
 
-.umo-word-count {
+.arslan-word-count {
   margin-right: 0.25em;
   &-detail {
     padding: 10px 0 8px;
     width: 160px;
     font-size: 12px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     ul {
       padding: 0;
       margin: 0;
@@ -718,7 +718,7 @@ watch(
       display: flex;
       justify-content: space-between;
       line-height: 28px;
-      color: var(--umo-text-color);
+      color: var(--arslan-text-color);
       &:hover {
         background-color: var(--td-bg-color-container-hover);
       }
@@ -730,3 +730,4 @@ watch(
   }
 }
 </style>
+

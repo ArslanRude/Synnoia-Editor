@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="image"
     :text="t('export.image.text')"
@@ -40,7 +40,7 @@ const saveImage = async ({
     page.value.zoomLevel = 100
     await nextTick()
     const node = document.querySelector(
-      `${container} .umo-page-content`,
+      `${container} .arslan-page-content`,
     ) as HTMLElement
     const blob = await toBlob(node, { scale: devicePixelRatio })
     const { title } = options.value.document ?? {}
@@ -66,3 +66,4 @@ const saveImage = async ({
   }
 }
 </script>
+

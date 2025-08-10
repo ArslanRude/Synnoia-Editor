@@ -44,7 +44,7 @@
   "exports": {
     ".": {
       "types": "./types/index.d.ts",
-      "import": "./dist/umo-editor.js"
+      "import": "./dist/my-word.js"
     },
     "./style": {
       "import": "./dist/style.css"

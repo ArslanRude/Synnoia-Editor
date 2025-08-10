@@ -1,4 +1,4 @@
-import type { Extension, HTMLContent, JSONContent } from '@tiptap/core'
+﻿import type { Extension, HTMLContent, JSONContent } from '@tiptap/core'
 import type { FocusPosition } from '@tiptap/core'
 import { Fragment, Node as ProseMirrorNode } from '@tiptap/pm/model'
 import type { AsyncFunction } from '@tool-belt/type-predicates'
@@ -227,7 +227,7 @@ type OnSaveFunction = (
   document: DocumentOptions,
 ) => Promise<unknown>
 
-export interface UmoEditorOptions {
+export interface ArslanEditorOptions {
   editorKey?: string
   locale?: SupportedLocale
   theme?: 'light' | 'dark'
@@ -265,3 +265,4 @@ export interface UmoEditorOptions {
 
 // Component type declarations
 export * from './src/components'
+

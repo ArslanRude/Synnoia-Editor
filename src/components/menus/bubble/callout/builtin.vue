@@ -1,9 +1,9 @@
-<template>
-  <div class="umo-bubble-callout-builtin">
+﻿<template>
+  <div class="arslan-bubble-callout-builtin">
     <div
       v-for="item in callouts"
       :key="item.type"
-      class="umo-bubble-callout-item"
+      class="arslan-bubble-callout-item"
       :style="{
         color: item.color,
         backgroundColor: item.backgroundColor,
@@ -15,7 +15,7 @@
         name="selected"
         size="14"
       />
-      <span v-else class="umo-bubble-callout-item-text">{{ item.icon }}</span>
+      <span v-else class="arslan-bubble-callout-item-text">{{ item.icon }}</span>
     </div>
   </div>
 </template>
@@ -66,11 +66,11 @@ const selectStyle = (item: (typeof callouts)[0]) => {
 </script>
 
 <style lang="less">
-.umo-bubble-callout-builtin {
+.arslan-bubble-callout-builtin {
   display: flex;
   align-items: center;
 }
-.umo-bubble-callout-item {
+.arslan-bubble-callout-item {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,3 +86,4 @@ const selectStyle = (item: (typeof callouts)[0]) => {
   }
 }
 </style>
+

@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <menus-button
     ico="columns"
     :text="t('insert.columns')"
@@ -8,12 +8,12 @@
     @toggle-popup="togglePopup"
   >
     <template #content>
-      <div class="umo-columns-container">
+      <div class="arslan-columns-container">
         <div
           v-for="column in columns"
           :key="column"
-          class="umo-columns-item"
-          :class="{ 'umo-columns-item-selected': activeColumn >= column }"
+          class="arslan-columns-item"
+          :class="{ 'arslan-columns-item-selected': activeColumn >= column }"
           @mouseenter="setActiveColumn(column)"
           @click="setColumns(column)"
         >
@@ -50,7 +50,7 @@ watch(
 </script>
 
 <style lang="less" scoped>
-.umo-columns {
+.arslan-columns {
   &-container {
     width: 180px;
     display: grid;
@@ -60,20 +60,21 @@ watch(
   }
 
   &-item {
-    background-color: var(--umo-content-table-selected-background);
-    border-radius: var(--umo-radius);
+    background-color: var(--arslan-content-table-selected-background);
+    border-radius: var(--arslan-radius);
     cursor: pointer;
     height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     &-selected {
-      background-color: var(--umo-primary-color);
-      color: var(--umo-color-white);
+      background-color: var(--arslan-primary-color);
+      color: var(--arslan-color-white);
       opacity: 0.9;
     }
   }
 }
 </style>
+

@@ -1,6 +1,6 @@
-<template>
-  <node-view-wrapper as="span" class="umo-node-tag">
-    <span class="umo-node-tag-text" :style="{
+﻿<template>
+  <node-view-wrapper as="span" class="arslan-node-tag">
+    <span class="arslan-node-tag-text" :style="{
       color: node.attrs.color,
       backgroundColor: node.attrs.backgroundColor,
     }" v-text="node.attrs.text"></span>
@@ -14,7 +14,7 @@ const { node } = defineProps(nodeViewProps)
 </script>
 
 <style lang="less" scoped>
-.umo-node-tag {
+.arslan-node-tag {
   margin: 0 0.2em;
   background-color: transparent !important;
   vertical-align: middle;
@@ -33,3 +33,4 @@ const { node } = defineProps(nodeViewProps)
   }
 }
 </style>
+

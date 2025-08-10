@@ -1,6 +1,6 @@
-<template>
-  <div class="umo-assistant-container">
-    <div class="umo-assistant-input">
+﻿<template>
+  <div class="arslan-assistant-container">
+    <div class="arslan-assistant-input">
       <div class="ai-icon">
         <icon name="assistant" />
       </div>
@@ -25,7 +25,7 @@
         </t-button>
       </div>
     </div>
-    <div class="umo-assistant-result">
+    <div class="arslan-assistant-result">
       <div class="close">
         <tooltip :content="t('assistant.exit')">
           <t-button
@@ -57,7 +57,7 @@
       <div v-if="result.content !== ''" class="result-container">
         <div class="title" v-text="t('assistant.result')"></div>
         <div
-          class="result umo-editor-container umo-scrollbar"
+          class="result arslan-editor-container arslan-scrollbar"
           :class="{ error: result.error }"
           v-html="result.content"
         ></div>
@@ -294,12 +294,12 @@ const deleteResult = () => {
 </script>
 
 <style lang="less" scoped>
-.umo-assistant-input {
+.arslan-assistant-input {
   width: 480px;
   position: relative;
   .ai-icon {
     position: absolute;
-    border-radius: var(--umo-radius);
+    border-radius: var(--arslan-radius);
     z-index: 10;
     font-size: 20px;
     margin: 12px;
@@ -311,7 +311,7 @@ const deleteResult = () => {
       content: '';
       display: block;
       width: 4px;
-      background-color: var(--umo-color-white);
+      background-color: var(--arslan-color-white);
       opacity: 0.25;
       height: 30px;
       transform: rotate(35deg);
@@ -324,17 +324,17 @@ const deleteResult = () => {
   }
   .input {
     outline: none !important;
-    box-shadow: var(--umo-shadow);
-    background-color: var(--umo-color-white);
+    box-shadow: var(--arslan-shadow);
+    background-color: var(--arslan-color-white);
     :deep(textarea) {
-      border-color: var(--umo-primary-color);
+      border-color: var(--arslan-primary-color);
       padding: 10px 60px 10px 40px;
       min-height: 44px;
       height: 44px;
       resize: none;
       outline: none !important;
     }
-    :deep(.umo-textarea__info_wrapper) {
+    :deep(.arslan-textarea__info_wrapper) {
       display: none;
     }
   }
@@ -344,7 +344,7 @@ const deleteResult = () => {
     bottom: 0;
     z-index: 10;
     margin: 9px 10px;
-    :deep(.umo-button) {
+    :deep(.arslan-button) {
       height: 26px;
       width: 42px;
       font-size: 12px;
@@ -352,14 +352,14 @@ const deleteResult = () => {
   }
 }
 
-.umo-assistant-result {
+.arslan-assistant-result {
   margin-top: 10px;
   padding: 15px;
-  box-shadow: var(--umo-shadow);
-  border: solid 1px var(--umo-primary-color);
-  border-radius: var(--umo-radius);
+  box-shadow: var(--arslan-shadow);
+  border: solid 1px var(--arslan-primary-color);
+  border-radius: var(--arslan-radius);
   position: relative;
-  background-color: var(--umo-color-white);
+  background-color: var(--arslan-color-white);
   width: 480px;
   box-sizing: border-box;
   .close {
@@ -375,7 +375,7 @@ const deleteResult = () => {
   }
   .title {
     font-size: 12px;
-    color: var(--umo-text-color-light);
+    color: var(--arslan-text-color-light);
     margin-bottom: 10px;
   }
   .result {
@@ -389,7 +389,7 @@ const deleteResult = () => {
       margin-top: 6px;
     }
     &.error {
-      color: var(--umo-error-color);
+      color: var(--arslan-error-color);
     }
   }
   .actions {
@@ -402,26 +402,26 @@ const deleteResult = () => {
     .secondary {
       display: flex;
       gap: 8px;
-      :deep(.umo-button__text) {
+      :deep(.arslan-button__text) {
         font-size: 16px;
         opacity: 0.6;
-        .umo-icon {
+        .arslan-icon {
           margin-right: 0 !important;
         }
       }
     }
-    :deep(.umo-button) {
+    :deep(.arslan-button) {
       height: 28px;
       font-size: 12px;
       padding-left: 10px;
       padding-right: 10px;
-      &.umo-button--shape-square {
+      &.arslan-button--shape-square {
         width: 28px;
       }
-      .umo-button__text {
+      .arslan-button__text {
         display: flex;
         align-items: center;
-        .umo-icon {
+        .arslan-icon {
           font-size: 14px;
           margin-right: 3px;
         }
@@ -441,3 +441,4 @@ const deleteResult = () => {
   }
 }
 </style>
+

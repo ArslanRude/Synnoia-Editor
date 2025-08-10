@@ -1,7 +1,7 @@
-<template>
-  <div ref="linkBubbleRef" class="umo-editor-bubble-menu">
+﻿<template>
+  <div ref="linkBubbleRef" class="arslan-editor-bubble-menu">
     <menus-bubble-link-open @hide-bubble="hideBubble" />
-    <div class="umo-bubble-menu-divider"></div>
+    <div class="arslan-bubble-menu-divider"></div>
     <menus-bubble-link-edit
       ico="edit"
       @show-bubble="showBubble"
@@ -25,7 +25,7 @@ let tippyInstance: any = null
 onMounted(() => {
   const { meta } = editor.value.storage.link
   const pageContainer = document.querySelector(
-    `${container} .umo-zoomable-container`,
+    `${container} .arslan-zoomable-container`,
   )
   tippyInstance = tippy(meta.target, {
     trigger: 'click',
@@ -66,3 +66,4 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped></style>
+
