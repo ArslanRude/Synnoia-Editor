@@ -20,7 +20,7 @@
 
     <!-- Custom Style Form Modal with Tailwind CSS -->
     <div v-if="showCustomStyleForm" class="backdrop-blur-sm fixed inset-0 flex justify-center items-center z-50">
-      <div class="rounded-lg p-4 w-[450px] max-w-[95%] shadow-lg max-h-[80vh] overflow-y-auto">
+      <div class="bg-secondary-light dark:bg-secondary-dark rounded-lg p-4 w-[450px] max-w-[95%] shadow-lg max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
           <h3 class="text-base font-semibold text-text-light dark:text-text-dark m-0">{{ t('Create New Style') }}</h3>
           <button @click="showCustomStyleForm = false"
@@ -84,10 +84,10 @@
         </div>
         <div class="flex justify-end gap-2 mt-4">
           <button @click="showCustomStyleForm = false"
-            class="px-3 py-1.5 rounded text-sm cursor-pointer bg-transparent border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-white">{{
+            class="px-3 py-1.5 rounded text-sm cursor-pointer bg-transparent border border-gray-300 dark:border-primary-light text-text-light dark:text-text-dark">{{
               t('Cancel') }}</button>
           <button @click="createCustomStyle"
-            class="px-3 py-1.5 rounded text-sm cursor-pointer bg-blue-600 text-white border-none">{{ t('Create')
+            class="px-3 py-1.5 rounded text-sm cursor-pointer bg-red-500 dark:bg-red-500 text-text-light dark:text-text-dark border-none">{{ t('Create')
             }}</button>
         </div>
       </div>

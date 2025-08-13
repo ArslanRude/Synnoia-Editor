@@ -94,7 +94,7 @@ const fontDetect = (font?: string) => {
     return Array.from(data).filter((pixel) => pixel !== 0)
   }
 
-  // 返回结果，如果使用 baseFont 和输入的 font 时，通过 getImageDataWithFont 函数检测得到的像素数据不一致，则说明自定义字体生效
+  // Return the result, if the pixel data obtained by using the baseFont and the input font through the getImageDataWithFont function are not consistent, it means that the custom font takes effect.
   return (
     getImageDataWithFont(baseFont).join('') !==
     getImageDataWithFont(font).join('')
@@ -108,7 +108,7 @@ const allFonts = computed(() => {
       children: options.value.dicts?.fonts ?? [],
     },
   ]
-  // 通过字体值获取字体列表
+  // Get fonts by values
   const getFontsByValues = (values: string[]) => {
     return values.map(
       (item) =>
@@ -135,7 +135,7 @@ const allFonts = computed(() => {
   return all
 })
 
-// 获取当前文档中所有已使用的字体
+// Get all used fonts in the current document
 const getUsedFonts = () => {
   const content = JSON.stringify(editor.value?.getJSON())
   const matches = content.match(/"fontFamily":"([^"]+)"/g)

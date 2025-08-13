@@ -4,50 +4,6 @@ export const defaultDicts = {
       label: 'Default Font',
       value: null,
     },
-    {
-      label: 'Songti',
-      value: 'SimSun',
-    },
-    {
-      label: 'Heiti',
-      value: 'SimHei',
-    },
-    {
-      label: 'Kaiti',
-      value: 'KaiTi',
-    },
-    {
-      label: 'Kaiti GB2312',
-      value: 'KaiTi_GB2312',
-    },
-    {
-      label: 'Fangsong',
-      value: 'FangSong',
-    },
-    {
-      label: 'Fangsong GB2312',
-      value: 'FangSong_GB2312',
-    },
-    {
-      label: 'STSong',
-      value: 'STSong',
-    },
-    {
-      label: 'STFangsong',
-      value: 'STFangsong',
-    },
-    {
-      label: 'FZ Fangsong Simplified',
-      value: 'FZFangSong-Z02S',
-    },
-    {
-      label: 'FZ Xiaobiao Song',
-      value: 'FZXiaoBiaoSong-B05S',
-    },
-    {
-      label: 'Microsoft Yahei',
-      value: 'Microsoft Yahei',
-    },
     { label: 'Arial', value: 'Arial' },
     { label: 'Times New Roman', value: 'Times New Roman' },
     { label: 'Verdana', value: 'Verdana' },

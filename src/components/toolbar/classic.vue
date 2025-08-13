@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <toolbar-scrollable ref="scrollableRef" class="arslan-scrollable-container">
     <div class="arslan-classic-menu">
       <div v-if="menus.length > 1" class="arslan-virtual-group">
@@ -82,8 +82,8 @@
           <menus-toolbar-insert-file v-if="!disableItem('file')" />
           <menus-toolbar-insert-code-block v-if="!disableItem('code-block')" />
           <menus-toolbar-insert-symbol v-if="!disableItem('symbol')" />
-          <menus-toolbar-insert-chinese-date
-            v-if="!disableItem('chineseDate')"
+          <menus-toolbar-insert-date
+            v-if="!disableItem('date')"
           />
           <menus-toolbar-insert-emoji v-if="!disableItem('emoji')" />
           <menus-toolbar-insert-math v-if="!disableItem('math')" />
