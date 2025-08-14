@@ -57,15 +57,15 @@ const options = $ref({
     showBookmark: true,
   },
   templates,
-  cdnUrl: 'https://cdn.umodoc.com',
-  shareUrl: 'https://umodoc.com',
+  cdnUrl: 'MyWord',
+  shareUrl: 'MyWord',
   file: {
-    // allowedMimeTypes: [
-    //   'application/pdf',
-    //   'image/svg+xml',
-    //   'video/mp4',
-    //   'audio/*',
-    // ],
+    allowedMimeTypes: [
+      'application/pdf',
+      'image/svg+xml',
+      'video/mp4',
+      'audio/*',
+    ],
   },
   ai: {
     assistant: {
@@ -76,19 +76,12 @@ const options = $ref({
     },
   },
   user: {
-    id: 'umoeditor',
-    label: 'Umo Editor',
+    id: 'admin',
+    label: 'Arslan',
     avatar: 'https://tdesign.gtimg.com/site/avatar.jpg',
   },
   users: [
-    { id: 'umodoc', label: 'Umo Team' },
-    { id: 'Cassielxd', label: 'Cassielxd' },
-    { id: 'Goldziher', label: "Na'aman Hirschfeld" },
-    { id: 'SerRashin', label: 'SerRashin' },
-    { id: 'ChenErik', label: 'ChenErik' },
-    { id: 'china-wangxu', label: 'china-wangxu' },
-    { id: 'Sherman Xu', label: 'xuzhenjun130' },
-    { id: 'testuser', label: 'Test User' },
+    { id: 'admin', label: 'Arslan' },
   ],
   async onSave(content: string, page: number, document: { content: string }) {
     localStorage.setItem('document.content', document.content)

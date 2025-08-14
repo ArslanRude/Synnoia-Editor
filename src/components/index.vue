@@ -1,21 +1,38 @@
 <template>
-  <t-config-provider :key="options.editorKey" :global-config="{
-    ...localeConfig['en-US'],
-    classPrefix: 'arslan',
-  }">
-    <div :id="container.substr(1)" class="arslan-editor-container" :class="{
-      'toolbar-classic': isRecord($toolbar) && $toolbar.mode === 'classic',
-      'toolbar-ribbon': isRecord($toolbar) && $toolbar.mode === 'ribbon',
-      'preview-mode': page.preview?.enabled,
-      'laser-pointer': page.preview?.enabled && page.preview?.laserPointer,
-      'arslan-editor-is-fullscreen': fullscreen,
-    }" :style="{
+  <t-config-provider
+    :key="options.editorKey"
+    :global-config="{
+      ...localeConfig['en-US'],
+      classPrefix: 'arslan',
+    }"
+  >
+    <div
+      :id="container.substr(1)"
+      class="arslan-editor-container"
+      :class="{
+        'toolbar-classic': isRecord($toolbar) && $toolbar.mode === 'classic',
+        'toolbar-ribbon': isRecord($toolbar) && $toolbar.mode === 'ribbon',
+        'preview-mode': page.preview?.enabled,
+        'laser-pointer': page.preview?.enabled && page.preview?.laserPointer,
+        'arslan-editor-is-fullscreen': fullscreen,
+      }"
+      :style="{
         height: options.height,
         zIndex: fullscreen ? options.fullscreenZIndex : 'unset',
-      }">
-      <header class="bg-secondary-light dark:bg-secondary-dark text-text-light dark:text-text-dark">
-        <toolbar :key="toolbarKey" @menu-change="(event: any) => emits('menuChange', event)">
-          <template v-for="item in options.toolbar?.menus" :key="item" #[`toolbar_${item}`]="slotProps">
+      }"
+    >
+      <header
+        class="bg-secondary-light dark:bg-secondary-dark text-text-light dark:text-text-dark"
+      >
+        <toolbar
+          :key="toolbarKey"
+          @menu-change="(event: any) => emits('menuChange', event)"
+        >
+          <template
+            v-for="item in options.toolbar?.menus"
+            :key="item"
+            #[`toolbar_${item}`]="slotProps"
+          >
             <slot :name="`toolbar_${item}`" v-bind="slotProps" />
           </template>
         </toolbar>
@@ -27,7 +44,9 @@
           </template>
         </container-page>
       </main>
-      <footer class="arslan-footer bg-highlight-light dark:bg-highlight-dark text-text-light dark:text-text-dark">
+      <footer
+        class="arslan-footer bg-highlight-light dark:bg-highlight-dark text-text-light dark:text-text-dark"
+      >
         <statusbar />
       </footer>
     </div>
@@ -62,16 +81,11 @@ import type {
   SetContentType,
   ArslanEditorOptions,
 } from '@/types'
-import type {
-  AutoSaveOptions,
-  DocumentOptions,
-  WatermarkOption,
-} from '@/types'
+import type { AutoSaveOptions, DocumentOptions, WatermarkOption } from '@/types'
 import { contentTransform } from '@/utils/content-transform'
 import { consoleCopyright } from '@/utils/copyright'
 import { getOpitons } from '@/utils/options'
 import { shortId } from '@/utils/short-id'
-
 
 const { toBlob, toJpeg, toPng } = domToImage
 
@@ -688,7 +702,6 @@ const getContent = <T extends 'html' | 'json' | 'text' = 'html'>(
   throw new Error('format must be html, text or json')
 }
 
-
 const getLocale = () => locale.value
 const getI18n = () => i18n
 
@@ -1037,5 +1050,3 @@ defineExpose({
   }
 }
 </style>
-
-

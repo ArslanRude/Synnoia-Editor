@@ -3,9 +3,9 @@ import type { InsterContentType, SetContentType } from '@/types'
 export const contentTransform = <T extends InsterContentType | SetContentType>(
   content: T,
 ) => {
-  // 处理空内容或非字符串内容
+  // Handle empty content or non-string content
   if (content && typeof content === 'string' && !content.startsWith('<')) {
-    // 处理纯文本中的换行符
+    // Handle line breaks in plain text
     console.log(content.split('\n'))
     return content
       .split('\n')

@@ -46,7 +46,7 @@ class DiagramEditor {
     }
   }
 
-  // 编辑元素
+  // Edit element
   edit(src: string) {
     let fmt = this.format
     if (src.substring(0, 15) === 'data:image/png;') {
@@ -58,7 +58,7 @@ class DiagramEditor {
     return this
   }
 
-  // 创建 iframe
+  // Create iframe
   createFrame() {
     const params = Object.keys(this.params)
       .map((key) => `${key}=${this.params[key as keyof typeof this.params]}`)
@@ -69,7 +69,7 @@ class DiagramEditor {
     return frame
   }
 
-  // diagrams页面和当前页面通信
+  // diagrams page and current page communication
   postMessage(msg: Record<string, any>) {
     if (this.frame) {
       this.frame.contentWindow?.postMessage(JSON.stringify(msg), '*')
@@ -113,7 +113,7 @@ class DiagramEditor {
     }
   }
 
-  // 开始编辑
+  // Start editing
   startEditing(data: any, format: string) {
     if (!this.frame) {
       window.addEventListener('message', this.handleuseMessageEvent)
@@ -125,13 +125,13 @@ class DiagramEditor {
     }
   }
 
-  // 停止编辑
+  // Stop editing
   stopEditing() {
     window.removeEventListener('message', this.handleuseMessageEvent)
     this.frame = undefined
   }
 
-  // 安装编辑器
+  // Install editor
   initializeEditor() {
     this.postMessage({
       action: 'load',
@@ -142,11 +142,11 @@ class DiagramEditor {
     })
   }
 
-  // 设置编辑器
+  // Configure editor
   configureEditor() {
     this.postMessage({ action: 'configure', config: this.params.configure })
   }
-  // 导出数据
+  // Export data
   export(data: any) {
     return data
   }

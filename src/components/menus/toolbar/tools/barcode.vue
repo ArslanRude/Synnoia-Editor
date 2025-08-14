@@ -296,7 +296,7 @@ const changeFontOptions = (val: string) => {
   config.fontOptions = fontOptions.join(' ').trim()
 }
 
-// 生成条形码
+// Generate barcode
 let renderError = $ref(false)
 const barcodeSvgRef = $ref<
   | (HTMLElement & {
@@ -337,7 +337,7 @@ watch(
   { immediate: true, deep: true },
 )
 
-// 创建或更新条形码
+// Create or update barcode
 const setBarcode = () => {
   if (renderError) {
     useMessage('error', {

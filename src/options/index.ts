@@ -22,7 +22,7 @@ import { defaultAiOptions } from './ai'
 import { defaultDicts } from './dicts'
 import { defaultWebPages } from './web-pages'
 
-// 默认配置
+// Default configuration
 const defaultOptions: ArslanEditorOptions = {
   editorKey: 'default',
   locale: 'en-US',
@@ -151,7 +151,7 @@ const defaultOptions: ArslanEditorOptions = {
   },
 }
 
-// 组件 props 所需格式
+// Component props required format
 const propsOptions = Object.keys(defaultOptions)
 
 const isLocale = (value: unknown) => {

@@ -53,13 +53,13 @@
         </t-button>
       </tooltip>
       <div class="bar-split"></div>
-      <tooltip :content="t('Powered By Nexus')">
+      <tooltip :content="t('poweredBy')">
         <t-button
           class="arslan-status-bar-button !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
-          href="https://editor.umodoc.com/en/docs"
+          href=""
           target="_blank"
         >
           <icon name="home-page" />
@@ -71,7 +71,7 @@
           :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
           variant="text"
           size="small"
-          href="https://github.com/umodoc/editor/issues"
+          href="https://github.com/ArslanRude/OnlyWord/issues"
           target="_blank"
         >
           <icon name="message" />
