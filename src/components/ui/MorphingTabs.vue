@@ -77,7 +77,7 @@ const getTabDisplayName = (tab: string) => {
     insert: 'Insert',
     table: 'Table',
     tools: 'Tools',
-    page: 'Page Layout',
+    page: 'Page',
     export: 'Export',
   }
   return tabNames[tab] || tab

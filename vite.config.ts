@@ -1,4 +1,4 @@
-﻿import tailwindcss from '@tailwindcss/vite'
+import tailwindcss from '@tailwindcss/vite'
 import Vue from '@vitejs/plugin-vue'
 import ReactivityTransform from '@vue-macros/reactivity-transform/vite'
 import AutoImport from 'unplugin-auto-import/vite'

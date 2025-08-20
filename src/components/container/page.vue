@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="arslan-page-container">
     <container-toc v-if="pageOptions.showToc" @close="pageOptions.showToc = false" />
     <div class="arslan-zoomable-container arslan-scrollbar">
@@ -282,4 +282,3 @@ watch(
   background: transparent;
 }
 </style>
-

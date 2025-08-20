@@ -51,7 +51,7 @@ const scrollRight = () => {
   }
 }
 
-// 监听父元素大小变化
+// Listen for parent element size changes
 useResizeObserver(wraperRef, () => {
   checkScrollPosition()
 })
@@ -61,7 +61,7 @@ onMounted(() => {
   contentRef?.addEventListener('scroll', checkScrollPosition)
 })
 
-// 更新
+// Update
 const update = () => {
   if (contentRef) {
     contentRef.scrollLeft = 0

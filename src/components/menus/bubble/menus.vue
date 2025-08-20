@@ -24,14 +24,14 @@
     <menus-bubble-image-draggable />
     <menus-bubble-image-reset />
     <div class="arslan-bubble-menu-divider"></div>
-    <menus-bubble-image-remove-background
+    <!-- <menus-bubble-image-remove-background
       v-if="
         editor?.getAttributes('image')?.type.startsWith('image') ||
         ['image/png', 'image/jpeg'].includes(
           editor?.getAttributes('image')?.type,
         )
       "
-    />
+    /> -->
     <menus-bubble-image-preview
       v-if="
         editor?.getAttributes('image')?.type.startsWith('image') ||

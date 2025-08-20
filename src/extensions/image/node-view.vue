@@ -1,79 +1,34 @@
-﻿<template>
-  <node-view-wrapper
-    ref="containerRef"
-    class="arslan-node-view"
-    :class="{ 'arslan-floating-node': node.attrs.draggable }"
-    :style="nodeStyle"
-    @dblclick="openImageViewer"
-  >
-    <div
-      class="arslan-node-container arslan-node-image"
-      :class="{
-        'is-loading': node.attrs.src && isLoading,
-        'is-error': node.attrs.src && error,
-        'is-draggable': node.attrs.draggable,
-        'arslan-hover-shadow': !options.document?.readOnly,
-        'arslan-select-outline': !node.attrs.draggable,
-      }"
-    >
-      <div
-        v-if="node.attrs.src && isLoading"
-        class="loading"
-        :style="{ height: `${node.attrs.height}px` }"
-      >
+<template>
+  <node-view-wrapper ref="containerRef" class="arslan-node-view"
+    :class="{ 'arslan-floating-node': node.attrs.draggable }" :style="nodeStyle" @dblclick="openImageViewer">
+    <div class="arslan-node-container arslan-node-image" :class="{
+      'is-loading': node.attrs.src && isLoading,
+      'is-error': node.attrs.src && error,
+      'is-draggable': node.attrs.draggable,
+      'arslan-hover-shadow': !options.document?.readOnly,
+      'arslan-select-outline': !node.attrs.draggable,
+    }">
+      <div v-if="node.attrs.src && isLoading" class="loading" :style="{ height: `${node.attrs.height}px` }">
         <icon name="loading" class="loading-icon" />
         {{ t('node.image.loading') }}
       </div>
-      <div
-        v-else-if="node.attrs.src && error"
-        class="error"
-        :style="{ height: `${node.attrs.height}px` }"
-      >
+      <div v-else-if="node.attrs.src && error" class="error" :style="{ height: `${node.attrs.height}px` }">
         <icon name="image-failed" class="error-icon" />
         {{ t('node.image.error') }}
       </div>
-      <drager
-        v-else
-        :selected="selected"
-        :rotatable="true"
-        :boundary="false"
-        :draggable="
-          Boolean(node.attrs.draggable) && !options.document?.readOnly
-        "
-        :disabled="options.document?.readOnly"
-        :angle="node.attrs.angle"
-        :width="Number(node.attrs.width)"
-        :height="Number(node.attrs.height)"
-        :left="Number(node.attrs.left)"
-        :top="Number(node.attrs.top)"
-        :min-width="14"
-        :min-height="14"
-        :max-width="maxWidth"
-        :max-height="maxHeight"
-        :z-index="10"
-        :equal-proportion="node.attrs.equalProportion"
-        @rotate="onRotate"
-        @resize="onResize"
-        @drag="onDrag"
-        @focus="selected = true"
-      >
-        <img
-          ref="imageRef"
-          :src="node.attrs.src"
-          :style="{
-            transform:
-              node.attrs.flipX || node.attrs.flipY
-                ? `rotateX(${node.attrs.flipX ? '180' : '0'}deg) rotateY(${node.attrs.flipY ? '180' : '0'}deg)`
-                : 'none',
-          }"
-          :data-id="node.attrs.id"
-          loading="lazy"
-          @load="onLoad"
-        />
-        <div
-          v-if="!node.attrs.uploaded && node.attrs.file !== null"
-          class="uploading"
-        >
+      <drager v-else :selected="selected" :rotatable="true" :boundary="false" :draggable="Boolean(node.attrs.draggable) && !options.document?.readOnly
+        " :disabled="options.document?.readOnly" :angle="node.attrs.angle" :width="Number(node.attrs.width)"
+        :height="Number(node.attrs.height)" :left="Number(node.attrs.left)" :top="Number(node.attrs.top)"
+        :min-width="14" :min-height="14" :max-width="maxWidth" :max-height="maxHeight" :z-index="10"
+        :equal-proportion="node.attrs.equalProportion" @rotate="onRotate" @resize="onResize" @drag="onDrag"
+        @focus="selected = true">
+        <img ref="imageRef" :src="node.attrs.src" :style="{
+          transform:
+            node.attrs.flipX || node.attrs.flipY
+              ? `rotateX(${node.attrs.flipX ? '180' : '0'}deg) rotateY(${node.attrs.flipY ? '180' : '0'}deg)`
+              : 'none',
+        }" :data-id="node.attrs.id" loading="lazy" @load="onLoad" />
+        <div v-if="!node.attrs.uploaded && node.attrs.file !== null" class="uploading">
           <span></span>
         </div>
       </drager>
@@ -247,15 +202,18 @@ watch(
     width: auto;
     position: relative;
     z-index: 20;
+
     &.is-loading,
     &.is-error {
       outline: none !important;
       box-shadow: none !important;
     }
+
     &:not(.is-draggable) .es-drager {
       max-width: 100%;
       max-height: 100%;
     }
+
     img {
       display: block;
       max-width: 100%;
@@ -331,6 +289,7 @@ watch(
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -340,9 +299,9 @@ watch(
   0% {
     width: 0;
   }
+
   100% {
     width: 100%;
   }
 }
 </style>
-

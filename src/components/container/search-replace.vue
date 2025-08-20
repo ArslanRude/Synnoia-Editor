@@ -201,7 +201,7 @@ watch(
     right: 25px;
     top: 131px;
     user-select: none;
-    background-color: transparent !important;
+    background-color: var(--color-highlight-light) !important;
     backdrop-filter: blur(5px);
     box-shadow: 1px 1px 2px !important;
   }

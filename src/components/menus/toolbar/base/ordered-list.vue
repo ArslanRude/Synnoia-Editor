@@ -66,14 +66,6 @@ const options = [
   { label: t('list.ordered.upperRoman'), value: 'upper-roman' },
   { label: t('list.ordered.lowerLatin'), value: 'lower-latin' },
   { label: t('list.ordered.upperLatin'), value: 'upper-latin' },
-  {
-    label: t('list.ordered.tradChineseInformal'),
-    value: 'trad-chinese-informal',
-  },
-  {
-    label: t('list.ordered.simpChineseFormal'),
-    value: 'simp-chinese-formal',
-  },
 ]
 
 // 列表类型
