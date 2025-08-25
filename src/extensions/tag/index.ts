@@ -20,7 +20,7 @@ export default Node.create({
   addAttributes() {
     return {
       type: { default: 'default' },
-      text: { default: '标签内容' },
+      text: { default: 'Tag' },
       color: { default: '#999' },
       backgroundColor: { default: 'rgba(0, 0, 0, 0.05)' },
     }

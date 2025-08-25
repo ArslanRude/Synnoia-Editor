@@ -41,6 +41,7 @@ const options = $ref({
     // menus: ['base'],
     importWord: {
       enabled: true,
+      maxSize: 1024 * 1024 * 100,
       // async onCustomImportMethod() {
       //   return await Promise.resolve({
       //     value: '<p>测试导入word</p>',
@@ -57,7 +58,7 @@ const options = $ref({
     showBookmark: true,
   },
   templates,
-  cdnUrl: 'MyWord',
+  cdnUrl: '',
   shareUrl: 'MyWord',
   file: {
     allowedMimeTypes: [
@@ -130,4 +131,3 @@ body {
   overflow: hidden;
 }
 </style>
-

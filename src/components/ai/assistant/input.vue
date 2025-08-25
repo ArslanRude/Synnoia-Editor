@@ -237,7 +237,7 @@ const exitAssistant = () => {
 }
 
 const replaceContent = () => {
-  // 记录插入前的选区位置
+  // Record the selection position before insertion
   const { from, to } = editor.value?.state.selection ?? {}
   const prevDocLength = editor.value?.state.doc.content.size || 0
   editor.value?.chain().insertContent(result.content).run()

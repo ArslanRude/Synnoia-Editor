@@ -2,13 +2,18 @@
   <div class="arslan-page-container">
     <container-toc v-if="pageOptions.showToc" @close="pageOptions.showToc = false" />
     <div class="arslan-zoomable-container arslan-scrollbar">
-      <div class="arslan-zoomable-content bg-highlight-light text-text-light dark:bg-highlight-dark dark:text-text-dark"
+      <div class="arslan-zoomable-content"
         :style="{
           width: pageZoomWidth,
           height: pageZoomHeight,
         }">
         <t-watermark class="arslan-page-content" :alpha="pageOptions.watermark.alpha" v-bind="watermarkOptions"
-          :watermark-content="pageOptions.watermark" :style="{
+          :content="pageOptions.watermark?.text" :font="{
+            color: pageOptions.watermark?.fontColor,
+            size: pageOptions.watermark?.fontSize,
+            family: pageOptions.watermark?.fontFamily,
+            weight: pageOptions.watermark?.fontWeight
+          }" :style="{
             '--arslan-page-background': pageOptions.background,
             '--arslan-page-margin-top': (pageOptions.margin?.top ?? '0') + 'cm',
             '--arslan-page-margin-bottom':
@@ -115,11 +120,9 @@ const watermarkOptions = $ref<{
   x: number
   y?: number
   width?: number
-  height: number
   type?: string
 }>({
   x: 0,
-  height: 0,
 })
 watch(
   () => pageOptions.value.watermark,
@@ -187,7 +190,7 @@ watch(
       display: flex;
       position: relative;
       box-sizing: border-box;
-      // background-color: var(--arslan-page-background);
+      background-color: var(--arslan-page-background);
       width: var(--arslan-page-width);
       min-height: var(--arslan-page-height);
       overflow: visible !important;
