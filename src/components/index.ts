@@ -1,5 +1,7 @@
 import 'virtual:svg-icons-register'
+
 import type { ArslanEditorOptions } from '@/types'
+
 import ArslanEditor from './index.vue'
 import ArslanMenuButton from './menus/button.vue'
 import ArslanDialog from './modal.vue'

@@ -51,9 +51,9 @@ const selectImage = () => {
     multiple: false,
     reset: true,
   })
-  // 打开文件对话框
+  // Open file dialog
   open()
-  // 选择图片
+  // Select image
   onChange(async (files) => {
     if (!files) {
       return

@@ -38,16 +38,16 @@
 </template>
 
 <script setup lang="ts">
-// tiptap 组件
+// tiptap component
 import { nodeViewProps, NodeViewWrapper } from '@tiptap/vue-3'
-// 拖拽组件
+// drag component
 import Drager from 'es-drager'
 
 import {
   calbaseConfigData,
   calbaseConfigOptions,
 } from '@/extensions/echarts/cal-service'
-// 引入 echart 服务 用此方法初始化加载 cdn echart.js 脚本 否则
+// Import echart service to initialize loading cdn echart.js script otherwise
 import { useEchartsLoader } from '@/extensions/echarts/init-service'
 
 const { node, updateAttributes } = defineProps(nodeViewProps)
@@ -58,12 +58,12 @@ const maxWidth = $ref(0)
 let selected = $ref(false)
 let myChart: any = null
 
-// 加载数据
+// Load data
 onMounted(async () => {
   await loadData()
 })
 
-// 初始化样式，需要在 margin 和 nodeAlign 里面增加 name 才可以
+// Initialize style, need to add name in margin and nodeAlign
 const nodeStyle = $computed(() => {
   const { nodeAlign, margin } = node.attrs
   const marginTop =
@@ -92,15 +92,15 @@ const onResize = ({ width, height }: { width: number; height: number }) => {
 onClickOutside(containerRef, () => {
   selected = false
 })
-// 数据加载
+// Load data
 const loadData = async () => {
   await nextTick()
-  // 确保 loadData 在 echarts 加载完毕后调用
+  // Ensure loadData is called after echarts is loaded
   await loadEchartScript()
-  // 接下来的使用就跟之前一样，初始化图表，设置配置项
+  // Next, initialize the chart and set the configuration
   if (typeof echarts !== 'undefined') {
     const { chartOptions, chartConfig, id, mode } = node.attrs
-    // 根据参数不同 实现效果不同
+    // Based on the parameters, achieve different effects
     if (myChart !== null) {
       myChart.dispose()
       myChart = null
@@ -125,17 +125,17 @@ const loadData = async () => {
   }
 }
 
-// 监听 node.attrs 变化并在变化时重新加载数据
+// Watch node.attrs changes and reload data when changes occur
 watch(
   () => node.attrs,
   async (newAttrs: any, oldAttrs: any) => {
-    // 避免初次挂载时重复调用 loadData
+    // Avoid repeated calls to loadData during initial mounting
     if (
       newAttrs !== undefined &&
       oldAttrs !== undefined &&
       newAttrs !== oldAttrs
     ) {
-      // 如果只有高度和宽度变化，则不走重新加载逻辑
+      // Avoid repeated calls to loadData during initial mounting
       let isLoad = false
       for (const attr1 in oldAttrs) {
         if (attr1 === 'height' || attr1 === 'width' || attr1 === 'src') {
@@ -147,7 +147,7 @@ watch(
         }
       }
       if (isLoad) {
-        await loadData() // 第二次及之后的调用 loadData，在属性变化时
+        await loadData() // Second and subsequent calls to loadData when attributes change
       }
     }
   },

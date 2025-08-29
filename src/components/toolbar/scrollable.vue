@@ -56,12 +56,12 @@ useResizeObserver(wraperRef, () => {
   checkScrollPosition()
 })
 
-//
+// Add scroll event listener
 onMounted(() => {
   contentRef?.addEventListener('scroll', checkScrollPosition)
 })
 
-// Update
+// Update scroll position
 const update = () => {
   if (contentRef) {
     contentRef.scrollLeft = 0

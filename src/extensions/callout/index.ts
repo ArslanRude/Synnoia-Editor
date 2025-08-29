@@ -82,17 +82,17 @@ export default Node.create({
         const { dispatch } = view
         const { selection } = state
         const { $from } = selection
-        const node = $from.node(-1) // 获取 `callout` 节点
+        const node = $from.node(-1) // Get `callout` node
 
         if (node?.type.name === 'callout') {
           if (node.content.size <= 2) {
-            const pos = selection.from + 1 // 计算新段落插入的位置
-            // 创建新的 `paragraph` 并插入
+            const pos = selection.from + 1 // Calculate the position of the new paragraph
+            // Create a new `paragraph` and insert it
             const tr = state.tr.insert(
               pos,
               state.schema.nodes.paragraph.create(),
             )
-            // 将光标移动到新段落
+            // Move the cursor to the new paragraph
             tr.setSelection(
               state.selection.constructor.near(tr.doc.resolve(pos)),
             )

@@ -192,7 +192,7 @@ watch(
   { immediate: true, deep: true },
 )
 
-// 创建或更新条形码
+// Create or update QR code
 const setQrcode = () => {
   if (renderError || !svgCode) {
     useMessage('error', {

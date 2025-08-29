@@ -95,7 +95,7 @@ const standardColors = ['#B12318', '#EB3323', '#F6C143', '#FFFE55', '#A0CD63', '
 
 const color = $ref(props.defaultColor)
 
-// 更多颜色
+// More colors
 const moreColorPicker = $ref(false)
 const colorChange = (color: string, ctx?: { trigger: string }) => {
   if (ctx && ctx.trigger !== 'palette-saturation-brightness') {
@@ -121,7 +121,7 @@ watch(
   },
 )
 
-// 选择颜色
+// Select color
 const selectColor = (color: string) => {
   colorChange(color)
   emits('change', color)

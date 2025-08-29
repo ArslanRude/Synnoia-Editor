@@ -68,7 +68,7 @@ const options = [
   { label: t('list.ordered.upperLatin'), value: 'upper-latin' },
 ]
 
-// 列表类型
+// List type
 let listStyleType = $ref('left')
 watch(
   () => popupVisible.value,
@@ -97,7 +97,7 @@ const toggleOrderedList = (listType: string) => {
   popupVisible.value = false
 }
 
-// 起始编号
+// Start number
 let startAt = $ref(1)
 const changeOrderedListStart = () => {
   if (editor.value) {

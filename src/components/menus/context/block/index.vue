@@ -49,7 +49,8 @@ const tippyOpitons = $ref<Partial<Instance>>({
   },
 })
 
-// 菜单位置更新
+
+// Update menu position
 const updateMenuPostion = useThrottleFn(() => {
   if (!tippyInstance) {
     return

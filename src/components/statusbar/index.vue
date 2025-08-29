@@ -306,12 +306,13 @@ const page = inject('page')
 const options = inject('options')
 const $document = useState('document', options)
 
-// 快捷键抽屉
+
+// Shortcut drawer
 const showShortcut = $ref(false)
 
 const reset = inject('reset') as (silent: boolean) => void
 
-// 字数统计
+// Word count
 const showWordCount = $ref(false)
 const selectionCharacters = computed(() => {
   if (editor.value) {
@@ -326,7 +327,7 @@ const selectionCharacters = computed(() => {
   return 0
 })
 
-// 页面全屏
+// Page fullscreen
 const fullscreen = inject('fullscreen')
 const toggleFullscreen = () => {
   fullscreen.value = !fullscreen.value
@@ -337,7 +338,7 @@ onMounted(() => {
   documentFullscreen = useFullscreen(document.querySelector(container))
 })
 
-// 演示模式
+// Preview mode
 const togglePreview = () => {
   page.value.showToc = false
   page.value.preview ??= {}
@@ -369,7 +370,7 @@ watch(
   },
 )
 
-// 演示模式倒计时
+// Preview mode countdown
 const countdownSetting = $ref(false)
 let countdownValue = $ref('')
 const countdownChange = (value: string) => {
@@ -397,7 +398,8 @@ watch(
   },
 )
 
-// 页面缩放
+
+// Page zoom
 const zoomIn = () => {
   if (page.value?.zoomLevel && page.value.zoomLevel < 500) {
     page.value.zoomLevel += 10
@@ -415,7 +417,7 @@ const zoomReset = () => {
   page.value.autoWidth = false
 }
 
-// 最佳宽度
+// Best width
 const autoWidth = (auto = true, padding = 50) => {
   if (auto && page.value.autoWidth) {
     zoomReset()
@@ -453,7 +455,7 @@ watch(
 )
 
 
-// 快捷键
+// Hotkeys
 watch(
   () => editor.value,
   () => {

@@ -1,9 +1,8 @@
 /*
-此服务主要作用
-echarts相关的一些公共处理方法 主要用于基础模式
+This service mainly serves to process echarts related public processing methods, mainly used for basic mode
 */
 
-// 基础模式下，对界面数据进行加工处理，根据第一列为空时不作为有效数据
+// Process data in the basic mode, and according to the first column being empty, it is not considered as valid data
 export function calbaseConfigData(data: any) {
   if (!data) {
     return data
@@ -19,33 +18,33 @@ export function calbaseConfigData(data: any) {
   }
   return data
 }
-// 计算配置 根据手工设置的配置信息和数据进行 Options 生成，此方法会逐步扩充
+// Calculate configuration based on manually set configuration information and data to generate Options, this method will gradually expand
 export function calbaseConfigOptions(data: any, config: any, options: any) {
-  // 声明的最终返回的options
+  // Declare the final returned options
   let resOption: any = {}
   if (!data || !config) {
     return resOption
   }
-  // 1.0 标题 title
+  // 1.0 Title
   if (config.titleText && config.titleText !== '') {
     resOption.title = {}
     resOption.title.text = config.titleText
-    resOption.title.left = config.titleleft ? config.titleleft : 'center' // 标题位置
+    resOption.title.left = config.titleleft ?? 'center' // Title position
   }
-  // 2.0 图例位置 legend
+  // 2.0 Legend
   let colNameList: any = []
   function calbaseConfigOptionsInlegend() {
     resOption.legend = {}
-    // 图例显示隐藏
+    // Legend display hidden
     resOption.legend.show = config.legend ? true : false
-    // 图例纵向位置
+    // Legend vertical position
     resOption.legend[config.legendlocation] = 10
-    // 图例横向位置
-    resOption.legend.left = config.legendleft
-    // 图例布局
+    // Legend horizontal position
+    resOption.legend.left = config.legendleft ?? 'center'
+    // Legend layout
     resOption.legend.orient = config.legendorient
     resOption.legend.data = []
-    // 目前只支持 26 个图例，图例名称为空时，不展示
+    // Currently only supports 26 legends, legend names are empty, not displayed
     const alphabet = Array.from({ length: 26 }, (_, i) =>
       String.fromCharCode(i + 65),
     )
@@ -56,18 +55,20 @@ export function calbaseConfigOptions(data: any, config: any, options: any) {
         continue
       }
       resOption.legend.data.push(data[0][curColName])
-      colNameList.push(curColName) // 有那些列需要展示到系列中
+      if (curColName) {
+        colNameList.push(curColName) // Only push non-empty column names to the list
+      }
       if (config.seriesType === 'pie' && colNameList.length === 1) {
         break
-        // 饼图只需要显示一个图例
+        // Pie chart only needs to display one legend
       }
     }
   }
   calbaseConfigOptionsInlegend()
 
-  // 3.0 图例 yAxis xAxis series处理
+  // 3.0 Legend yAxis xAxis series processing
   function calbaseConfigOptionsInType() {
-    // y轴
+    // y axis
     if (config.seriesType === 'bar' || config.seriesType === 'line') {
       resOption.yAxis = {
         type: 'value',
@@ -85,7 +86,7 @@ export function calbaseConfigOptions(data: any, config: any, options: any) {
 
     for (let i = 0; i < colNameList.length; i++) {
       const seriesdata: object[] = []
-      // 从第二行开始
+      // From the second row
       for (let j = 1; j < data.length; j++) {
         let _value = data[j][colNameList[i]]
         if (isNaN(Number(_value))) {
@@ -102,7 +103,7 @@ export function calbaseConfigOptions(data: any, config: any, options: any) {
         type: config.seriesType,
         data: seriesdata,
       })
-      // 平滑折线
+      // Smooth line
       if (
         config.smooth &&
         resOption.series[resOption.series.length - 1].type === 'line'
@@ -117,7 +118,7 @@ export function calbaseConfigOptions(data: any, config: any, options: any) {
 
   calbaseConfigOptionsInType()
 
-  // 4.0 grid 属性设置
+  // 4.0 grid property setting
   resOption.grid = {
     left: '3%',
     right: '4%',
@@ -133,11 +134,11 @@ export function calbaseConfigOptions(data: any, config: any, options: any) {
     }
   }
 
-  // 9.0 自定义扩展，可以在外部自定义实现展示效果，扩展个性化样式
+  // 9.0 Custom extension, can be implemented in external custom display effect, expand personalized style
   const newOptions = options.echarts?.onCustomSettings?.(data, config)
   if (newOptions !== null && typeof newOptions === 'object') {
     resOption = newOptions
   }
-  // 10.0 返回值 必须JSON.parse(JSON.stringify( 一下，个别情况下echart不展示问题
+  // 10.0 Return value must be JSON.parse(JSON.stringify( ), individual cases echarts not displayed
   return JSON.parse(JSON.stringify(resOption))
 }

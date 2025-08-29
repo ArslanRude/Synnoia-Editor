@@ -1,6 +1,6 @@
-# Umo Editor Configuration
+# Synnoia Configuration
 
-Umo Editor is an open-source rich-text document editor built using:
+Synnoia is an open-source rich-text document editor built using:
 
 - **Vue** (>=v3.x)
 - **Tiptap** (>=v2.6)

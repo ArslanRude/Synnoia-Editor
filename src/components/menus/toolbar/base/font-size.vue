@@ -61,12 +61,12 @@ const fontSizes = Array.from({length: 96}, (_, i) => ({
   order: i+1
 }));
 
-// 设置字体大小
+// Set font size
 const setFontSize = (fontSize: string) => {
   editor.value?.chain().focus().setFontSize(fontSize).run()
 }
 
-// 增大字号
+// Increase font size
 const increaseFontSize = () => {
   const { fontSize } = editor.value?.getAttributes('textStyle') ?? {}
   if (fontSize) {
@@ -83,7 +83,7 @@ const increaseFontSize = () => {
   }
 }
 
-// 减小字号
+// Decrease font size
 const decreaseFontSize = () => {
   const { fontSize } = editor.value?.getAttributes('textStyle') ?? {}
   if (fontSize) {

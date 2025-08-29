@@ -141,19 +141,19 @@ export default Node.create({
           }
           const position = pos || editor.state.selection.anchor
           let previewType = 'file'
-          // 图片
+          // Image
           if (type.startsWith('image/') && mimeTypes.image.includes(type)) {
             previewType = 'image'
           }
-          // 视频
+          // Video
           if (type.startsWith('video/') && mimeTypes.video.includes(type)) {
             previewType = 'video'
           }
-          // 音频
+          // Audio
           if (type.startsWith('audio/') && mimeTypes.audio.includes(type)) {
             previewType = 'audio'
           }
-          // 插入节点
+          // Insert node
           const id = shortId(10)
           uploadFileMap.set(id, file)
           return commands.insertContentAt(position, {
@@ -190,10 +190,10 @@ export default Node.create({
             accept,
             reset: true,
           })
-          // 打开文件对话框
+          // Open file dialog
           open()
           let bool = false
-          // 插入文件
+          // Insert file
           onChange((fileList) => {
             const files = Array.from(fileList ?? [])
             for (const file of files) {
@@ -211,11 +211,11 @@ export default Node.create({
   onTransaction({ editor, transaction }) {
     transaction.steps.forEach((step: any) => {
       if (step instanceof ReplaceStep && step.slice.size === 0) {
-        // 使用事务前的文档状态来获取被删除的节点
+        // Use the document state before the transaction to get the deleted nodes
         const deletedNodes = transaction.before.content.cut(step.from, step.to)
         const { options } = editor.storage
         deletedNodes.content.forEach((node: any) => {
-          // 如果是文件节点，调用删除方法删除文件
+          // If it is a file node, call the delete method to delete the file
           if (['image', 'video', 'audio', 'file'].includes(node.attrs.type)) {
             const { id, src, url } = node.attrs
             options.onFileDelete(id, src || url)

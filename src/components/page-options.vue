@@ -252,7 +252,7 @@ watch(
   { immediate: true },
 )
 
-// 页面大小
+// Page size
 const selectPageSize = (value: number) => {
   pageOptions.size = options.value?.dicts?.pageSizes[value]
 }
@@ -270,7 +270,7 @@ const inputPageSize = (value: number, field: 'width' | 'height') => {
   pageOptions.size.label = t('pageOptions.size.custom')
 }
 
-// 页边距
+// Page margin
 const selectPageMargin = (margin: {
   right: number
   left: number

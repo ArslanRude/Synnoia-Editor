@@ -333,27 +333,27 @@ import { getShortcut } from '@/utils/shortcut'
 const { selectVisible } = useSelect()
 
 const props = defineProps({
-  // 菜单类型
+  // Menu type
   menuType: {
     type: String,
     default: 'button',
   },
-  // 是否为大按钮
+  // Whether it is a large button
   huge: {
     type: Boolean,
     default: false,
   },
-  // 是否强制为大按钮，用于测试，不建议使用
+  // Whether to force it to be a large button, used for testing, not recommended to use
   forceHuge: {
     type: Boolean,
     default: false,
   },
-  // 按钮图标
+  // Button icon
   ico: {
     type: String,
     default: undefined,
   },
-  // 按钮文字
+  // Button text
   text: {
     type: String,
     default: '',
@@ -362,12 +362,12 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  // 文字提示
+  // Tooltip text
   tooltip: {
     type: [String, Boolean],
     default: undefined,
   },
-  // 快捷键
+  // Shortcut
   shortcut: {
     type: String,
     default: undefined,
@@ -376,7 +376,7 @@ const props = defineProps({
     type: String,
     default: undefined,
   },
-  // Dropdown,Select 相关
+  // Dropdown,Select related
   selectOptions: {
     type: Array as PropType<DropdownOption[]>,
     default: undefined,
@@ -385,7 +385,7 @@ const props = defineProps({
     type: [String, Number],
     default: '',
   },
-  // Popup 相关
+  // Popup related
   popupVisible: {
     type: Boolean,
     default: false,
@@ -394,7 +394,7 @@ const props = defineProps({
     type: String,
     default: undefined,
   },
-  // 菜单激活状态
+  // Menu active state
   menuActive: {
     type: Boolean,
     default: false,
@@ -426,7 +426,7 @@ const menuClick = (...args: any[]) => {
 const tooltipVisible = $ref(false)
 let tooltipForceHide = $ref(false)
 const popupVisileChange = (visible: boolean) => {
-  // 隐藏 Tooltip，适用于 select、dropdown、popup 等子组件展开时，隐藏 Tooltip
+  // Hide Tooltip, applicable to select, dropdown, popup, etc. when subcomponents are expanded, hide Tooltip
   tooltipForceHide = visible
 }
 const getTooltipContent = () => {
@@ -448,7 +448,7 @@ watch(
   },
 )
 
-// Popup
+// Popup related
 const popupHandleRef = ref(null)
 const popupContentRef = ref(null)
 const togglePopup = (visible: boolean) => {

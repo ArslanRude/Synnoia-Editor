@@ -54,7 +54,7 @@ const editor = inject('editor')
 const container = inject('container')
 const uploadFileMap = inject('uploadFileMap')
 
-//  初始化 Mermaid
+// Initialize Mermaid
 const mermaidInit = () => {
   mermaid.initialize({
     darkMode: false,
@@ -70,7 +70,7 @@ const menuClick = () => {
   mermaidInit()
 }
 
-// 渲染 Mermaid
+// Render Mermaid
 const defaultCode = 'graph TB\na-->b'
 let mermaidCode = $ref('')
 let svgCode = $ref('')
@@ -103,7 +103,7 @@ watch(
   { immediate: true },
 )
 
-// 创建或更新 Mermaid
+// Create or update Mermaid
 const setMermaid = () => {
   if (mermaidCode === '') {
     useMessage('error', {
