@@ -6,17 +6,17 @@
     </div>
     <!-- Editor content - takes remaining space -->
     <div class="flex-1 min-h-0">
-      <MyWord ref="editorRef" v-bind="options" />
+      <Synnoia ref="editorRef" v-bind="options" />
     </div>
 
     <!-- <div class="box">
-      <ArslanEditorComponent editor-key="testaaa" :toolbar="{ defaultMode: 'classic' }" />
+      <Synnoia editor-key="testaaa" :toolbar="{ defaultMode: 'classic' }" />
     </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import MyWord from '@/components/index.vue'
+import Synnoia from '@/components/index.vue'
 import Nav from '@/components/navbar/nav.vue'
 import { shortId } from '@/utils/short-id'
 
