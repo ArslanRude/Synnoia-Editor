@@ -219,7 +219,6 @@
             <menus-toolbar-page-break />
             <menus-toolbar-page-break-marks />
             <menus-toolbar-page-line-number />
-            <menus-toolbar-page-watermark v-if="!disableItem('watermark')" />
             <menus-toolbar-page-background v-if="!disableItem('background')" />
           </div>
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>

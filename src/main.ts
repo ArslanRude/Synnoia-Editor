@@ -9,4 +9,3 @@ const options = {}
 app.use(useArslanEditor, options as ArslanEditorOptions)
 
 app.mount('#app')
-

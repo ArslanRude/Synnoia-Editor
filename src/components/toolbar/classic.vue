@@ -2,27 +2,14 @@
   <toolbar-scrollable ref="scrollableRef" class="arslan-scrollable-container">
     <div class="arslan-classic-menu">
       <div v-if="menus.length > 1" class="arslan-virtual-group">
-        <t-select
-          v-if="selectVisible"
-          v-model="currentMenu"
-          :popup-props="{
-            destroyOnClose: true,
-            attach: container,
-          }"
-          size="small"
-          auto-width
-          borderless
-          @change="toggoleMenu"
-        >
+        <t-select v-if="selectVisible" v-model="currentMenu" :popup-props="{
+          destroyOnClose: true,
+          attach: container,
+        }" size="small" auto-width borderless @change="toggoleMenu">
           <template #prefixIcon>
             <icon name="menu" />
           </template>
-          <t-option
-            v-for="item in menus"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          />
+          <t-option v-for="item in menus" :key="item.value" :label="item.label" :value="item.value" />
         </t-select>
       </div>
       <template v-if="currentMenu === 'base'">
@@ -47,9 +34,7 @@
           <menus-toolbar-base-highlight v-if="!disableItem('highlight')" />
         </div>
         <div class="arslan-virtual-group">
-          <menus-toolbar-base-ordered-list
-            v-if="!disableItem('ordered-list')"
-          />
+          <menus-toolbar-base-ordered-list v-if="!disableItem('ordered-list')" />
           <menus-toolbar-base-bullet-list v-if="!disableItem('bullet-list')" />
           <menus-toolbar-base-task-list v-if="!disableItem('task-list')" />
           <menus-toolbar-base-indent />
@@ -82,9 +67,7 @@
           <menus-toolbar-insert-file v-if="!disableItem('file')" />
           <menus-toolbar-insert-code-block v-if="!disableItem('code-block')" />
           <menus-toolbar-insert-symbol v-if="!disableItem('symbol')" />
-          <menus-toolbar-insert-date
-            v-if="!disableItem('date')"
-          />
+          <menus-toolbar-insert-date v-if="!disableItem('date')" />
           <menus-toolbar-insert-emoji v-if="!disableItem('emoji')" />
           <menus-toolbar-insert-math v-if="!disableItem('math')" />
         </div>
@@ -165,9 +148,7 @@
           <menus-toolbar-tools-mermaid v-if="!disableItem('mermaid')" />
         </div>
         <div class="arslan-virtual-group">
-          <menus-toolbar-tools-chinese-case
-            v-if="!disableItem('chineseCase')"
-          />
+          <menus-toolbar-tools-chinese-case v-if="!disableItem('chineseCase')" />
         </div>
         <div class="virtual-group is-slot">
           <slot name="toolbar_tools" toolbar-mode="classic" />
@@ -186,7 +167,6 @@
           <menus-toolbar-page-break />
           <menus-toolbar-page-break-marks />
           <menus-toolbar-page-line-number />
-          <menus-toolbar-page-watermark v-if="!disableItem('watermark')" />
           <menus-toolbar-page-background v-if="!disableItem('background')" />
         </div>
         <div class="arslan-virtual-group">
@@ -258,16 +238,20 @@ const toggoleMenu = async (menu: string) => {
 .arslan-scrollable-container {
   padding: 10px;
 }
+
 .arslan-classic-menu {
   display: flex;
   align-items: center;
   flex: 1;
+
   .arslan-virtual-group {
     display: flex;
     align-items: center;
+
     &:empty {
       display: none;
     }
+
     &:not(:last-child),
     &.is-slot {
       &::before {
@@ -279,18 +263,20 @@ const toggoleMenu = async (menu: string) => {
         margin: 0 10px;
       }
     }
+
     &:first-child::before {
       display: none;
     }
+
     :deep(.arslan-menu-button .arslan-button--shape-square) {
       .arslan-icon {
         font-size: 14px;
       }
     }
+
     &-row {
       display: flex;
     }
   }
 }
 </style>
-
