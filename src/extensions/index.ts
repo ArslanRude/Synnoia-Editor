@@ -227,5 +227,3 @@ export const inputAndPasteRules = (options: any) => {
   }
   return enableRules
 }
-
-

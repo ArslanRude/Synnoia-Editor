@@ -76,7 +76,7 @@ const defaultOptions: ArslanEditorOptions = {
   document: {
     title: '',
     content: '',
-    placeholder: 'Please enter the document content...',
+    placeholder: 'Let write with Synnoia...',
     enableSpellcheck: true,
     enableMarkdown: true,
     enableBubbleMenu: true,
