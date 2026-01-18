@@ -2,11 +2,19 @@
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- Navbar - fixed height -->
     <div class="flex-shrink-0">
-      <Nav />
+      <Nav @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
     </div>
-    <!-- Editor content - takes remaining space -->
-    <div class="flex-1 min-h-0">
-      <Synnoia ref="editorRef" v-bind="options" />
+
+    <!-- Content area with editor and sidebar -->
+    <div class="flex-1 flex min-h-0 overflow-hidden">
+      <!-- Editor content - takes remaining space -->
+      <div class="flex-1 min-h-0 overflow-auto">
+        <Synnoia ref="editorRef" v-bind="options" />
+      </div>
+
+      <!-- AI Agent Panel - integrated into layout -->
+      <AgentPanel v-if="isSidebarOpen" :is-open="isSidebarOpen" :width="sidebarWidth"
+        @update:is-open="isSidebarOpen = $event" @update:width="sidebarWidth = $event" />
     </div>
 
     <!-- <div class="box">
@@ -18,8 +26,11 @@
 <script setup lang="ts">
 import Synnoia from '@/components/index.vue'
 import Nav from '@/components/navbar/nav.vue'
+import AgentPanel from '@/components/sidebar/sidebar.vue'
 import { shortId } from '@/utils/short-id'
 
+let isSidebarOpen = $ref(false)
+let sidebarWidth = $ref(400) // Default width in pixels
 const editorRef = $ref(null)
 const templates = [
   {
@@ -44,7 +55,7 @@ const options = $ref({
       maxSize: 1024 * 1024 * 100,
       // async onCustomImportMethod() {
       //   return await Promise.resolve({
-      //     value: '<p>测试导入word</p>',
+      //     value: '<p>Test import word</p>',
       //   })
       // },
     },

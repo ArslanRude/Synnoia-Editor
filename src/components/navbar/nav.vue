@@ -41,7 +41,7 @@
         </button>
         <button
           class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200">
-          <icon name="sidebar" size="20" color="currentcolor" />
+          <icon name="sidebar" size="20" color="currentcolor" @click="toggleSidebar" />
         </button>
       </div>
     </div>
@@ -52,12 +52,17 @@
 import { useDark } from '@vueuse/core';
 export default {
   name: 'NavBar',
-  setup() {
+  emits: ['toggle-sidebar'],
+  setup(props, { emit }) {
     const isDark = useDark();
     return {
       isDark,
       toggleDark: () => {
-        isDark.value = !isDark.value;
+        // isDark.value = !isDark.value;
+        alert('Dark mode is not supported yet');
+      },
+      toggleSidebar: () => {
+        emit('toggle-sidebar');
       }
     };
   },

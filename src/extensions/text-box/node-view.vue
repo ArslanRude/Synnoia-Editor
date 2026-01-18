@@ -58,6 +58,14 @@ const editTextBox = () => {
 </script>
 
 <style lang="less">
+    .arslan-node-view{
+      &,
+      & *,
+      &::before,
+      &::after {
+        border: none !important;
+      }
+    }
 .arslan-node-view {
   .arslan-node-text-box {
     position: relative;

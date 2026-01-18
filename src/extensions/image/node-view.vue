@@ -1,7 +1,9 @@
 <template>
   <node-view-wrapper ref="containerRef" class="arslan-node-view"
-    :class="{ 'arslan-floating-node': node.attrs.draggable }" :style="nodeStyle" @dblclick="openImageViewer">
+    :class="{ 'arslan-floating-node': node.attrs.draggable, [`is-${node.attrs.type}`]: node.attrs.type }"
+    :style="nodeStyle" @dblclick="openImageViewer">
     <div class="arslan-node-container arslan-node-image" :class="{
+      [`is-${node.attrs.type}`]: node.attrs.type,
       'is-loading': node.attrs.src && isLoading,
       'is-error': node.attrs.src && error,
       'is-draggable': node.attrs.draggable,
@@ -196,6 +198,16 @@ watch(
 </script>
 
 <style lang="less">
+
+    .arslan-node-view{
+      &,
+      & *,
+      &::before,
+      &::after {
+        border: none !important;
+      }
+    }
+
 .arslan-node-view {
   .arslan-node-image {
     max-width: 100%;
