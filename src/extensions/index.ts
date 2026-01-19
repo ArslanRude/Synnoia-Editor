@@ -32,6 +32,7 @@ import BreakMarks from './break-marks'
 import BulletList from './bullet-list'
 import Callout from './callout'
 import CodeBlock from './code-block'
+import { Completion } from './completion'
 import Datetime from './datetime'
 import Echarts from './echarts'
 import File from './file'
@@ -210,6 +211,7 @@ export const getDefaultExtensions = ({
       color: 'var(--arslan-primary-color)',
     }),
     Echarts,
+    Completion,
     typeWriter,
   ]
 

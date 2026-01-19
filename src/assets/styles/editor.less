@@ -32,6 +32,12 @@
     }
   }
 
+  .completion-ghost-text {
+    color: #ccc;
+    pointer-events: none;
+    user-select: none;
+  }
+
   .arslan-editor {
     outline: none;
     counter-reset: title;
@@ -57,7 +63,9 @@
         @media screen {
           &:not(.is-editor-empty):not(hr):not(.tableWrapper):not(
               .arslan-page-break
-            ):not(table):not(.arslan-code-block):not(.arslan-floating-node):before {
+            ):not(table):not(.arslan-code-block):not(
+              .arslan-floating-node
+            ):before {
             content: '';
             display: block;
             position: absolute;
@@ -642,4 +650,3 @@
     }
   }
 }
-
