@@ -2,10 +2,11 @@ import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 
+import { WEBSOCKET_CONFIG } from '../../config/websocket'
 import { getSuggestion } from './suggestion'
 
 export interface CompletionOptions {
-  suggestion: (text: string) => Promise<string>
+  suggestion: (prefixText: string, suffixText: string) => Promise<string>
 }
 
 export const completionPluginKey = new PluginKey('completion')
@@ -130,14 +131,34 @@ export const Completion = Extension.create<CompletionOptions>({
               }
 
               const prevText = prevState.doc.textBetween(
-                Math.max(0, prevState.selection.from - 50),
+                Math.max(
+                  0,
+                  prevState.selection.from -
+                    WEBSOCKET_CONFIG.PREFIX_CONTEXT_LENGTH,
+                ),
                 prevState.selection.from,
                 '\n',
                 '\n',
               )
               const currText = view.state.doc.textBetween(
-                Math.max(0, view.state.selection.from - 50),
+                Math.max(
+                  0,
+                  view.state.selection.from -
+                    WEBSOCKET_CONFIG.PREFIX_CONTEXT_LENGTH,
+                ),
                 view.state.selection.from,
+                '\n',
+                '\n',
+              )
+
+              // Get suffix text (text after cursor)
+              const suffixText = view.state.doc.textBetween(
+                view.state.selection.from,
+                Math.min(
+                  view.state.doc.content.size,
+                  view.state.selection.from +
+                    WEBSOCKET_CONFIG.SUFFIX_CONTEXT_LENGTH,
+                ),
                 '\n',
                 '\n',
               )
@@ -160,8 +181,8 @@ export const Completion = Extension.create<CompletionOptions>({
                 // Access options from the extension instance if possible, or directly use the imported function for simplicity in this artifact
                 // In a real extension, we'd capture `this.options` from the `addProseMirrorPlugins` scope
                 const suggestionPromise = this.options?.suggestion
-                  ? this.options.suggestion(currText)
-                  : getSuggestion(currText)
+                  ? this.options.suggestion(currText, suffixText)
+                  : getSuggestion(currText, suffixText)
 
                 suggestionPromise.then((suggestion) => {
                   // Check if state is still valid/relevant? usage of 'view' here is a closure, valid.
@@ -191,7 +212,7 @@ export const Completion = Extension.create<CompletionOptions>({
                   })
                   view.dispatch(tr)
                 })
-              }, 2000)
+              }, WEBSOCKET_CONFIG.DEBOUNCE_DELAY)
             },
             destroy() {
               if (timer) {

@@ -1,13 +1,18 @@
-export const getSuggestion = async (text: string): Promise<string> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      if (text.endsWith('The quick brown')) {
-        resolve(' fox jumps over the lazy dog')
-      } else if (text.endsWith('Hello world')) {
-        resolve(' is a common test phrase')
-      } else {
-        resolve('Arslan is a common test phrase')
-      }
-    }, 500)
-  })
+import { websocketService } from '../../services/websocket'
+
+export const getSuggestion = async (
+  prefixText: string,
+  suffixText: string,
+): Promise<string> => {
+  try {
+    const suggestion = await websocketService.getSuggestion(
+      prefixText,
+      suffixText,
+    )
+    return suggestion
+  } catch (error) {
+    console.error('Failed to get suggestion from WebSocket:', error)
+    // Fallback to empty string if WebSocket fails
+    return 'Error '
+  }
 }

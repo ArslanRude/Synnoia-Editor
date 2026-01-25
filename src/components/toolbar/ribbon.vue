@@ -64,7 +64,7 @@
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
           <div class="px-5 shrink-0 first:pl-0 empty:hidden">
             <menus-toolbar-base-import-word />
-            <menus-toolbar-base-markdown v-if="!disableItem('markdown')"/>
+            <menus-toolbar-base-markdown v-if="!disableItem('markdown')" />
             <menus-toolbar-base-search-replace />
           </div>
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
