@@ -27,8 +27,6 @@
       "vite/client",
       "vitest/globals",
       "vitest",
-      "./types/imports.d.ts",
-      "./types/components.d.ts"
     ],
     "paths": {
       "@/*": ["./src/*"],
