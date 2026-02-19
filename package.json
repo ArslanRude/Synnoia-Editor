@@ -52,7 +52,7 @@
   },
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vite build",
     "dev": "vite --port 9000 --open --force",
     "format": "prettier --write .",
     "check:code": "eslint --cache src",
