@@ -182,7 +182,7 @@
     "stylelint-less": "^3.0.1",
     "tailwindcss": "^4.1.11",
     "tdesign-vue-next": "1.9.8",
-    "typescript": "5.5.4",
+    "typescript": "^5.5.4",
     "typescript-eslint": "^8.5.0",
     "unplugin-auto-import": "^0.18.2",
     "unplugin-vue": "^5.1.5",
