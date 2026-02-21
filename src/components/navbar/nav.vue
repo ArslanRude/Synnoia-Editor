@@ -4,10 +4,8 @@
       <!-- Left: Logo and Brand -->
       <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
         <div
-          class="w-6 h-6 sm:w-8 sm:h-8 bg-highlight-light dark:bg-highlight-dark rounded-lg flex items-center justify-center">
-          <svg class="w-4 h-4 sm:w-5 sm:h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z" />
-          </svg>
+          class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center">
+          <img src="/src/assets/logo/Synnoia Logo.svg" alt="Synnoia Logo" class="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         <span class="text-text-light dark:text-text-dark font-semibold text-sm sm:text-lg">Synnoia</span>
       </div>
