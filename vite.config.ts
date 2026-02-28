@@ -83,7 +83,7 @@ const cssConfig = {
 }
 
 export default defineConfig({
-  base: '/my-word',
+  base: '/synnoia',
   plugins: [
     tailwindcss(),
     tsConfigPaths(),

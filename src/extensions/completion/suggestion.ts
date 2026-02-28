@@ -13,6 +13,6 @@ export const getSuggestion = async (
   } catch (error) {
     console.error('Failed to get suggestion from WebSocket:', error)
     // Fallback to empty string if WebSocket fails
-    return 'Error '
+    return ''
   }
 }
