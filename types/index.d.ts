@@ -228,7 +228,7 @@ type OnSaveFunction = (
 export interface ArslanEditorOptions {
   editorKey?: string
   locale?: SupportedLocale
-  theme?: 'light' | 'dark'
+  theme?: 'light' | 'dark' | 'auto'
   height?: string
   fullscreenZIndex?: number
   dicts?: {
@@ -263,4 +263,3 @@ export interface ArslanEditorOptions {
 
 // Component type declarations
 export * from './src/components'
-

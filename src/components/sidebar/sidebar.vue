@@ -10,98 +10,235 @@
         <div class="panel-content">
             <!-- Header -->
             <div class="panel-header">
-                <div class="header-title">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                        <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                    </svg>
-                    <h2>AI Assistant</h2>
+                <div class="header-main">
+                    <div class="header-title">
+                        <div class="agent-avatar">
+                            <img src="/src/assets/logo/Synnoia Logo Black.png" alt="Synnoia Logo">
+                        </div>
+                        <h2>Synnoia</h2>
+                    </div>
+                    <div class="header-actions">
+                        <!-- Status Pill -->
+                        <span class="status-pill" :class="`status-pill--${agent.status.value}`" title="Agent Status">
+                            <span class="status-dot"></span>
+                            {{ statusLabel }}
+                        </span>
+                        <!-- Undo -->
+                        <button class="icon-btn" :disabled="!agent.canUndo.value" @click="handleUndo"
+                            title="Undo change">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="1 4 1 10 7 10"></polyline>
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                            </svg>
+                        </button>
+                        <!-- Clear -->
+                        <button class="icon-btn" @click="handleClear" title="Clear chat">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M3 6h18"></path>
+                                <path
+                                    d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-                <button class="clear-btn" @click="clearMessages" title="Clear conversation">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </button>
+
+                <!-- Segmented Tabs -->
+                <div class="tabs-segmented">
+                    <button class="tab-segment" :class="{ active: activeTab === 'chat' }" @click="activeTab = 'chat'">
+                        Chat
+                    </button>
+                    <button class="tab-segment" :class="{ active: activeTab === 'chatHistory' }"
+                        @click="activeTab = 'chatHistory'">
+                        Sessions
+                    </button>
+                    <button class="tab-segment" :class="{ active: activeTab === 'history' }"
+                        @click="activeTab = 'history'">
+                        Changes
+                        <span v-if="agent.history.value.length > 0" class="tab-badge">{{ agent.history.value.length
+                        }}</span>
+                    </button>
+                </div>
             </div>
 
-            <!-- Messages Area -->
-            <div class="messages-container" ref="messagesContainer">
-                <div v-if="messages.length === 0" class="empty-state">
-                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="1.5">
-                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    </svg>
-                    <p>Start a conversation with the AI assistant</p>
-                </div>
-
-                <div v-for="(message, index) in messages" :key="index" class="message" :class="message.role">
-                    <div class="message-avatar">
-                        <span v-if="message.role === 'user'">👤</span>
-                        <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            <!-- Chat Tab -->
+            <template v-if="activeTab === 'chat'">
+                <!-- Messages Area -->
+                <div class="messages-container" ref="messagesContainer">
+                    <div v-if="agent.messages.value.length === 0" class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
+                        <p>Ask the AI agent to modify your document</p>
+                        <div class="suggestions">
+                            <button v-for="suggestion in suggestions" :key="suggestion" class="suggestion-chip"
+                                @click="useSuggestion(suggestion)">
+                                {{ suggestion }}
+                            </button>
+                        </div>
                     </div>
-                    <div class="message-content">
-                        <div class="message-text">{{ message.content }}</div>
-                        <div class="message-time">{{ formatTime(message.timestamp) }}</div>
-                    </div>
-                </div>
 
-                <div v-if="isTyping" class="message assistant typing-indicator">
-                    <div class="message-avatar">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                        </svg>
+                    <div v-for="message in agent.messages.value" :key="message.id" class="message"
+                        :class="[message.role, message.status]">
+                        <div class="message-avatar">
+                            <span v-if="message.role === 'user'">👤</span>
+                            <span v-else-if="message.role === 'system'">⚙️</span>
+                            <img v-else width="16" height="16" src="/src/assets/logo/Synnoia Logo White.png"
+                                alt="Synnoia Logo">
+                        </div>
+                        <div class="message-content">
+                            <div class="message-text" :class="{ 'message-error': message.status === 'error' }">
+                                {{ message.content }}
+                                <span v-if="message.status === 'streaming'" class="streaming-cursor">▊</span>
+                            </div>
+
+
+
+                            <div class="message-time">{{ formatTime(message.timestamp) }}</div>
+                        </div>
                     </div>
-                    <div class="message-content">
-                        <div class="typing-dots">
-                            <span></span>
-                            <span></span>
-                            <span></span>
+
+                    <!-- Thinking indicator -->
+                    <div v-if="agent.status.value === 'thinking'" class="message assistant typing-indicator">
+                        <div class="message-avatar">
+                            <img width="16" height="16" src="/src/assets/logo/Synnoia Logo White.png"
+                                alt="Synnoia Logo">
+                        </div>
+                        <div class="message-content">
+                            <div class="typing-dots">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- Input Area -->
-            <div class="input-container">
-                <textarea v-model="inputMessage" @input="resizeTextarea" @keydown.enter.exact.prevent="sendMessage"
-                    @keydown.enter.shift.exact="handleShiftEnter" placeholder="Ask me anything..." rows="1"
-                    ref="inputArea"></textarea>
-                <button class="send-btn" @click="sendMessage" :disabled="!inputMessage.trim() || isTyping">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
-            </div>
+                <!-- Accept/Reject Bar -->
+                <div v-if="agent.status.value === 'awaiting-confirmation'" class="confirmation-bar">
+                    <div class="confirmation-label">Review proposed changes</div>
+                    <div class="confirmation-actions">
+                        <button class="confirm-btn confirm-btn--accept" @click="handleAccept">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Accept
+                        </button>
+                        <button class="confirm-btn confirm-btn--reject" @click="handleReject">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Reject
+                        </button>
+                        <button class="confirm-btn confirm-btn--regen" @click="handleRegenerate">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="23 4 23 10 17 10"></polyline>
+                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                            </svg>
+                            Regenerate
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Input Area -->
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <select v-model="selectedModel" class="model-select" title="Choose LLM Model">
+                            <option value="gpt-4o">GPT-4o</option>
+                            <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                            <option value="gemini-1-5-pro">Gemini 1.5 Pro</option>
+                        </select>
+                        <div class="textarea-wrapper">
+                            <textarea v-model="inputMessage" @input="resizeTextarea"
+                                @keydown.enter.exact.prevent="handleSend" :placeholder="inputPlaceholder" rows="1"
+                                :disabled="agent.status.value === 'thinking'" ref="inputArea"></textarea>
+                            <button class="send-btn" @click="handleSend"
+                                :disabled="!inputMessage.trim() || agent.status.value === 'thinking'">
+                                <svg v-if="agent.status.value !== 'thinking'" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                                </svg>
+                                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" class="spin">
+                                    <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Chat History Tab -->
+            <template v-if="activeTab === 'chatHistory'">
+                <div class="history-container">
+                    <div class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                        <p>No chat history available</p>
+                    </div>
+                </div>
+            </template>
+
+            <!-- History Tab -->
+            <template v-if="activeTab === 'history'">
+                <div class="history-container">
+                    <div v-if="agent.history.value.length === 0" class="empty-state">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <p>No changes yet</p>
+                    </div>
+
+                    <div v-for="entry in agent.history.value" :key="entry.id" class="history-entry"
+                        :class="`history-entry--${entry.action}`">
+                        <div class="history-entry-header">
+                            <span class="history-action-badge">
+                                {{ entry.action === 'accepted' ? '✅' : entry.action === 'rejected' ? '❌' : '🔁' }}
+                                {{ entry.action }}
+                            </span>
+                            <span class="history-time">{{ formatTime(entry.timestamp) }}</span>
+                        </div>
+                        <div class="history-prompt">{{ entry.prompt }}</div>
+                        <div class="history-diff-count">
+                            {{ entry.action === 'regenerated' ? 'Prompt updated' : 'Changes applied' }}
+                        </div>
+                    </div>
+                </div>
+            </template>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-interface Message {
-    role: 'user' | 'assistant'
-    content: string
-    timestamp: Date
-}
+import type { Editor } from '@tiptap/vue-3'
+
+import { useAgentSidebar } from '@/composables/useAgentSidebar'
+import { sendMockAgentRequest } from '@/services/agentService'
 
 interface Props {
     isOpen?: boolean
     width?: number
+    editor?: { value: Editor | null } | null
 }
 
 const props = withDefaults(defineProps<Props>(), {
     isOpen: false,
-    width: 400
+    width: 400,
+    editor: null,
 })
 
 const emit = defineEmits<{
@@ -109,12 +246,42 @@ const emit = defineEmits<{
     'update:width': [value: number]
 }>()
 
+// Agent composable
+const agent = useAgentSidebar()
+
+// Local UI state
+let selectedModel = $ref('gpt-4o')
 let inputMessage = $ref('')
-let messages = $ref<Message[]>([])
-let isTyping = $ref(false)
+let activeTab = $ref<'chat' | 'history' | 'chatHistory'>('chat')
 let messagesContainer = $ref<HTMLElement | null>(null)
 let inputArea = $ref<HTMLTextAreaElement | null>(null)
 let isResizing = $ref(false)
+
+const suggestions = [
+    'Fix grammar throughout',
+    'Make the intro more concise',
+    'Add a conclusion section',
+    'Improve the tone to be more professional',
+]
+
+// Computed
+const statusLabel = $computed(() => {
+    const labels: Record<string, string> = {
+        'idle': 'Ready',
+        'thinking': 'Thinking...',
+        'proposing': 'Proposing',
+        'awaiting-confirmation': 'Review Changes',
+        'applied': 'Applied ✓',
+        'rejected': 'Rejected',
+    }
+    return labels[agent.status.value] || agent.status.value
+})
+
+const inputPlaceholder = $computed(() => {
+    if (agent.status.value === 'thinking') return 'Agent is thinking...'
+    if (agent.status.value === 'awaiting-confirmation') return 'Review the changes above first...'
+    return 'Tell the agent what to change...'
+})
 
 // Watch for panel opening to focus input
 $: if (props.isOpen) {
@@ -130,57 +297,75 @@ const resizeTextarea = () => {
     inputArea.style.height = inputArea.scrollHeight + 'px'
 }
 
-// Watch input changes to resize
 $: if (inputMessage !== undefined) {
     setTimeout(resizeTextarea, 0)
 }
 
-const sendMessage = async () => {
-    const content = inputMessage.trim()
-    if (!content || isTyping) return
+// Scroll to bottom of messages
+const scrollToBottom = () => {
+    setTimeout(() => {
+        if (messagesContainer) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight
+        }
+    }, 50)
+}
 
-    // Add user message
-    messages.push({
-        role: 'user',
-        content,
-        timestamp: new Date()
-    })
+// Watch messages for auto-scroll
+watch(
+    () => agent.messages.value.length,
+    () => scrollToBottom(),
+)
+
+// --- Actions ---
+
+const handleSend = async () => {
+    const content = inputMessage.trim()
+    if (!content || agent.status.value === 'thinking') return
+    if (!props.editor?.value) {
+        console.error('Editor not available')
+        return
+    }
 
     inputMessage = ''
-    // Reset textarea height after sending
     setTimeout(() => {
-        if (inputArea) {
-            inputArea.style.height = 'auto'
-        }
+        if (inputArea) inputArea.style.height = 'auto'
     }, 0)
-    scrollToBottom()
 
-    // Simulate AI response
-    isTyping = true
-
-    // Simulate AI thinking time
-    await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000))
-
-    isTyping = false
-
-    // Add assistant response
-    messages.push({
-        role: 'assistant',
-        content: `I received your message: "${content}". This is a demo response. In a real implementation, this would connect to your AI backend.`,
-        timestamp: new Date()
-    })
-
+    // Use mock service for development
+    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel)
     scrollToBottom()
 }
 
-const handleShiftEnter = (e: KeyboardEvent) => {
-    // Allow default behavior for Shift+Enter (new line)
+const handleAccept = () => {
+    if (!props.editor?.value) return
+    agent.acceptChanges(props.editor.value)
+    scrollToBottom()
 }
 
-const clearMessages = () => {
-    if (confirm('Clear all messages?')) {
-        messages = []
-    }
+const handleReject = () => {
+    if (!props.editor?.value) return
+    agent.rejectChanges(props.editor.value)
+    scrollToBottom()
+}
+
+const handleRegenerate = async () => {
+    if (!props.editor?.value) return
+    await agent.regenerate(props.editor.value, sendMockAgentRequest, selectedModel)
+    scrollToBottom()
+}
+
+const handleUndo = () => {
+    if (!props.editor?.value) return
+    agent.undoLastChange(props.editor.value)
+}
+
+const handleClear = () => {
+    agent.clearMessages()
+}
+
+const useSuggestion = (suggestion: string) => {
+    inputMessage = suggestion
+    setTimeout(() => inputArea?.focus(), 0)
 }
 
 const formatTime = (date: Date) => {
@@ -190,15 +375,7 @@ const formatTime = (date: Date) => {
     })
 }
 
-const scrollToBottom = () => {
-    setTimeout(() => {
-        if (messagesContainer) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight
-        }
-    }, 50)
-}
-
-// Resize functionality
+// --- Resize ---
 const startResize = (e: MouseEvent) => {
     e.preventDefault()
     isResizing = true
@@ -208,13 +385,9 @@ const startResize = (e: MouseEvent) => {
 
     const onMouseMove = (e: MouseEvent) => {
         if (!isResizing) return
-
-        // Calculate new width (dragging left increases width, right decreases)
         const deltaX = startX - e.clientX
-        // Min width: 350px to show all content properly, Max: 1000px or 60% of window width
         const maxWidth = Math.min(1000, window.innerWidth * 0.6)
         const newWidth = Math.max(350, Math.min(maxWidth, startWidth + deltaX))
-
         emit('update:width', newWidth)
     }
 
@@ -236,7 +409,6 @@ const handleKeyboard = (e: KeyboardEvent) => {
     }
 }
 
-// Setup event listener
 if (typeof window !== 'undefined') {
     window.addEventListener('keydown', handleKeyboard)
 }
@@ -245,13 +417,15 @@ if (typeof window !== 'undefined') {
 <style scoped lang="less">
 .agent-panel {
     height: 100%;
-    @apply bg-secondary-light dark:bg-secondary-dark border-l border-gray-300 dark:border-gray-700;
+    @apply bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800;
     display: flex;
     flex-direction: row;
     overflow: hidden;
     position: relative;
     flex-shrink: 0;
-    transition: width 0.3s ease;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.03);
 
     &.resizing {
         transition: none;
@@ -259,7 +433,7 @@ if (typeof window !== 'undefined') {
 }
 
 .resize-handle {
-    width: 8px;
+    width: 6px;
     height: 100%;
     cursor: col-resize;
     display: flex;
@@ -267,33 +441,26 @@ if (typeof window !== 'undefined') {
     justify-content: center;
     background: transparent;
     position: absolute;
-    left: 0;
+    left: -3px;
     top: 0;
-    z-index: 10;
+    z-index: 20;
     user-select: none;
 
     &:hover .resize-handle-line,
     &:active .resize-handle-line {
         opacity: 1;
-    }
-
-    &:hover .resize-handle-line {
-        background: #667eea;
-        width: 3px;
-    }
-
-    &:active .resize-handle-line {
-        background: #764ba2;
+        background: #6366f1;
+        width: 4px;
     }
 }
 
 .resize-handle-line {
     width: 2px;
-    height: 40px;
-    @apply bg-gray-400 dark:bg-gray-600;
-    border-radius: 1px;
+    height: 32px;
+    @apply bg-gray-300 dark:bg-gray-600;
+    border-radius: 2px;
     transition: all 0.2s ease;
-    opacity: 0.6;
+    opacity: 0;
 }
 
 .panel-content {
@@ -301,92 +468,211 @@ if (typeof window !== 'undefined') {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding-left: 8px;
-    min-width: 0;
+    background: #fafafc;
+    @apply dark:bg-gray-950;
 }
 
+// --- Header ---
 .panel-header {
-    padding: 16px 20px;
-    @apply border-b border-gray-300 dark:border-gray-700 bg-highlight-light dark:bg-highlight-dark;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px 0;
+    @apply bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800;
+    flex-shrink: 0;
+    gap: 16px;
+}
+
+.header-main {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-shrink: 0;
 }
 
 .header-title {
     display: flex;
     align-items: center;
     gap: 10px;
-    @apply text-text-light dark:text-text-dark;
-    min-width: 0;
+}
 
-    svg {
-        color: #667eea;
-        flex-shrink: 0;
+.agent-avatar {
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-title h2 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    @apply text-gray-900 dark:text-gray-100;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+// --- Status Pill ---
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+
+    &--idle {
+        @apply bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300;
     }
 
-    h2 {
-        margin: 0;
-        font-size: 16px;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
+    &--thinking {
+        background: rgba(99, 102, 241, 0.1);
+        color: #6366f1;
     }
 
-    .width-debug {
-        font-size: 11px;
-        color: #667eea;
-        font-family: monospace;
-        margin-left: 8px;
-        background: rgba(102, 126, 234, 0.1);
-        padding: 2px 6px;
-        border-radius: 4px;
-        flex-shrink: 0;
+    &--proposing,
+    &--awaiting-confirmation {
+        background: rgba(245, 158, 11, 0.1);
+        color: #d97706;
+    }
+
+    &--applied {
+        background: rgba(34, 197, 94, 0.1);
+        color: #16a34a;
+    }
+
+    &--rejected {
+        background: rgba(239, 68, 68, 0.1);
+        color: #dc2626;
     }
 }
 
-.clear-btn {
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+
+    .status-pill--thinking & {
+        animation: pulse 1.5s infinite ease-in-out;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.4;
+        transform: scale(0.85);
+    }
+}
+
+// --- Header Icons ---
+.icon-btn {
     background: transparent;
     border: none;
-    @apply text-gray-500 dark:text-gray-400;
+    @apply text-gray-400 dark:text-gray-500;
     cursor: pointer;
-    padding: 6px;
-    border-radius: 4px;
+    padding: 4px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
 
     &:hover {
-        @apply bg-secondary-light dark:bg-secondary-dark text-text-light dark:text-text-dark;
+        @apply bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300;
+    }
+
+    &:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
     }
 }
 
+// --- Segmented Tabs ---
+.tabs-segmented {
+    display: flex;
+    background: #f1f5f9;
+    @apply dark:bg-gray-800;
+    border-radius: 8px;
+    padding: 4px;
+    margin-bottom: 12px;
+}
+
+.tab-segment {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
+    @apply dark:text-gray-400;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    position: relative;
+
+    &:hover {
+        color: #0f172a;
+        @apply dark:text-gray-200;
+    }
+
+    &.active {
+        background: white;
+        @apply dark:bg-gray-700;
+        color: #0f172a;
+        @apply dark:text-gray-100;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+}
+
+.tab-badge {
+    background: #6366f1;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+// --- Messages Area ---
 .messages-container {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 
     &::-webkit-scrollbar {
-        width: 6px;
+        width: 4px;
     }
 
     &::-webkit-scrollbar-track {
-        @apply bg-secondary-light dark:bg-secondary-dark;
+        background: transparent;
     }
 
     &::-webkit-scrollbar-thumb {
-        @apply bg-gray-300 dark:bg-gray-600;
-        border-radius: 3px;
-
-        &:hover {
-            @apply bg-gray-400 dark:bg-gray-500;
-        }
+        @apply bg-gray-200 dark:bg-gray-700;
+        border-radius: 4px;
     }
 }
 
@@ -396,25 +682,57 @@ if (typeof window !== 'undefined') {
     align-items: center;
     justify-content: center;
     height: 100%;
-    @apply text-gray-400 dark:text-gray-600;
+    @apply text-gray-400 dark:text-gray-500;
     text-align: center;
     gap: 16px;
 
     svg {
-        opacity: 0.5;
+        opacity: 0.4;
+        width: 32px;
+        height: 32px;
     }
 
     p {
         margin: 0;
         font-size: 14px;
-        max-width: 200px;
+        max-width: 220px;
+    }
+}
+
+.suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    max-width: 280px;
+    margin-top: 10px;
+}
+
+.suggestion-chip {
+    background: white;
+    @apply dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+
+    &:hover {
+        border-color: #6366f1;
+        color: #6366f1;
+        background: #f8fafc;
+        @apply dark:bg-gray-800;
+        box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
+        transform: translateY(-1px);
     }
 }
 
 .message {
     display: flex;
     gap: 12px;
-    animation: slideIn 0.3s ease;
+    animation: slideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @keyframes slideIn {
@@ -430,140 +748,293 @@ if (typeof window !== 'undefined') {
 }
 
 .message-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    font-size: 16px;
+    font-size: 13px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .message.user .message-avatar {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300;
+    border: 1px solid #e2e8f0;
+    @apply dark:border-gray-700;
+    background: transparent;
 }
 
 .message.assistant .message-avatar {
-    @apply bg-highlight-light dark:bg-highlight-dark;
-    color: #667eea;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    color: white;
+}
+
+.message.system .message-avatar {
+    @apply bg-gray-100 dark:bg-gray-800 text-gray-500;
 }
 
 .message-content {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     min-width: 0;
-    overflow-wrap: break-word;
 }
 
 .message-text {
-    @apply bg-highlight-light dark:bg-highlight-dark;
+    @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
     padding: 12px 16px;
     border-radius: 12px;
-    @apply text-text-light dark:text-text-dark;
-    font-size: 14px;
-    line-height: 1.5;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word;
+    border-top-left-radius: 4px;
+    @apply text-gray-800 dark:text-gray-200;
+    font-size: 13.5px;
+    line-height: 1.6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    &.message-error {
+        border-color: #fca5a5;
+        @apply dark:border-red-900;
+        background: #fef2f2;
+        @apply dark:bg-red-950/30;
+        color: #b91c1c;
+        @apply dark:text-red-400;
+    }
 }
 
 .message.user .message-text {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: #fff;
+    background: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    border-top-right-radius: 4px;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.2);
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message.user .message-content {
+    align-items: flex-end;
+}
+
+.message.system .message-text {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 4px 0;
+    font-size: 12px;
+    @apply text-gray-500;
+    font-style: italic;
+}
+
+.streaming-cursor {
+    animation: blink 1s steps(1) infinite;
+    color: #6366f1;
+}
+
+@keyframes blink {
+
+    0%,
+    50% {
+        opacity: 1;
+    }
+
+    51%,
+    100% {
+        opacity: 0;
+    }
 }
 
 .message-time {
     font-size: 11px;
-    @apply text-gray-400 dark:text-gray-600;
+    @apply text-gray-400;
     padding: 0 4px;
+    margin-top: 2px;
 }
 
-.typing-indicator {
-    .typing-dots {
-        display: flex;
-        gap: 4px;
-        padding: 12px 16px;
-        @apply bg-highlight-light dark:bg-highlight-dark;
-        border-radius: 12px;
-        width: fit-content;
+// --- Typing Indicator ---
+.typing-dots {
+    display: flex;
+    gap: 4px;
+    padding: 14px 16px;
+    @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
+    border-radius: 12px;
+    border-top-left-radius: 4px;
+    width: fit-content;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 
-        span {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: typingDot 1.4s infinite;
+    span {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: #6366f1;
+        animation: typingDot 1.4s infinite ease-in-out both;
 
-            &:nth-child(2) {
-                animation-delay: 0.2s;
-            }
+        &:nth-child(1) {
+            animation-delay: -0.32s;
+        }
 
-            &:nth-child(3) {
-                animation-delay: 0.4s;
-            }
+        &:nth-child(2) {
+            animation-delay: -0.16s;
         }
     }
 }
 
-@keyframes typingDot {
+// --- Confirmation Bar ---
+.confirmation-bar {
+    padding: 14px 20px;
+    background: #fffbeb;
+    @apply dark:bg-yellow-900/20 border-t border-yellow-100 dark:border-yellow-900/30;
+    flex-shrink: 0;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.02);
+}
 
-    0%,
-    60%,
-    100% {
-        opacity: 0.3;
-        transform: scale(0.8);
+.confirmation-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #b45309;
+    @apply dark:text-yellow-500;
+    margin-bottom: 10px;
+}
+
+.confirmation-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.confirm-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &--accept {
+        background: #10b981;
+        color: white;
+        box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+
+        &:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
     }
 
-    30% {
-        opacity: 1;
-        transform: scale(1);
+    &--reject {
+        background: #ef4444;
+        color: white;
+        box-shadow: 0 2px 6px rgba(239, 68, 68, 0.2);
+
+        &:hover {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+    }
+
+    &--regen {
+        background: white;
+        @apply dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700;
+
+        &:hover {
+            @apply bg-gray-50 dark:bg-gray-700;
+        }
     }
 }
 
+// --- Input Container ---
 .input-container {
-    padding: 16px 20px;
-    @apply border-t border-gray-300 dark:border-gray-700 bg-highlight-light dark:bg-highlight-dark;
-    display: flex;
-    gap: 12px;
-    align-items: flex-end;
+    padding: 16px 20px 20px;
+    @apply bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800;
     flex-shrink: 0;
-    min-width: 0;
+}
+
+.input-wrapper {
+    background: #f8fafc;
+    @apply dark:bg-gray-800 border border-gray-200 dark:border-gray-700;
+    border-radius: 16px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02) inset;
+
+    &:focus-within {
+        background: white;
+        @apply dark:bg-gray-900;
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+}
+
+.model-select {
+    background: transparent;
+    border: none;
+    @apply text-gray-500 dark:text-gray-400;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 20px 4px 6px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    background-size: 12px;
+    max-width: fit-content;
+
+    &:hover,
+    &:focus {
+        @apply text-gray-900 dark:text-gray-100;
+    }
+}
+
+.textarea-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
 }
 
 textarea {
     flex: 1;
-    @apply bg-secondary-light dark:bg-secondary-dark border border-gray-300 dark:border-gray-700;
-    border-radius: 8px;
-    padding: 12px;
-    @apply text-text-light dark:text-text-dark;
+    background: transparent;
+    border: none;
+    padding: 8px 6px;
+    @apply text-gray-900 dark:text-gray-100;
     font-size: 14px;
     font-family: inherit;
     resize: none;
     overflow: hidden;
-    max-height: 120px;
-    min-height: 42px;
-    min-width: 0;
+    max-height: 150px;
+    min-height: 24px;
     outline: none;
-    transition: border-color 0.2s ease;
-
-    &:focus {
-        border-color: #667eea;
-    }
+    line-height: 1.5;
 
     &::placeholder {
-        @apply text-gray-400 dark:text-gray-600;
+        @apply text-gray-400 dark:text-gray-500;
+    }
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
     }
 }
 
 .send-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
     border: none;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #6366f1;
     color: white;
     cursor: pointer;
     display: flex;
@@ -573,8 +1044,8 @@ textarea {
     flex-shrink: 0;
 
     &:hover:not(:disabled) {
+        background: #4f46e5;
         transform: scale(1.05);
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
 
     &:active:not(:disabled) {
@@ -582,8 +1053,105 @@ textarea {
     }
 
     &:disabled {
-        opacity: 0.5;
+        background: #e2e8f0;
+        @apply dark:bg-gray-700 text-gray-400 dark:text-gray-500;
         cursor: not-allowed;
+        transform: none;
     }
+}
+
+.spin {
+    animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// --- History Tab ---
+.history-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        @apply bg-gray-200 dark:bg-gray-700;
+        border-radius: 4px;
+    }
+}
+
+.history-entry {
+    padding: 14px;
+    border-radius: 12px;
+    background: white;
+    @apply dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border-color: #e2e8f0;
+        @apply dark:border-gray-600;
+    }
+}
+
+.history-entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.history-action-badge {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.history-entry--accepted .history-action-badge {
+    color: #10b981;
+}
+
+.history-entry--rejected .history-action-badge {
+    color: #ef4444;
+}
+
+.history-entry--regenerated .history-action-badge {
+    color: #6366f1;
+}
+
+.history-time {
+    font-size: 11px;
+    @apply text-gray-400;
+}
+
+.history-prompt {
+    font-size: 13.5px;
+    line-height: 1.5;
+    @apply text-gray-800 dark:text-gray-200;
+    margin-bottom: 8px;
+}
+
+.history-diff-count {
+    font-size: 12px;
+    @apply text-gray-500;
+    background: #f8fafc;
+    @apply dark:bg-gray-900;
+    padding: 4px 10px;
+    border-radius: 6px;
+    display: inline-block;
 }
 </style>

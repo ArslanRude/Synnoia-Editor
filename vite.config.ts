@@ -128,5 +128,16 @@ export default defineConfig({
       '@': `${process.cwd()}/src`,
     },
   },
+  server: {
+    proxy: {
+      // Proxy AI agent API requests to your backend
+      // Change the target URL to your actual AI backend
+      '/api/agent': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        // If no backend is running, the mock plugin below will handle it
+      },
+    },
+  },
 })
 

@@ -1,4 +1,4 @@
-﻿@import '@/assets/styles/_mixins.less';
+@import '@/assets/styles/_mixins.less';
 
 .arslan-editor-content {
   accent-color: var(--arslan-primary-color);
@@ -594,6 +594,19 @@
       outline: 2px dashed var(--arslan-primary-color);
     }
   }
+  .arslan-diff-added {
+    background-color: rgba(46, 160, 67, 0.2); // GitHub-style green
+    text-decoration: none;
+    border-radius: 2px;
+  }
+
+  .arslan-diff-removed {
+    background-color: rgba(248, 81, 73, 0.2); // GitHub-style red
+    text-decoration: line-through;
+    color: var(--arslan-text-color-disabled, #8b949e);
+    border-radius: 2px;
+  }
+
   h1 {
     font-size: 2.5em;
   }

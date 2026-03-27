@@ -1,11 +1,6 @@
 <template>
-  <menus-button
-    ico="break-marks"
-    :text="t('page.breakMarks')"
-    huge
-    :menu-active="page.showBreakMarks"
-    @menu-click="toggleInvisibleCharacters"
-  />
+  <menus-button ico="break-marks" :text="t('page.breakMarks')" huge :menu-active="page.showBreakMarks"
+    @menu-click="toggleInvisibleCharacters" />
 </template>
 
 <script setup lang="ts">

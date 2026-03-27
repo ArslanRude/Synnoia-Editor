@@ -56,8 +56,8 @@ export default {
     return {
       isDark,
       toggleDark: () => {
-        // isDark.value = !isDark.value;
-        alert('Dark mode is not supported yet');
+        isDark.value = !isDark.value;
+        // alert('Dark mode is not supported yet');
       },
       toggleSidebar: () => {
         emit('toggle-sidebar');

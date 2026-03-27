@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- Navbar - fixed height -->
     <div class="flex-shrink-0">
@@ -13,7 +13,7 @@
       </div>
 
       <!-- AI Agent Panel - integrated into layout -->
-      <AgentPanel v-if="isSidebarOpen" :is-open="isSidebarOpen" :width="sidebarWidth"
+      <AgentPanel v-if="isSidebarOpen" :is-open="isSidebarOpen" :width="sidebarWidth" :editor="editorRef?.getEditor?.()"
         @update:is-open="isSidebarOpen = $event" @update:width="sidebarWidth = $event" />
     </div>
 
@@ -47,6 +47,7 @@ const templates = [
   },
 ]
 const options = $ref({
+  theme: 'light',
   toolbar: {
     // defaultMode: 'classic',
     // menus: ['base'],
@@ -61,12 +62,13 @@ const options = $ref({
     },
   },
   document: {
-    title: 'Test Document',
-    content: localStorage.getItem('document.content') ?? '<p>Test Document</p>',
-    characterLimit: 10000,
+    title: '',
+    content: localStorage.getItem('document.content') ?? '',
+    characterLimit: 100000,
   },
   page: {
     showBookmark: true,
+    
   },
   templates,
   cdnUrl: '',

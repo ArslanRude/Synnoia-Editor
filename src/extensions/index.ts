@@ -1,4 +1,4 @@
-﻿import SearchReplace from '@sereneinserenade/tiptap-search-and-replace'
+import SearchReplace from '@sereneinserenade/tiptap-search-and-replace'
 import Bold from '@tiptap/extension-bold'
 import CharacterCount from '@tiptap/extension-character-count'
 import Color from '@tiptap/extension-color'
@@ -61,6 +61,7 @@ import TextBox from './text-box'
 import Toc from './toc'
 import typeWriter from './type-writer'
 import Video from './video'
+import { DiffAdded, DiffRemoved } from './diff-marks'
 
 export const getDefaultExtensions = ({
   container,
@@ -213,6 +214,8 @@ export const getDefaultExtensions = ({
     Echarts,
     Completion,
     typeWriter,
+    DiffAdded,
+    DiffRemoved,
   ]
 
   return extensions
