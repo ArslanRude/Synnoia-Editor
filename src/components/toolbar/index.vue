@@ -13,7 +13,7 @@
       </template>
     </toolbar-classic>
     <div :class="[
-      'flex items-center px-2.5 py-1 gap-2',
+      'items-center px-2.5 py-1 gap-2 hidden md:flex',
       $toolbar.mode === 'ribbon' ? 'absolute right-0' : '',
     ]">
       <t-popup v-if="options.document.readOnly !== true" v-model="statusPopup" :attach="container" trigger="click"

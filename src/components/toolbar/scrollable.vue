@@ -1,27 +1,15 @@
 ﻿<template>
-  <div
-    ref="wraperRef"
-    class="arslan-scrollable-container"
-    :style="{
-      paddingLeft: hidePrev ? '10px' : '32px',
-      paddingRight: hideNext ? '10px' : '32px',
-    }"
-  >
-    <div
-      v-if="!hidePrev"
-      class="arslan-scrollable-control scrollable-left"
-      @click="scrollLeft"
-    >
+  <div ref="wraperRef" class="arslan-scrollable-container" :style="{
+    paddingLeft: hidePrev ? '10px' : '32px',
+    paddingRight: hideNext ? '10px' : '32px',
+  }">
+    <div v-if="!hidePrev" class="arslan-scrollable-control scrollable-left" @click="scrollLeft">
       <icon name="arrow-down" />
     </div>
     <div ref="contentRef" class="arslan-scrollable-content">
       <slot />
     </div>
-    <div
-      v-if="!hideNext"
-      class="arslan-scrollable-control scrollable-right"
-      @click="scrollRight"
-    >
+    <div v-if="!hideNext" class="arslan-scrollable-control scrollable-right" @click="scrollRight">
       <icon name="arrow-down" />
     </div>
   </div>
@@ -80,6 +68,7 @@ defineExpose({
   width: 100%;
   overflow: hidden;
   position: relative;
+
   .arslan-scrollable-control {
     display: flex;
     align-items: center;
@@ -97,24 +86,26 @@ defineExpose({
     top: 50%;
     transform: translateY(-50%);
     height: calc(100% - 20px);
+
     &:hover {
       border-color: var(--arslan-primary-color);
       background-color: var(--arslan-primary-color);
       color: var(--arslan-color-white);
     }
+
     &.scrollable-left {
       left: 10px;
+
       :deep(.arslan-icon) {
         transform: rotate(90deg);
       }
+
       &::before {
         display: block;
         content: '';
-        background: linear-gradient(
-          to left,
-          transparent,
-          var(--arslan-color-white)
-        );
+        background: linear-gradient(to left,
+            transparent,
+            var(--arslan-color-white));
         position: absolute;
         left: 21px;
         top: 0;
@@ -123,19 +114,20 @@ defineExpose({
         pointer-events: none;
       }
     }
+
     &.scrollable-right {
       right: 10px;
+
       :deep(.arslan-icon) {
         transform: rotate(-90deg);
       }
+
       &::before {
         display: block;
         content: '';
-        background: linear-gradient(
-          to right,
-          transparent,
-          var(--arslan-color-white)
-        );
+        background: linear-gradient(to right,
+            transparent,
+            var(--arslan-color-white));
         position: absolute;
         right: 21px;
         top: 0;
@@ -145,15 +137,48 @@ defineExpose({
       }
     }
   }
+
   .arslan-scrollable-content {
     overflow-x: auto;
     overflow-y: hidden;
     scroll-behavior: smooth;
     flex: 1;
+
     &::-webkit-scrollbar {
       display: none;
     }
   }
 }
-</style>
 
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .arslan-scrollable-container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+
+    .arslan-scrollable-control {
+      width: 24px;
+      height: 24px;
+
+      &.scrollable-left {
+        left: 4px;
+      }
+
+      &.scrollable-right {
+        right: 4px;
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .arslan-scrollable-container {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+
+    .arslan-scrollable-control {
+      display: none; // Hide scroll arrows on mobile, rely on touch scroll
+    }
+  }
+}
+</style>

@@ -3,24 +3,30 @@
     <div class="bg-secondary-light dark:bg-secondary-dark px-3 sm:px-5 py-2 flex items-center justify-between">
       <!-- Left: Logo and Brand -->
       <div class="flex items-center space-x-1 sm:space-x-2 flex-shrink-0">
-        <div
-          class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center">
+        <div class="w-6 h-6 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center">
           <img src="/src/assets/logo/Synnoia Logo.svg" alt="Synnoia Logo" class="w-4 h-4 sm:w-5 sm:h-5" />
         </div>
         <span class="text-text-light dark:text-text-dark font-semibold text-sm sm:text-lg">Synnoia</span>
       </div>
 
       <!-- Center: Editable Document Name -->
-      <div class="flex-1 flex justify-center px-4">
+      <div class="hidden sm:flex flex-1 justify-center px-4">
         <input v-model="documentName"
           class="bg-transparent text-text-light dark:text-text-dark text-center font-medium text-sm sm:text-base border-none outline-none focus:bg-highlight-light dark:focus:bg-highlight-dark rounded px-2 py-1 min-w-0 max-w-xs dark:text-white"
           placeholder="Untitled Document" @blur="saveDocumentName" @keydown.enter="$event.target.blur()" />
       </div>
 
-      <!-- Right: Theme Toggle -->
-      <div class="flex items-center space-x-2 flex-shrink-0">
+      <!-- Mobile Document Name (compact) -->
+      <div class="flex sm:hidden flex-1 justify-center px-2">
+        <input v-model="documentName"
+          class="bg-transparent text-text-light dark:text-text-dark text-center font-medium text-sm border-none outline-none focus:bg-highlight-light dark:focus:bg-highlight-dark rounded px-1 py-1 min-w-0 max-w-[120px] dark:text-white"
+          placeholder="Untitled" @blur="saveDocumentName" @keydown.enter="$event.target.blur()" />
+      </div>
+
+      <!-- Right: Theme Toggle (Desktop) -->
+      <div class="hidden md:flex items-center space-x-2 flex-shrink-0">
         <button
-          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200"
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
           :title="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'" @click="toggleDark">
           <!-- Sun Icon for Light Mode -->
           <svg v-if="isDark" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -34,30 +40,112 @@
           </svg>
         </button>
         <button
-          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200">
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center">
           <icon name="user" size="20" color="currentcolor" />
         </button>
         <button
-          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200">
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center">
           <icon name="sidebar" size="20" color="currentcolor" @click="toggleSidebar" />
         </button>
+      </div>
+
+      <!-- Mobile: Sidebar button + Hamburger Menu -->
+      <div class="flex md:hidden items-center space-x-1 flex-shrink-0">
+        <!-- Sidebar button OUTSIDE hamburger (directly visible) -->
+        <button
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-text-light dark:text-text-dark min-w-[44px] min-h-[44px] flex items-center justify-center"
+          @click="toggleSidebar">
+          <icon name="sidebar" size="20" color="currentcolor" />
+        </button>
+
+        <!-- Hamburger Menu Button -->
+        <button
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-text-light dark:text-text-dark min-w-[44px] min-h-[44px] flex items-center justify-center"
+          @click="showMobileMenu = true">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
+        <!-- Mobile Menu - Slide out panel like sidebar -->
+        <t-drawer v-model:visible="showMobileMenu" placement="right" :footer="false" :size="'280px'" :close-btn="false">
+          <div class="mobile-menu-panel">
+            <!-- Simple Header -->
+            <div class="mobile-menu-header">
+              <span class="mobile-menu-title">Menu</span>
+              <button class="mobile-menu-close" @click="showMobileMenu = false">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M18 6L6 18M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Menu Items - Simple List -->
+            <div class="mobile-menu-content">
+              <!-- Theme Toggle -->
+              <button class="mobile-menu-item" @click="toggleDark(); showMobileMenu = false">
+                <span class="mobile-menu-icon">
+                  <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <circle cx="12" cy="12" r="5" />
+                    <path
+                      d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+                  </svg>
+                  <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                  </svg>
+                </span>
+                <span class="mobile-menu-label">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+              </button>
+
+              <!-- User Profile -->
+              <button class="mobile-menu-item" @click="showMobileMenu = false">
+                <span class="mobile-menu-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </span>
+                <span class="mobile-menu-label">Profile</span>
+              </button>
+
+              <!-- Divider -->
+              <div class="mobile-menu-divider"></div>
+
+              <!-- Save Status -->
+              <button class="mobile-menu-item" :class="{ 'is-saved': isSaved }"
+                @click="saveDocument(); showMobileMenu = false">
+                <span class="mobile-menu-icon">
+                  <span class="save-status-dot" :class="isSaved ? 'saved' : 'unsaved'"></span>
+                </span>
+                <span class="mobile-menu-label">{{ isSaved ? 'Saved' : 'Save Document' }}</span>
+              </button>
+            </div>
+          </div>
+        </t-drawer>
       </div>
     </div>
   </nav>
 </template>
 
 <script>
+import { inject } from 'vue';
 import { useDark } from '@vueuse/core';
 export default {
   name: 'NavBar',
   emits: ['toggle-sidebar'],
   setup(props, { emit }) {
     const isDark = useDark();
+
+    // Inject save functionality from parent
+    const saveContentMethod = inject('saveContent');
+
     return {
       isDark,
+      saveContentMethod,
       toggleDark: () => {
         isDark.value = !isDark.value;
-        // alert('Dark mode is not supported yet');
       },
       toggleSidebar: () => {
         emit('toggle-sidebar');
@@ -66,13 +154,217 @@ export default {
   },
   data() {
     return {
-      documentName: ''
+      documentName: '',
+      isSaved: false,
+      lastSaved: null,
+      showMobileMenu: false
     };
   },
   methods: {
     saveDocumentName() {
       // Add your logic to save the document name
+    },
+    saveDocument() {
+      // Call the actual save method from parent
+      if (this.saveContentMethod) {
+        this.saveContentMethod();
+        this.isSaved = true;
+        this.lastSaved = new Date();
+
+        // Reset status after 3 seconds
+        setTimeout(() => {
+          this.isSaved = false;
+        }, 3000);
+      } else {
+        console.warn('saveContent method not available');
+      }
     }
   }
 };
 </script>
+
+<style scoped>
+/* Mobile responsive navbar fixes */
+@media (max-width: 640px) {
+  nav>div {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  /* Smaller logo and text on tiny screens */
+  .flex-shrink-0:first-child span {
+    font-size: 12px;
+  }
+
+  /* Document name input smaller */
+  input.max-w-\[120px\] {
+    max-width: 100px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 380px) {
+
+  /* Hide Synnoia text on very small screens, show only logo */
+  .flex-shrink-0:first-child span {
+    display: none;
+  }
+
+  /* Even smaller input */
+  input.max-w-\[120px\] {
+    max-width: 80px;
+  }
+
+  /* Smaller buttons */
+  .min-w-\[44px\] {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 6px;
+  }
+
+  .min-w-\[44px\] svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Mobile Menu Panel Styles - Simple and Professional like Sidebar */
+.mobile-menu-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+}
+
+.dark .mobile-menu-panel {
+  background: #111827;
+}
+
+.mobile-menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .mobile-menu-header {
+  border-bottom-color: #374151;
+}
+
+.mobile-menu-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.dark .mobile-menu-title {
+  color: #f3f4f6;
+}
+
+.mobile-menu-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mobile-menu-close:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dark .mobile-menu-close {
+  color: #9ca3af;
+}
+
+.dark .mobile-menu-close:hover {
+  background: #374151;
+  color: #f3f4f6;
+}
+
+.mobile-menu-content {
+  flex: 1;
+  padding: 8px 0;
+  overflow-y: auto;
+}
+
+.mobile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.mobile-menu-item:hover {
+  background: #f3f4f6;
+}
+
+.dark .mobile-menu-item:hover {
+  background: #374151;
+}
+
+.mobile-menu-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  color: #6b7280;
+}
+
+.dark .mobile-menu-icon {
+  color: #9ca3af;
+}
+
+.mobile-menu-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.dark .mobile-menu-label {
+  color: #d1d5db;
+}
+
+.mobile-menu-divider {
+  height: 1px;
+  margin: 8px 16px;
+  background: #e5e7eb;
+}
+
+.dark .mobile-menu-divider {
+  background: #374151;
+}
+
+.save-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.save-status-dot.saved {
+  background: #22c55e;
+}
+
+.save-status-dot.unsaved {
+  background: #ef4444;
+}
+
+.mobile-menu-item.is-saved .mobile-menu-label {
+  color: #22c55e;
+}
+</style>

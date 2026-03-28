@@ -58,7 +58,7 @@
                         @click="activeTab = 'history'">
                         Changes
                         <span v-if="agent.history.value.length > 0" class="tab-badge">{{ agent.history.value.length
-                        }}</span>
+                            }}</span>
                     </button>
                 </div>
             </div>
@@ -84,8 +84,8 @@
                     <div v-for="message in agent.messages.value" :key="message.id" class="message"
                         :class="[message.role, message.status]">
                         <div class="message-avatar">
-                            <span v-if="message.role === 'user'">👤</span>
-                            <span v-else-if="message.role === 'system'">⚙️</span>
+                            <img v-if="message.role === 'user'" src="/src/assets/icons/user.svg" alt="">
+                            <img v-else-if="message.role === 'system'" width="18" height="18" src="/src/assets/logo/Synnoia Logo.png" alt="">
                             <img v-else width="16" height="16" src="/src/assets/logo/Synnoia Logo White.png"
                                 alt="Synnoia Logo">
                         </div>
@@ -785,6 +785,7 @@ if (typeof window !== 'undefined') {
 
 .message-text {
     @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
+    background: #e8eaee;
     padding: 12px 16px;
     border-radius: 12px;
     border-top-left-radius: 4px;
@@ -821,10 +822,10 @@ if (typeof window !== 'undefined') {
 }
 
 .message.system .message-text {
-    background: transparent;
+    background: rgb(174, 200, 238);
     border: none;
     box-shadow: none;
-    padding: 4px 0;
+    padding: 8px 8px;
     font-size: 12px;
     @apply text-gray-500;
     font-style: italic;
@@ -1153,5 +1154,71 @@ textarea {
     padding: 4px 10px;
     border-radius: 6px;
     display: inline-block;
+}
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+    .agent-panel {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100% !important;
+        height: 85vh;
+        border-radius: 16px 16px 0 0;
+        z-index: 100;
+        transform: translateY(100%);
+        border-left: none;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
+
+        &.panel-open {
+            transform: translateY(0);
+        }
+    }
+
+    .resize-handle {
+        display: none;
+    }
+
+    .panel-header {
+        padding: 12px 16px 0;
+        gap: 12px;
+    }
+
+    .header-title h2 {
+        font-size: 16px;
+    }
+
+    .messages-container {
+        padding: 16px;
+    }
+
+    .input-area {
+        padding: 12px 16px;
+    }
+
+    .model-select {
+        min-width: 120px;
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .agent-panel {
+        height: 90vh;
+    }
+
+    .header-actions {
+        gap: 4px;
+    }
+
+    .icon-btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    .status-pill {
+        display: none;
+    }
 }
 </style>

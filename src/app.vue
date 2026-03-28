@@ -68,7 +68,7 @@ const options = $ref({
   },
   page: {
     showBookmark: true,
-    
+
   },
   templates,
   cdnUrl: '',

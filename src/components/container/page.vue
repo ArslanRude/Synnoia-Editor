@@ -2,11 +2,10 @@
   <div class="arslan-page-container">
     <container-toc v-if="pageOptions.showToc" @close="pageOptions.showToc = false" />
     <div class="arslan-zoomable-container arslan-scrollbar">
-      <div class="arslan-zoomable-content"
-        :style="{
-          width: pageZoomWidth,
-          height: pageZoomHeight,
-        }">
+      <div class="arslan-zoomable-content" :style="{
+        width: pageZoomWidth,
+        height: pageZoomHeight,
+      }">
         <t-watermark class="arslan-page-content" :alpha="pageOptions.watermark.alpha" v-bind="watermarkOptions"
           :content="pageOptions.watermark?.text" :font="{
             color: pageOptions.watermark?.fontColor,
@@ -276,6 +275,48 @@ watch(
   position: relative;
   box-sizing: border-box;
   flex-shrink: 1;
+}
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .arslan-page-container {
+    .arslan-page-content {
+      --arslan-page-margin-top: 1cm;
+      --arslan-page-margin-bottom: 1cm;
+      --arslan-page-margin-left: 0.5cm;
+      --arslan-page-margin-right: 0.5cm;
+      width: 100% !important;
+      min-height: auto;
+    }
+  }
+
+  .arslan-zoomable-container {
+    padding: 10px;
+  }
+
+  .arslan-zoomable-content {
+    transform-origin: top center;
+  }
+}
+
+@media (max-width: 640px) {
+  .arslan-page-container {
+    .arslan-page-content {
+      --arslan-page-margin-top: 0.5cm;
+      --arslan-page-margin-bottom: 0.5cm;
+      --arslan-page-margin-left: 0.3cm;
+      --arslan-page-margin-right: 0.3cm;
+    }
+  }
+
+  .arslan-zoomable-container {
+    padding: 5px;
+  }
+
+  .arslan-page-node-header,
+  .arslan-page-node-footer {
+    display: none;
+  }
 }
 
 :deep(.arslan-back-top) {

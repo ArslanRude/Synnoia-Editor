@@ -279,4 +279,50 @@ const toggoleMenu = async (menu: string) => {
     }
   }
 }
+
+// Mobile responsive styles
+@media (max-width: 768px) {
+  .arslan-scrollable-container {
+    padding: 6px;
+  }
+
+  .arslan-classic-menu {
+    .arslan-virtual-group {
+      &:not(:last-child)::before {
+        margin: 0 6px;
+        height: 16px;
+      }
+
+      :deep(.arslan-menu-button .arslan-button--shape-square) {
+        min-width: 40px;
+        min-height: 40px;
+
+        .arslan-icon {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .arslan-classic-menu {
+    .arslan-virtual-group {
+      &:not(:last-child)::before {
+        margin: 0 4px;
+        height: 14px;
+      }
+
+      :deep(.arslan-menu-button .arslan-button--shape-square) {
+        min-width: 36px;
+        min-height: 36px;
+        padding: 6px;
+
+        .arslan-icon {
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
 </style>
