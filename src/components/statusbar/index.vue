@@ -55,7 +55,8 @@
         </t-button>
       </tooltip>
       <div class="arslan-status-bar-split"></div>
-      <t-popup v-if="editor" v-model="showWordCount" trigger="click" placement="top-left">
+      <t-popup v-if="editor" v-model="showWordCount" :attach="container" trigger="click" placement="top-left"
+        @visible-change="(visible: boolean) => (showWordCount = visible)">
         <t-button
           class="arslan-status-bar-button auto-width word-count !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           variant="text" :class="{ active: showShortcut, '!bg-secondary-light dark:!bg-secondary-dark': showShortcut }"
@@ -69,7 +70,7 @@
           <icon name="arrow-down" :style="{ transform: `rotate(${showWordCount ? '180deg' : 0})` }" />
         </t-button>
         <template #content>
-          <div v-if="showWordCount" class="arslan-word-count-detail">
+          <div class="arslan-word-count-detail">
             <div class="arslan-word-count-title">{{ t('wordCount.title') }}</div>
             <ul>
               <li>
@@ -108,7 +109,8 @@
       </tooltip>
       <div class="arslan-status-bar-split"></div>
       <!-- Compact Word Count -->
-      <t-popup v-if="editor" v-model="showWordCount" trigger="click" placement="top-left">
+      <t-popup v-if="editor" v-model="showMobileWordCount" :attach="container" trigger="click" placement="top-left"
+        @visible-change="(visible: boolean) => (showMobileWordCount = visible)">
         <t-button
           class="arslan-status-bar-button auto-width word-count mobile-word-count !text-text-light dark:!text-text-dark hover:!bg-secondary-light dark:hover:!bg-secondary-dark"
           variant="text" size="small">
@@ -117,10 +119,10 @@
           </span>
           <span class="arslan-word-count">
             {{ editor.storage.characterCount.characters() }}</span>
-          <icon name="arrow-down" :style="{ transform: `rotate(${showWordCount ? '180deg' : 0})` }" />
+          <icon name="arrow-down" :style="{ transform: `rotate(${showMobileWordCount ? '180deg' : 0})` }" />
         </t-button>
         <template #content>
-          <div v-if="showWordCount" class="arslan-word-count-detail">
+          <div class="arslan-word-count-detail">
             <div class="arslan-word-count-title">{{ t('wordCount.title') }}</div>
             <ul>
               <li>
@@ -359,6 +361,7 @@ const reset = inject('reset') as (silent: boolean) => void
 
 // Word count
 const showWordCount = $ref(false)
+const showMobileWordCount = $ref(false)
 const selectionCharacters = computed(() => {
   if (editor.value) {
     const { selection } = editor.value.state
