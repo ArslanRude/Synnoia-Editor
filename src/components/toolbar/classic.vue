@@ -180,10 +180,7 @@
           <menus-toolbar-export-image v-if="!disableItem('exportImage')" />
           <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-text v-if="!disableItem('exportText')" />
-        </div>
-        <div class="arslan-virtual-group">
-          <menus-toolbar-export-share v-if="!disableItem('share')" />
-          <menus-toolbar-export-embed v-if="!disableItem('embed')" />
+          <menus-toolbar-export-word v-if="!disableItem('exportWord')" />
         </div>
         <div class="virtual-group is-slot">
           <slot name="toolbar_export" toolbar-mode="classic" />

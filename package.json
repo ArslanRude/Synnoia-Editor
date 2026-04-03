@@ -111,6 +111,7 @@
     "@umoteam/editor-external": "6.1.0",
     "@vueuse/core": "^11.3.0",
     "buffer-image-size": "^0.6.4",
+    "docx": "^9.6.1",
     "dom-to-image-more": "^3.4.3",
     "es-drager": "1.2.11",
     "eslint-plugin-unused-imports": "^4.1.4",

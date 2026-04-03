@@ -409,13 +409,6 @@
     }
   },
   "export": {
-    "embed": {
-      "text": "Embed",
-      "title": "Embed Code",
-      "tip": "After copying, manually adjust the iframe width and height for optimal viewing.",
-      "copy": "Copy",
-      "copied": "Code copied to clipboard"
-    },
     "image": {
       "text": "Image",
       "jpg": "JPG",
@@ -425,19 +418,14 @@
         "message": "Failed to export image, please try again or refresh the page."
       }
     },
-    "share": {
-      "text": "Share",
-      "tip": "Copy the link and send it to those you want to share with.",
-      "copy": "Copy Link",
-      "copied": "Link copied to clipboard"
-    },
     "pdf": {
       "text": "PDF Document",
       "title": "Export PDF Document",
       "message": "Before exporting the PDF document, please ensure that all images on the pages have finished loading. Then, in the pop-up print dialog, select 'Printer - Save as PDF', and click the 'Save' button. To ensure that all content is displayed correctly, please check the 'Background graphics' option in the print dialog box and set the 'Margins' to 'None.'",
       "confirm": "I Understand"
     },
-    "text": "Text"
+    "text": "Text",
+    "word": "DOCX"
   },
   "list": {
     "bullet": {
