@@ -1,26 +1,13 @@
 ﻿<template>
-  <drag-handle
-    :editor="editor"
-    :tippy-options="tippyOpitons"
-    class="arslan-block-menu-drag-handle"
-    :class="{ 'is-empty': editor.isEmpty }"
-    @node-change="nodeChange"
-  >
-    <div
-      class="arslan-block-menu-hander"
-      :class="`arslan-selected-node-${selectedNode?.type?.name || 'unknown'} `"
-    >
+  <drag-handle :editor="editor" :tippy-options="tippyOpitons" class="arslan-block-menu-drag-handle"
+    :class="{ 'is-empty': editor.isEmpty }" @node-change="nodeChange">
+    <div class="arslan-block-menu-hander" :class="`arslan-selected-node-${selectedNode?.type?.name || 'unknown'} `">
       <menus-context-block-node @dropdown-visible="dropdownVisible" />
-      <menus-context-block-common
-        v-if="
-          !editor.isEmpty ||
-          editor.isActive('table') ||
-          editor.isActive('callout')
-        "
-        :node="selectedNode"
-        :pos="selectedNodePos"
-        @dropdown-visible="dropdownVisible"
-      />
+      <menus-context-block-common v-if="
+        !editor.isEmpty ||
+        editor.isActive('table') ||
+        editor.isActive('callout')
+      " :node="selectedNode" :pos="selectedNodePos" @dropdown-visible="dropdownVisible" />
     </div>
   </drag-handle>
 </template>
@@ -65,7 +52,7 @@ const updateMenuPostion = useThrottleFn(() => {
         getReferenceClientRect: () => rect,
       })
     }
-  } catch {}
+  } catch { }
 }, 200)
 
 onMounted(() => {
@@ -89,87 +76,108 @@ const dropdownVisible = (visible: boolean) => {
   .arslan-menu-button {
     color: var(--arslan-text-color-light) !important;
   }
+
   &-drag-handle.is-empty {
     .arslan-block-menu-hander {
-      margin-top: 2px;
+      margin-top: none;
     }
   }
+
   &-hander {
     position: absolute;
     display: flex;
     right: -10px;
-    top: -5px;
     padding-right: 15px;
+
     @media print {
       display: none;
     }
+
     &.arslan-selected-node {
+
       &-table,
       &-horizontalRule,
       &-ProseMirror-gapcursor {
         margin-top: 5px;
       }
+
       &-pageBreak {
         margin-top: -6px;
       }
     }
+
     .arslan-menu-button {
       background-color: var(--arslan-page-background);
+
       .arslan-button-content {
         color: rgba(0, 0, 0, 0.5);
       }
+
       &:not(.active):hover {
         background-color: var(--arslan-content-node-selected-background);
       }
+
       &.active {
         &:hover {
           opacity: 0.8;
         }
+
         .arslan-button-content {
           color: var(--arslan-text-color-light);
         }
       }
     }
   }
+
   &-dropdown {
     .arslan-block-menu-group-name {
       padding-left: 15px !important;
     }
+
     .arslan-dropdown__menu,
     .arslan-dropdown__submenu {
       --td-radius-default: 0;
       padding: 8px 0 !important;
+
       .arslan-divider {
         margin: 4px 0 2px;
         opacity: 0.5;
       }
+
       .arslan-dropdown__item {
         padding: 2px 0;
         min-width: 140px !important;
+
         .arslan-menu-button {
           background-color: transparent;
           padding: 0 15px;
           box-sizing: border-box;
           justify-content: flex-start;
           width: 100%;
+
           &-wrap {
             display: block !important;
           }
+
           .arslan-button__text {
             width: 100%;
           }
         }
+
         .arslan-button-content {
           width: 100%;
           justify-content: flex-start;
+
           .arslan-button-text {
             color: var(--arslan-text-color);
           }
+
           .arslan-button-icon {
             margin-right: 3px;
             font-size: 16px;
             color: #666;
           }
+
           .arslan-button-kbd {
             flex: 1;
             text-align: right;
@@ -177,9 +185,11 @@ const dropdownVisible = (visible: boolean) => {
             font-family: Arial, Helvetica, sans-serif;
             font-size: 9px;
           }
+
           .arslan-heading {
             display: flex;
             color: var(--arslan-text-color);
+
             .icon-heading {
               font-size: 12px;
               display: inline-block;
@@ -187,16 +197,19 @@ const dropdownVisible = (visible: boolean) => {
             }
           }
         }
+
         &--disabled {
           .arslan-button-content {
             opacity: 0.6;
           }
         }
+
         &-direction {
           opacity: 0.4;
           font-size: 12px !important;
           margin-right: 8px;
         }
+
         .arslan-dropdown-item-label {
           padding: 1px 15px;
           overflow: hidden;
@@ -223,9 +236,9 @@ const dropdownVisible = (visible: boolean) => {
   *::selection {
     background: transparent;
   }
+
   * {
     caret-color: transparent;
   }
 }
 </style>
-
