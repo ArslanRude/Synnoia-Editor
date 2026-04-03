@@ -75,7 +75,6 @@
           <menus-toolbar-insert-columns v-if="!disableItem('columns')" />
           <menus-toolbar-insert-tag v-if="!disableItem('tag')" />
           <menus-toolbar-insert-callout v-if="!disableItem('callout')" />
-          <menus-toolbar-insert-mention v-if="!disableItem('mention')" />
           <menus-toolbar-insert-bookmark v-if="!disableItem('bookmark')" />
         </div>
         <div class="arslan-virtual-group">

@@ -93,7 +93,6 @@
             <menus-toolbar-insert-tag v-if="!disableItem('tag')" />
             <menus-toolbar-insert-columns v-if="!disableItem('columns')" />
             <menus-toolbar-insert-callout v-if="!disableItem('callout')" />
-            <menus-toolbar-insert-mention v-if="!disableItem('mention')" />
             <menus-toolbar-insert-bookmark v-if="!disableItem('bookmark')" />
           </div>
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
@@ -251,8 +250,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-
 import MorphingTabs from '@/components/ui/MorphingTabs.vue'
 const props = defineProps<{
   menus: {

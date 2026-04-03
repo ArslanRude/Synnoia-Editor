@@ -46,8 +46,6 @@ import Indent from './indent'
 import LineHeight from './line-height'
 import Link from './link'
 import Margin from './margin'
-import Mention from './mention'
-import getUsersSuggestion from './mention/suggestion'
 import NodeAlign from './node-align'
 import OrderedList from './ordered-list'
 import PageBreak from './page-break'
@@ -155,11 +153,7 @@ export const getDefaultExtensions = ({
       visible: page?.showBreakMarks,
     }),
     PageBreak,
-
-    // 其他
-    Mention.configure({
-      suggestion: getUsersSuggestion(users ?? [], container),
-    }),
+    
     Selection,
     NodeRange,
     TableOfContents.configure({
