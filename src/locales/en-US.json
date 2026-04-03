@@ -1,5 +1,5 @@
 {
-  "welcome": "%cThanks for using MyWord%cCurrent version: v{version}, More info: {homepage}",
+  "welcome": "%cThanks for using Synnoia%cCurrent version: v{version}, More info: {homepage}",
   "toolbar": {
     "ribbon": "Professional",
     "classic": "Classic",
@@ -741,6 +741,7 @@
     "second": "{n} seconds"
   },
   "dialog": {
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "confirm": "Confirm"
   }
 }

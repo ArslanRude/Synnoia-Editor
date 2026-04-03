@@ -6,6 +6,7 @@ export const useAlert = (
 ) => {
   return DialogPlugin.alert({
     placement: 'center',
+    confirmBtn: t('dialog.confirm'),
     ...parmas,
   })
 }
@@ -13,7 +14,8 @@ export const useConfirm = (parmas: DialogOptions) => {
   return DialogPlugin.confirm({
     placement: 'center',
     preventScrollThrough: false,
-    cancelBtn: t('Cancel'),
+    confirmBtn: t('dialog.confirm'),
+    cancelBtn: t('dialog.cancel'),
     ...parmas,
   })
 }
