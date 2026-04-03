@@ -1,20 +1,8 @@
 ﻿<template>
-  <menus-button
-    v-if="hasRemoveBackgroundFunction"
-    ico="seal"
-    :text="t('tools.seal.text')"
-    huge
-    @menu-click="dialogVisible = true"
-  >
-    <modal
-      :visible="dialogVisible"
-      icon="seal"
-      :header="t('tools.seal.title')"
-      width="480px"
-      :confirm-btn="t('tools.seal.insert')"
-      @confirm="setSeal"
-      @close="dialogVisible = false"
-    >
+  <menus-button v-if="hasRemoveBackgroundFunction" ico="seal" :text="t('tools.seal.text')" huge
+    @menu-click="dialogVisible = true">
+    <modal :visible="dialogVisible" icon="seal" :header="t('tools.seal.title')" width="480px"
+      :confirm-btn="t('tools.seal.insert')" @confirm="setSeal" @close="dialogVisible = false">
       <div class="arslan-seal-container" @click="selectImage">
         <div class="arslan-seal-tip" v-text="t('tools.seal.tip')"></div>
         <div class="arslan-seal-uploader">
@@ -65,8 +53,14 @@ const selectImage = () => {
     try {
       sealImg = null
       converting = t('tools.seal.converting1')
+
+      // Build the public path for background removal models
+      const publicPath = options.value.cdnUrl
+        ? `${options.value.cdnUrl}/libs/imgly/background-removal-data/`
+        : 'https://staticimgly.com/@imgly/background-removal-data/latest/'
+
       const img = await removeBackground(file, {
-        publicPath: `${options.value.cdnUrl}/libs/imgly/background-removal-data/`,
+        publicPath: publicPath,
         progress: (key, current, total) => {
           if (key.startsWith('fetch')) {
             converting = t('tools.seal.converting2', {
@@ -78,12 +72,16 @@ const selectImage = () => {
         },
       })
       sealImg = URL.createObjectURL(img)
-    } catch {
-      useMessage('error', {
+    } catch (error) {
+      console.error('Background removal error:', error)
+
+      // Fallback: use original image without background removal
+      sealImg = URL.createObjectURL(file)
+
+      useMessage('warning', {
         attach: container,
-        content: t('tools.seal.convertError'),
+        content: 'Background removal failed. Using original image. You may want to use a transparent PNG.',
       })
-      sealImg = null
     } finally {
       converting = null
     }
@@ -135,6 +133,7 @@ const setSeal = async () => {
     margin-bottom: 6px;
     line-height: 1.4;
   }
+
   .arslan-seal-uploader {
     margin-top: 20px;
     height: 240px;
@@ -147,6 +146,7 @@ const setSeal = async () => {
     position: relative;
     color: var(--arslan-text-color-light);
     cursor: pointer;
+
     .arslan-seal-img {
       max-height: 100%;
       max-width: 100%;
@@ -156,4 +156,3 @@ const setSeal = async () => {
   }
 }
 </style>
-
