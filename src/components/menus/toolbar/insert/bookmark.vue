@@ -1,54 +1,21 @@
 ﻿<template>
-  <menus-button
-    ico="bookmark"
-    :text="t('insert.bookmark.text')"
-    huge
-    @menu-click="dialogVisible = true"
-  />
-  <modal
-    :visible="dialogVisible"
-    icon="bookmark"
-    :header="t('insert.bookmark.set')"
-    width="420px"
-    draggable
-    destroy-on-close
-    :confirm-btn="t('insert.bookmark.ok')"
-    @confirm="insertbookmark"
-    @close="dialogVisible = false"
-  >
+  <menus-button ico="bookmark" :text="t('insert.bookmark.text')" huge @menu-click="dialogVisible = true" />
+  <modal :visible="dialogVisible" icon="bookmark" :header="t('insert.bookmark.set')" width="420px" draggable
+    destroy-on-close :confirm-btn="t('insert.bookmark.ok')" @confirm="insertbookmark" @close="dialogVisible = false">
     <div class="arslan-bookmark-container">
       <t-form label-align="top" colon>
-        <t-form-item
-          :label="t('insert.bookmark.textName')"
-          style="margin-bottom: 10px"
-        >
-          <t-input
-            v-model.trim="bookmarkText"
-            status="default"
-            :maxcharacter="30"
-            :placeholder="t('insert.bookmark.placeholder')"
-            clearable
-          />
+        <t-form-item :label="t('insert.bookmark.textName')" style="margin-bottom: 10px">
+          <t-input v-model.trim="bookmarkText" status="default" :maxcharacter="30"
+            :placeholder="t('insert.bookmark.placeholder')" clearable />
         </t-form-item>
         <t-form-item class="bookmark-list">
-          <t-table
-            row-key="bookmarkRowId"
-            height="250"
-            :data="bookmarkData"
-            :columns="bookmarkColumns"
-            :active-row-type="'single'"
-            lazy-load
-            @active-change="onActiveChange"
-          >
+          <t-table row-key="bookmarkRowId" height="250" :data="bookmarkData" :columns="bookmarkColumns"
+            :active-row-type="'single'" lazy-load @active-change="onActiveChange">
             <template #operation="{ row }">
               <tooltip :content="t('insert.bookmark.delete')">
-                <t-button
-                  size="small"
-                  shape="square"
-                  variant="text"
-                  @click="rowDelete(row)"
-                  ><icon name="node-delete"
-                /></t-button>
+                <t-button size="small" shape="square" variant="text" @click="rowDelete(row)">
+                  <icon name="node-delete" />
+                </t-button>
               </tooltip>
             </template>
           </t-table>
@@ -77,7 +44,7 @@ let bookmarkData: any = []
 const bookmarkColumns = [
   {
     colKey: 'bookmarkRowName',
-    title: t('insert.bookmark.textNameEn'), // 'Bookmark Name',
+    title: t('insert.bookmark.textName'), // 'Bookmark Name',
     ellipsis: false,
     align: 'left',
   },
@@ -118,7 +85,7 @@ const insertbookmark = () => {
       attach: container,
       theme: 'warning',
       header: t('insert.bookmark.text'),
-      body: t('insert.bookmark.emptyError'), // "请输入书签名称！",//t('base.importWord.loadScript.message'),
+      body: t('insert.bookmark.emptyError'), // "Please enter bookmark name!",//t('base.importWord.loadScript.message'),
       onConfirm() {
         dialog.destroy()
       },
@@ -182,17 +149,19 @@ watch(
   border-radius: var(--arslan-radius);
   margin-bottom: 5px;
   overflow: hidden;
+
   :deep(table) {
+
     th,
     td,
     tr {
       border: none !important;
       padding: 4px 10px;
     }
+
     th {
       border-bottom: solid 1px var(--arslan-border-color) !important;
     }
   }
 }
 </style>
-

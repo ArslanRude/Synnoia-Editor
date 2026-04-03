@@ -4,15 +4,15 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     typewriter: {
       /**
-       * 启动打字机效果
+       * Start typewriter effect
        */
       startTypewriter: (content: any, options: TypewriterOptions) => ReturnType
       /**
-       * 停止打字机效果
+       * Stop typewriter effect
        */
       stopTypewriter: () => ReturnType
       /**
-       * 获取当前打字机状态
+       * Get current typewriter state
        */
       getTypewriterState: () => any
     }
@@ -51,7 +51,7 @@ let typewriterProgress: TypewriterProgress = {
   typedChars: 0,
 }
 
-// 计算总字符数用于进度跟踪
+// Calculate total character count for progress tracking
 function calculateTotalChars(content: any[]): number {
   return content.reduce((total, node) => {
     if (node.type === 'paragraph' && node.content) {
@@ -73,17 +73,17 @@ export default Extension.create({
       startTypewriter:
         (content, options) =>
         ({ editor, commands }) => {
-          // 立即返回 true 表示命令开始执行
+          // Immediately return true to indicate command execution started
 
           ;(async () => {
             try {
-              // 清除现有计时器
+              // Clear existing timer
               if (typewriterTimer) {
                 clearTimeout(typewriterTimer)
                 typewriterTimer = null
               }
 
-              // 重置状态
+              // Reset state
               typewriterState.value = {
                 isRunning: true,
                 currentParagraph: 0,
@@ -91,12 +91,12 @@ export default Extension.create({
                 currentChar: 0,
               }
 
-              // 计算总字符数
+              // Calculate total character count
               typewriterProgress = {
                 totalChars: calculateTotalChars(content?.content ?? []),
                 typedChars: 0,
               }
-              // 插入内容
+              // Insert content
               const typeWriterInsertContent = async (curContent: any) => {
                 await new Promise<void>((resolve) => {
                   setTimeout(() => {
@@ -113,16 +113,16 @@ export default Extension.create({
                   }, 0)
                 })
               }
-              // 取非负数
+              // Ensure non-negative number
               const speed = Math.max(options?.speed ?? 1, 0)
-              // 处理内容
+              // Process content
               const processNode = async (node: any, isTopLevel = false) => {
                 if (node.type === 'paragraph') {
-                  // 当前为段落时 插入段落样式
+                  // When current node is paragraph, insert paragraph style
                   await typeWriterInsertContent([
                     { type: 'paragraph', attrs: node.attrs },
                   ])
-                  // 处理段落内容
+                  // Process paragraph content
                   if (node.content && node.content.length > 0) {
                     for (const [index, childNode] of node.content.entries()) {
                       typewriterState.value.currentTextNode = index
@@ -133,17 +133,17 @@ export default Extension.create({
                   }
                   typewriterState.value.currentParagraph++
                 } else if (node.type === 'text') {
-                  // 处理文本节点
+                  // Handle text node
                   const text = node.text || ''
                   const marks = node.marks || []
                   const step = options?.step ?? 1
                   for (let i = 0; i < text.length; i += step) {
-                    if (!typewriterState.value.isRunning) return // 检查是否被停止
+                    if (!typewriterState.value.isRunning) return // Check if stopped
                     const endIndex = Math.min(i + step, text.length)
                     const currentText = text.slice(i, endIndex)
                     await new Promise<void>((resolve) => {
                       typewriterTimer = setTimeout(async () => {
-                        // 插入当前字符
+                        // Insert current character
                         await typeWriterInsertContent([
                           {
                             type: 'text',
@@ -156,7 +156,7 @@ export default Extension.create({
                           i + currentText.length - 1
                         typewriterProgress.typedChars += currentText.length
 
-                        // 更新进度回调
+                        // Update progress callback
                         if (
                           options?.onProgress &&
                           typewriterProgress.totalChars > 0
@@ -182,14 +182,14 @@ export default Extension.create({
                   }
                 }
               }
-              // 结束当前事务（确保之前的修改已应用）
-              editor.view.dispatch(editor.state.tr) // 应用一个空事务来确保状态更新
-              // 处理所有顶级节点
+              // End current transaction (ensure previous changes are applied)
+              editor.view.dispatch(editor.state.tr) // Apply empty transaction to ensure state update
+              // Process all top-level nodes
               for (const node of content?.content ?? []) {
                 if (!typewriterState.value.isRunning) break
                 await processNode(node, true)
               }
-              // 完成回调
+              // Complete callback
               if (typewriterState.value.isRunning && options?.onComplete) {
                 options.onComplete()
               }

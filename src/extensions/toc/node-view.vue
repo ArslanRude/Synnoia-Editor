@@ -25,9 +25,9 @@ interface TocItem {
   [key: string]: any
   children?: TocItem[]
 }
-// 最终可视化数据
+// Final visualization data
 let tocTreeData = $ref([])
-let watchTreeData: TocItem[] = [] // 可视化监听数据
+let watchTreeData: TocItem[] = [] // Visualization monitoring data
 const buildTocTree = (tocArray: Record<string, any>[]): TocItem[] => {
   const root: TocItem[] = []
   const stack: TocItem[] = []
@@ -58,7 +58,7 @@ const buildTocTree = (tocArray: Record<string, any>[]): TocItem[] => {
 watch(
   () => editor.value?.storage.tableOfContents.content,
   (toc: any[]) => {
-    // 每次都监听 但不是每次发生变化，重复赋值导致toc数据双击生效
+    // Monitor every time but not every change, repeated assignment causes toc data to take effect on double click
     const curTocTreeData = buildTocTree(toc)
     if (JSON.stringify(watchTreeData) !== JSON.stringify(curTocTreeData)) {
       watchTreeData = curTocTreeData
@@ -131,4 +131,3 @@ const headingActive = (value: any) => {
   }
 }
 </style>
-

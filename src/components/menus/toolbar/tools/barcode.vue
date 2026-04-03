@@ -1,126 +1,64 @@
 ﻿<template>
-  <menus-button
-    :ico="content ? 'edit' : 'barcode'"
-    :text="content ? t('tools.barcode.edit') : t('tools.barcode.text')"
-    huge
-    @menu-click="dialogVisible = true"
-  >
-    <modal
-      :visible="dialogVisible"
-      icon="barcode"
-      :header="t('tools.barcode.title')"
-      width="720px"
-      @confirm="setBarcode"
-      @close="dialogVisible = false"
-    >
+  <menus-button :ico="content ? 'edit' : 'barcode'" :text="content ? t('tools.barcode.edit') : t('tools.barcode.text')"
+    huge @menu-click="dialogVisible = true">
+    <modal :visible="dialogVisible" icon="barcode" :header="t('tools.barcode.title')" width="720px"
+      @confirm="setBarcode" @close="dialogVisible = false">
       <div class="arslan-barcode-container">
         <div class="arslan-barcode-toolbar">
-          <menus-button
-            style="width: 126px"
-            :text="t('tools.barcode.format')"
-            :select-options="formats"
-            menu-type="select"
-            :select-value="config.format"
-            @menu-click="
+          <menus-button style="width: 126px" :text="t('tools.barcode.format')" :select-options="formats"
+            menu-type="select" :select-value="config.format" @menu-click="
               (value: string) => {
                 config.format = value
               }
-            "
-          ></menus-button>
+            "></menus-button>
           <t-divider layout="vertical" />
-          <menus-button
-            style="width: 114px"
-            :text="t('tools.barcode.font')"
-            :select-options="fonts ?? []"
-            menu-type="select"
-            :select-value="config.font"
-            @menu-click="
+          <menus-button style="width: 114px" :text="t('tools.barcode.font')" :select-options="fonts ?? []"
+            menu-type="select" :select-value="config.font" @menu-click="
               (value: string) => {
                 config.font = value
               }
-            "
-          ></menus-button>
+            "></menus-button>
           <t-divider layout="vertical" />
-          <menus-toolbar-base-color
-            :text="t('tools.barcode.lineColor')"
-            :default-color="config.lineColor"
-            modeless
-            @change="(value: any) => (config.lineColor = value)"
-          />
-          <menus-toolbar-base-background-color
-            :text="t('tools.barcode.bgColor')"
-            :default-color="config.background"
-            modeless
-            @change="(value: any) => (config.background = value)"
-          />
+          <menus-toolbar-base-color :text="t('tools.barcode.lineColor')" :default-color="config.lineColor" modeless
+            @change="(value: any) => (config.lineColor = value)" />
+          <menus-toolbar-base-background-color :text="t('tools.barcode.bgColor')" :default-color="config.background"
+            modeless @change="(value: any) => (config.background = value)" />
           <t-divider layout="vertical" />
-          <menus-toolbar-base-bold
-            :menu-active="config.fontOptions.includes('bold')"
-            @menu-click-through="changeFontOptions('bold')"
-          />
-          <menus-toolbar-base-italic
-            :menu-active="config.fontOptions.includes('italic')"
-            @menu-click-through="changeFontOptions('italic')"
-          />
+          <menus-toolbar-base-bold :menu-active="config.fontOptions.includes('bold')"
+            @menu-click-through="changeFontOptions('bold')" />
+          <menus-toolbar-base-italic :menu-active="config.fontOptions.includes('italic')"
+            @menu-click-through="changeFontOptions('italic')" />
           <t-divider layout="vertical" />
-          <menus-toolbar-base-align-left
-            :menu-active="config.textAlign === 'left'"
-            @menu-click-through="config.textAlign = 'left'"
-          />
-          <menus-toolbar-base-align-center
-            :menu-active="config.textAlign === 'center'"
-            @menu-click-through="config.textAlign = 'center'"
-          />
-          <menus-toolbar-base-align-right
-            :menu-active="config.textAlign === 'right'"
-            @menu-click-through="config.textAlign = 'right'"
-          />
+          <menus-toolbar-base-align-left :menu-active="config.textAlign === 'left'"
+            @menu-click-through="config.textAlign = 'left'" />
+          <menus-toolbar-base-align-center :menu-active="config.textAlign === 'center'"
+            @menu-click-through="config.textAlign = 'center'" />
+          <menus-toolbar-base-align-right :menu-active="config.textAlign === 'right'"
+            @menu-click-through="config.textAlign = 'right'" />
           <t-divider layout="vertical" />
-          <menus-button
-            :text="t('tools.barcode.more')"
-            menu-type="popup"
-            :popup-visible="popupVisible"
-            @toggle-popup="togglePopup"
-          >
+          <menus-button :text="t('tools.barcode.more')" menu-type="popup" :popup-visible="popupVisible"
+            @toggle-popup="togglePopup">
             <icon name="setting" />
             <template #content>
               <div class="arslan-barcode-toolbar-more">
                 <t-form size="small" label-align="left">
                   <t-form-item :label="t('tools.barcode.width')">
-                    <t-slider
-                      v-model="config.width"
-                      :min="1"
-                      :max="4"
-                      :step="1"
-                      :tooltip-props="{
-                        showArrow: false,
-                        theme: 'light',
-                      }"
-                    />
+                    <t-slider v-model="config.width" :min="1" :max="4" :step="1" :tooltip-props="{
+                      showArrow: false,
+                      theme: 'light',
+                    }" />
                   </t-form-item>
                   <t-form-item :label="t('tools.barcode.height')">
-                    <t-slider
-                      v-model="config.height"
-                      :min="10"
-                      :max="200"
-                      :step="1"
-                      :tooltip-props="{
-                        showArrow: false,
-                        theme: 'light',
-                      }"
-                    />
+                    <t-slider v-model="config.height" :min="10" :max="200" :step="1" :tooltip-props="{
+                      showArrow: false,
+                      theme: 'light',
+                    }" />
                   </t-form-item>
                   <t-form-item :label="t('tools.barcode.margin')">
-                    <t-slider
-                      v-model="config.margin"
-                      :min="0"
-                      :max="25"
-                      :step="1"
-                      :tooltip-props="{
-                        showArrow: false,
-                        theme: 'light',
-                      }"
-                    />
+                    <t-slider v-model="config.margin" :min="0" :max="25" :step="1" :tooltip-props="{
+                      showArrow: false,
+                      theme: 'light',
+                    }" />
                   </t-form-item>
                   <t-divider></t-divider>
                   <t-form-item :label="t('tools.barcode.displayValue')">
@@ -128,50 +66,27 @@
                       {{ t('tools.barcode.displayValueText') }}
                     </t-checkbox>
                   </t-form-item>
-                  <t-form-item
-                    :label="t('tools.barcode.textContent')"
-                    :help="t('tools.barcode.textContentTip')"
-                  >
-                    <t-textarea
-                      v-model="config.text"
-                      autosize
-                      maxlength="100"
-                    />
+                  <t-form-item :label="t('tools.barcode.textContent')" :help="t('tools.barcode.textContentTip')">
+                    <t-textarea v-model="config.text" autosize maxlength="100" />
                   </t-form-item>
                   <t-form-item :label="t('tools.barcode.textPosition')">
-                    <t-select
-                      v-model="config.textPosition"
-                      :options="textPositions"
-                      :popup-props="{
-                        destroyOnClose: true,
-                        attach: container,
-                      }"
-                    >
+                    <t-select v-model="config.textPosition" :options="textPositions" :popup-props="{
+                      destroyOnClose: true,
+                      attach: container,
+                    }">
                     </t-select>
                   </t-form-item>
                   <t-form-item :label="t('tools.barcode.textMargin')">
-                    <t-slider
-                      v-model="config.textMargin"
-                      :min="-15"
-                      :max="40"
-                      :step="1"
-                      :tooltip-props="{
-                        showArrow: false,
-                        theme: 'light',
-                      }"
-                    />
+                    <t-slider v-model="config.textMargin" :min="-15" :max="40" :step="1" :tooltip-props="{
+                      showArrow: false,
+                      theme: 'light',
+                    }" />
                   </t-form-item>
                   <t-form-item :label="t('tools.barcode.fontSize')">
-                    <t-slider
-                      v-model="config.fontSize"
-                      :min="8"
-                      :max="36"
-                      :step="1"
-                      :tooltip-props="{
-                        showArrow: false,
-                        theme: 'light',
-                      }"
-                    />
+                    <t-slider v-model="config.fontSize" :min="8" :max="36" :step="1" :tooltip-props="{
+                      showArrow: false,
+                      theme: 'light',
+                    }" />
                   </t-form-item>
                 </t-form>
               </div>
@@ -179,36 +94,20 @@
           </menus-button>
         </div>
         <div class="arslan-barcode-code">
-          <t-input
-            v-model="config.content"
-            maxlength="44"
-            show-limit-number
-            autofocus
-            clearable
+          <t-input v-model="config.content" maxlength="44" show-limit-number autofocus clearable
             :placeholder="t('tools.barcode.placeholder')"
-            :status="renderError && config.content !== '' ? 'error' : 'default'"
-          >
+            :status="renderError && config.content !== '' ? 'error' : 'default'">
             <template #prefixIcon>
               <icon name="barcode" />
             </template>
           </t-input>
-          <div
-            v-if="renderError && config.content"
-            class="arslan-barcode-error"
-            v-text="t('tools.barcode.error')"
-          ></div>
+          <div v-if="renderError && config.content" class="arslan-barcode-error" v-text="t('tools.barcode.error')">
+          </div>
         </div>
         <div class="arslan-barcode-render">
-          <div
-            class="arslan-barcode-title"
-            v-text="t('tools.barcode.preview')"
-          ></div>
+          <div class="arslan-barcode-title" v-text="t('tools.barcode.preview')"></div>
           <div class="arslan-barcode-svg narrow-scrollbar">
-            <div
-              v-if="renderError"
-              class="arslan-barcode-empty"
-              v-text="t('tools.barcode.renderError')"
-            ></div>
+            <div v-if="renderError" class="arslan-barcode-empty" v-text="t('tools.barcode.renderError')"></div>
             <svg v-show="!renderError" id="barcode" ref="barcodeSvgRef"></svg>
           </div>
         </div>
@@ -238,7 +137,7 @@ const editor = inject('editor')
 const options = inject('options')
 const uploadFileMap = inject('uploadFileMap')
 
-// 工具栏
+// Toolbar
 const formats = [
   { label: 'CODE128', value: 'CODE128' },
   { label: 'CODE128 A', value: 'CODE128A' },
@@ -300,9 +199,9 @@ const changeFontOptions = (val: string) => {
 let renderError = $ref(false)
 const barcodeSvgRef = $ref<
   | (HTMLElement & {
-      width: { animVal: { value: number } }
-      height: { animVal: { value: number } }
-    })
+    width: { animVal: { value: number } }
+    height: { animVal: { value: number } }
+  })
   | null
 >(null)
 const renderBarcode = async () => {
@@ -391,28 +290,34 @@ const setBarcode = () => {
 <style lang="less" scoped>
 .arslan-barcode-container {
   padding: 2px;
+
   .arslan-barcode-toolbar {
     margin-bottom: 10px;
     display: flex;
     align-items: center;
   }
+
   .arslan-barcode-code {
     margin-bottom: 10px;
+
     :deep(.arslan-textarea__inner) {
       height: 100%;
       resize: none;
     }
+
     .arslan-barcode-error {
       font-size: 12px;
       color: var(--arslan-error-color);
     }
   }
+
   .arslan-barcode-render {
     border: solid 1px var(--td-border-level-2-color);
     border-radius: var(--arslan-radius);
     position: relative;
     overflow: hidden;
     box-sizing: border-box;
+
     .arslan-barcode-title {
       background-color: var(--arslan-button-hover-background);
       padding: 0 10px;
@@ -420,6 +325,7 @@ const setBarcode = () => {
       font-size: 12px;
       border-bottom-right-radius: var(--arslan-radius);
     }
+
     .arslan-barcode-svg {
       display: flex;
       align-items: center;
@@ -429,10 +335,12 @@ const setBarcode = () => {
       min-height: 100px;
       overflow: auto;
       color: var(--arslan-text-color);
+
       svg {
         border: solid 1px var(--arslan-border-color-light);
       }
     }
+
     .arslan-barcode-empty {
       color: var(--arslan-text-color-light);
       font-size: 12px;
@@ -446,15 +354,17 @@ const setBarcode = () => {
 .barcode-toolbar-more {
   padding: 10px 20px 10px 15px;
   width: 300px;
+
   .arslan-form__item {
     margin-bottom: 5px;
   }
+
   .arslan-form__label {
     margin-right: 20px;
   }
+
   .arslan-divider--horizontal {
     margin: 10px 0;
   }
 }
 </style>
-

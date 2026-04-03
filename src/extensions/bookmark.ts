@@ -5,14 +5,14 @@ import { shortId } from '@/utils/short-id'
 
 export interface BookmarkOptions {
   /**
-   *样式 左右有括号 {}
+   * Style with brackets {}
    * @default arslan-editor-bookmark
    * @example
    */
   class: string | undefined
   /**
-   *书签名称
-   * @default 不可为空 唯一标识 用于定位 删除等操作
+   * Bookmark name
+   * @default Cannot be empty, unique identifier for positioning, deletion and other operations
    * @example true
    */
   bookmarkName: string | undefined
@@ -21,7 +21,7 @@ declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     bookmark: {
       /**
-       * Set a bookmark//设置书签
+       * Set a bookmark
        * @param attributes
        * @example
        */
@@ -29,17 +29,17 @@ declare module '@tiptap/core' {
         bookmarkName: string | undefined
       }) => ReturnType
       /*
-      定位书签
-      */
+       * Focus bookmark
+       */
       focusBookmark: (bookmarkName: string | undefined) => ReturnType
       /*
-      获取所有书签
-      */
+       * Get all bookmarks
+       */
       getAllBookmarks: (callback: (bookmarks: any[]) => void) => ReturnType
     }
   }
 }
-// 书签格式 创建一个书签
+// Bookmark format - create a bookmark
 export default Mark.create<BookmarkOptions>({
   name: 'bookmark',
   priority: 1000,
@@ -76,7 +76,7 @@ export default Mark.create<BookmarkOptions>({
 
   addCommands() {
     return {
-      // 设置书签 若书签有选中区域数据 否则默认值为书签名称
+      // Set bookmark - if bookmark has selected area data, otherwise default value is bookmark name
       setBookmark:
         (attributes) =>
         ({ chain, editor }) => {
@@ -122,7 +122,7 @@ export default Mark.create<BookmarkOptions>({
             const alltext = editor.getHTML()
             const parser = new DOMParser()
             const doc = parser.parseFromString(alltext, 'text/html')
-            // 获取所有的 <bookmark> 元素
+            // Get all <bookmark> elements
             const bookmarks = doc.body.querySelectorAll(this.name)
             const keyNode: string[] = []
             Array.from(bookmarks).forEach((node) => {
@@ -144,4 +144,3 @@ export default Mark.create<BookmarkOptions>({
     }
   },
 })
-

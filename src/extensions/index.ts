@@ -141,19 +141,19 @@ export const getDefaultExtensions = ({
       class: 'arslan-editor-bookmark',
     }),
 
-    // 表格
+    // Table
     Table,
     TableRow,
     TableHeader,
     TableCell,
 
-    // 页面
+    // Page
     Toc,
     BreakMarks.configure({
       visible: page?.showBreakMarks,
     }),
     PageBreak,
-    
+
     Selection,
     NodeRange,
     TableOfContents.configure({
@@ -171,7 +171,7 @@ export const getDefaultExtensions = ({
     FileHandler.configure({
       allowedMimeTypes: file?.allowedMimeTypes,
       onPaste(editor: Editor, files: any) {
-        // 记录 已有位置
+        // Record existing position
         const pageContainer = document.querySelector(
           `${container} .arslan-zoomable-container`,
         ) as HTMLElement
@@ -183,9 +183,9 @@ export const getDefaultExtensions = ({
             autoType: true,
           })
         }
-        // 恢复滚动位置
+        // Restore scroll position
         if (pageContainer) {
-          // 使用 setTimeout 确保 DOM 更新完成后再恢复滚动位置
+          // Use setTimeout to ensure DOM update is complete before restoring scroll position
           setTimeout(() => {
             pageContainer.scrollTop = scrollTop
           }, 0)

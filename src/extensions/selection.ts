@@ -96,7 +96,7 @@ export function getSelectionText(editor: Editor) {
   return editor.state.doc.textBetween(from, to, '')
 }
 
-// 设置选中区域 包含选中效果
+// Set selection area with selection effect
 export function setSelectionText(
   editor: Editor,
   prevDocLength: number,
@@ -104,9 +104,9 @@ export function setSelectionText(
   to: number,
 ) {
   const state = editor?.state
-  // 计算新的文档长度
+  // Calculate new document length
   const newDocLength = state.doc.content.size
-  // 计算插入内容后的实际结束位置
+  // Calculate actual end position after inserting content
   const newTo = to + (newDocLength - prevDocLength)
   if (newTo <= from) {
     return false
@@ -119,4 +119,3 @@ export function setSelectionText(
     editor?.commands.focus()
   }
 }
-

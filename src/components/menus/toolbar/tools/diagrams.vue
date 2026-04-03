@@ -1,19 +1,9 @@
 ﻿<template>
-  <menus-button
-    :ico="content ? 'edit' : 'diagrams'"
-    :text="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')"
-    huge
-    @menu-click="dialogVisible = true"
-  >
-    <modal
-      :visible="dialogVisible"
-      icon="diagrams"
-      :header="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')"
-      :footer="false"
-      class="arslan-diagrams-dialog"
-      mode="full-screen"
-      @close="dialogVisible = false"
-    >
+  <menus-button :ico="content ? 'edit' : 'diagrams'"
+    :text="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')" huge @menu-click="dialogVisible = true">
+    <modal :visible="dialogVisible" icon="diagrams"
+      :header="content ? t('tools.diagrams.edit') : t('tools.diagrams.text')" :footer="false"
+      class="arslan-diagrams-dialog" mode="full-screen" @close="dialogVisible = false">
       <div v-if="loading" class="arslan-diagrams-loading">
         <t-loading :text="t('tools.diagrams.loading')" size="small" />
       </div>
@@ -48,15 +38,15 @@ const diagramEditor = new DiagramEditor({
 
 let image = $ref<
   | {
-      id: string
-      type: string
-      src: string
-      name: string
-      size: number
-      width: number
-      height: number
-      content: string
-    }
+    id: string
+    type: string
+    src: string
+    name: string
+    size: number
+    width: number
+    height: number
+    content: string
+  }
   | undefined
 >()
 
@@ -74,7 +64,7 @@ const messageListener = async (evt: MessageEvent) => {
       const id = shortId(10)
       const { width, height } = bounds
       const name = `diagrams-${shortId()}.svg`
-      // 将 data URL 转换为 Blob
+      // Convert data URL to Blob
       const file = await fetch(data)
         .then((res) => res.blob())
         .then((blob) => new File([blob], name, { type: blob.type }))
@@ -124,14 +114,17 @@ watch(
   .arslan-dialog {
     padding: 0 !important;
   }
+
   .arslan-dialog__header {
     background: var(--arslan-color-white);
     height: var(--td-comp-size-xxxl);
   }
+
   .arslan-dialog__body {
     padding: 0;
   }
 }
+
 .arslan-diagrams-loading {
   width: 100%;
   height: calc(100% - var(--td-comp-size-xxxl));
@@ -142,8 +135,10 @@ watch(
   position: absolute;
   background-color: var(--arslan-container-background);
 }
+
 .arslan-diagrams-container {
   height: 100%;
+
   .arslan-diagrams-iframe {
     width: 100%;
     height: 100%;
@@ -152,4 +147,3 @@ watch(
   }
 }
 </style>
-

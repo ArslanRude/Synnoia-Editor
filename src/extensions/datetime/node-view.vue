@@ -1,31 +1,19 @@
 ﻿<template>
   <node-view-wrapper as="span" class="arslan-node-datetime">
-    <t-popup
-      v-model="popupVisible"
-      :attach="`${container} .arslan-zoomable-container`"
-      trigger="click"
-      placement="bottom-start"
-      :disabled="
-        page.preview?.enabled ||
+    <t-popup v-model="popupVisible" :attach="`${container} .arslan-zoomable-container`" trigger="click"
+      placement="bottom-start" :disabled="page.preview?.enabled ||
         options.document?.readOnly ||
         !editor?.isEditable
-      "
-    >
+        ">
       <span class="arslan-node-datetime-text">
         <icon name="date" class="arslan-node-datetime-icon" />
         <span>{{ node.attrs.text }}</span>
       </span>
       <template #content>
-        <t-date-picker-panel
-          :value="node.attrs.date"
-          :format="
-            node.attrs.format ||
-            `YYYY-MM-DD${node.attrs.withTime ? ' HH:mm:ss' : ''}`
-          "
-          :enable-time-picker="node.attrs.withTime"
-          :mode="node.attrs.format === 'YYYY年M月' ? 'month' : 'date'"
-          @change="datetimeChange"
-        />
+        <t-date-picker-panel :value="node.attrs.date" :format="node.attrs.format ||
+          `YYYY-MM-DD${node.attrs.withTime ? ' HH:mm:ss' : ''}`
+          " :enable-time-picker="node.attrs.withTime" :mode="node.attrs.format === 'YYYY年M月' ? 'month' : 'date'"
+          @change="datetimeChange" />
       </template>
     </t-popup>
   </node-view-wrapper>
@@ -51,11 +39,11 @@ const formatDateToChinese = (dateStr: string) => {
 
   return dateStr.replace(/\d+/g, (match) => {
     if (match.length === 4) {
-      // 年份
+      // Year
       return replaceDigits(match)
     }
     if (match.length === 1) {
-      // 月份或日期
+      // Month or date
       return replaceDigits(match)
     }
     if (match.length === 2) {
@@ -72,7 +60,7 @@ const formatDateToChinese = (dateStr: string) => {
       }
       return `${replaceDigits(num1)}十${replaceDigits(num2)}`
     }
-    return match // 其他情况不处理
+    return match // Do not handle other cases
   })
 }
 
@@ -91,6 +79,7 @@ const datetimeChange = (value: any) => {
   margin: 0 0.2em;
   background-color: transparent !important;
   vertical-align: middle;
+
   &-text {
     box-decoration-break: clone;
     margin: 0 0.2em;
@@ -100,13 +89,14 @@ const datetimeChange = (value: any) => {
     align-items: center;
     white-space: nowrap;
   }
+
   &-icon {
     color: var(--arslan-text-color-light);
     margin-right: 0.3em;
   }
+
   &:hover {
     color: var(--arslan-primary-color);
   }
 }
 </style>
-

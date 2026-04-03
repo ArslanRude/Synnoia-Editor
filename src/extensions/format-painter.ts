@@ -16,7 +16,7 @@ declare module '@tiptap/core' {
 export default Extension.create({
   name: 'painter',
   addCommands() {
-    // 添加命令
+    // Add commands
     return {
       setFormatPainter:
         (once: boolean) =>
@@ -29,7 +29,7 @@ export default Extension.create({
             once,
             marks,
           }
-          // 设置格式刷开始的动作
+          // Set format painter start action
           view.dispatch(tr.setMeta('painterAction', { type: 'start', marks }))
           return true
         },
@@ -43,14 +43,14 @@ export default Extension.create({
             once: true,
             marks: [],
           }
-          // 设置格式刷结束的动作
+          // Set format painter end action
           view.dispatch(tr.setMeta('painterAction', { type: 'end' }))
           return true
         },
     }
   },
   addProseMirrorPlugins() {
-    // 添加插件
+    // Add plugin
     return [
       new Plugin({
         key: new PluginKey('format-painter'),
@@ -72,12 +72,12 @@ export default Extension.create({
             mousedown(view) {
               const marks: Mark[] | undefined = this.getState(view.state)
 
-              // 通过 view 传值，方便获取，但是不建议这样做
+              // Pass values through view for easy access, but this is not recommended
               // @ts-ignore
               const { painter } = view
 
               if (!marks || marks.length === 0) {
-                return false // 如果没有标记，则不执行任何操作
+                return false // If no marks, do not perform any operation
               }
               const mouseup = () => {
                 document.removeEventListener('mouseup', mouseup)

@@ -2,7 +2,7 @@ import Table from '@tiptap/extension-table'
 import { DOMParser as ProseMirrorDOMParser } from '@tiptap/pm/model'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 
-// 解析剪切板中 excel 的 CSS 规则（将 CSS 字符串转换为对象）
+// Parse CSS rules from clipboard Excel (convert CSS string to object)
 const parseCSS = (cssRules: string) => {
   const results: any = {}
   const rules = cssRules
@@ -18,7 +18,7 @@ const parseCSS = (cssRules: string) => {
   return results
 }
 
-// 提取样式规则的方法
+// Method to extract style rules
 const extractStyles = (styleText: string) => {
   const regex = /\.(\w+)\s*\{([^}]+)\}/g
   let match
@@ -39,7 +39,7 @@ const CustomTable = Table.extend({
   addProseMirrorPlugins() {
     return [
       ...(this.parent?.() ?? []),
-      // 处理从 Microsoft Excel 粘贴的表格样式问题
+      // Handle table style issues when pasting from Microsoft Excel
       new Plugin({
         key: new PluginKey('handleExcelPaste'),
         props: {
@@ -67,10 +67,10 @@ const CustomTable = Table.extend({
               .map((style) => style.textContent)
               .join('\n')
 
-            // 提取所有样式规则
+            // Extract all style rules
             const styles = extractStyles(styleText)
 
-            // 添加单元格的样式
+            // Add cell styles
             table.querySelectorAll('td, th').forEach((cell: any) => {
               const style: any = styles[cell.getAttribute('class')]
               if (style?.background) {
@@ -84,7 +84,7 @@ const CustomTable = Table.extend({
               }
             })
 
-            // 使用 ProseMirror 的 DOMParser 将表格转换为 ProseMirror 节点
+            // Use ProseMirror's DOMParser to convert table to ProseMirror node
             const { schema } = view.state
             const fragment =
               ProseMirrorDOMParser.fromSchema(schema).parse(table)
