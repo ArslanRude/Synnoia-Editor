@@ -53,6 +53,7 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "vite build",
+    "build:app": "vite build --config vite.config.app.ts",
     "dev": "vite --port 9000 --open --force",
     "format": "prettier --write .",
     "check:code": "eslint --cache src",
