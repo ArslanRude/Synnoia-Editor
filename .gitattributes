@@ -1,2 +1,5 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+vercel.json merge=ours
+vite.config.app.ts merge=ours
+package.json merge=ours
