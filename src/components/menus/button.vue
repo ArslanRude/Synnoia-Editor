@@ -1,0 +1,589 @@
+﻿<template>
+  <t-tooltip
+    :content="getTooltipContent"
+    :visible="tooltipVisible && !tooltipForceHide"
+    theme="light"
+    placement="top"
+    :attach="container"
+    :show-arrow="false"
+    destroy-on-close
+  >
+    <div
+      class="arslan-menu-button-wrap"
+      @click="tooltipVisible = false"
+      @mouseover="tooltipVisible = true"
+      @mouseleave="tooltipVisible = false"
+    >
+      <template v-if="menuType === 'button'">
+        <t-button
+          class="arslan-menu-button"
+          :class="{
+            huge: (huge && $toolbar.mode === 'ribbon') || forceHuge,
+            'show-text': !hideText,
+            active: menuActive && editor?.isEditable !== false,
+          }"
+          shape="square"
+          variant="text"
+          size="small"
+          :disabled="
+            !forceEnabled && (disabled || editor?.isEditable === false)
+          "
+          v-bind="attrs"
+          @click="menuClick"
+        >
+          <div class="arslan-button-content">
+            <slot />
+            <template v-if="ico">
+              <span
+                v-if="ico?.startsWith('<')"
+                class="arslan-button-icon-svg"
+                v-html="ico"
+              >
+              </span>
+              <icon v-else class="arslan-button-icon" :name="ico" />
+            </template>
+            <p class="arslan-button-text">{{ text }}</p>
+            <kbd v-if="shortcutText" class="arslan-button-kbd">
+              {{ getShortcut(shortcutText) }}
+            </kbd>
+          </div>
+        </t-button>
+      </template>
+      <template v-else-if="menuType === 'dropdown'">
+        <template v-if="popupHandle === 'arrow'">
+          <t-button
+            class="arslan-menu-button has-arrow"
+            :class="{
+              huge: (huge && $toolbar.mode === 'ribbon') || forceHuge,
+              'show-text': !hideText,
+              active: tooltipForceHide,
+            }"
+            variant="text"
+            size="small"
+            v-bind="attrs"
+            :disabled="
+              !forceEnabled && (disabled || editor?.isEditable === false)
+            "
+          >
+            <div class="arslan-button-content" @click="menuClick">
+              <slot />
+              <template v-if="ico">
+                <span
+                  v-if="ico?.startsWith('<')"
+                  class="arslan-button-icon-svg"
+                  v-html="ico"
+                >
+                </span>
+                <icon v-else class="arslan-button-icon" :name="ico" />
+              </template>
+              <p class="arslan-button-text">{{ text }}</p>
+              <kbd v-if="shortcutText" class="arslan-button-kbd">
+                {{ getShortcut(shortcutText) }}
+              </kbd>
+            </div>
+            <t-dropdown
+              v-bind="attrs"
+              trigger="click"
+              size="small"
+              :options="selectOptions"
+              :popup-props="{
+                overlayClassName: attrs['overlay-class-name'] as
+                  | string
+                  | undefined,
+                popperOptions: {
+                  modifiers: [
+                    { name: 'offset', options: { offset: [-22, 0] } },
+                  ],
+                },
+                onVisibleChange: popupVisileChange,
+                destroyOnClose: true,
+                attach: container,
+              }"
+              @click="attrs.onChange as any"
+            >
+              <span class="arslan-button-icon-arrow arslan-button-handle">
+                <icon name="arrow-down" />
+              </span>
+              <slot v-if="!selectOptions" name="dropmenu" />
+            </t-dropdown>
+          </t-button>
+        </template>
+        <template v-else>
+          <t-dropdown
+            v-bind="attrs"
+            trigger="click"
+            size="small"
+            :options="selectOptions"
+            :popup-props="{
+              overlayClassName: attrs['overlay-class-name'] as
+                | string
+                | undefined,
+              onVisibleChange: popupVisileChange,
+              destroyOnClose: true,
+              attach: container,
+            }"
+            @click="attrs.onChangeas as any"
+          >
+            <t-button
+              class="arslan-menu-button has-arrow"
+              :class="{
+                huge: (huge && $toolbar.mode === 'ribbon') || forceHuge,
+                'show-text': !hideText,
+                active: tooltipForceHide,
+              }"
+              variant="text"
+              size="small"
+              v-bind="attrs"
+              :disabled="
+                !forceEnabled && (disabled || editor?.isEditable === false)
+              "
+            >
+              <div class="arslan-button-content" @click="menuClick">
+                <slot />
+                <template v-if="ico">
+                  <span
+                    v-if="ico?.startsWith('<')"
+                    class="arslan-button-icon-svg"
+                    v-html="ico"
+                  >
+                  </span>
+                  <icon v-else class="arslan-button-icon" :name="ico" />
+                </template>
+                <p class="arslan-button-text">{{ text }}</p>
+                <kbd v-if="shortcutText" class="arslan-button-kbd">{{
+                  getShortcut(shortcutText)
+                }}</kbd>
+                <span
+                  v-if="$toolbar.mode === 'ribbon'"
+                  class="arslan-button-icon-arrow"
+                >
+                  <icon name="arrow-down" />
+                </span>
+              </div>
+              <span
+                v-if="$toolbar.mode === 'classic'"
+                class="arslan-button-icon-arrow"
+              >
+                <icon name="arrow-down" />
+              </span>
+            </t-button>
+            <slot v-if="!selectOptions" name="dropmenu" />
+          </t-dropdown>
+        </template>
+      </template>
+      <template v-else-if="menuType === 'select'">
+        <t-select
+          v-if="selectVisible"
+          size="small"
+          placement="bottom-left"
+          :on-popup-visible-change="popupVisileChange"
+          :value="selectValue"
+          :popup-props="{
+            destroyOnClose: true,
+            attach: container,
+          }"
+          v-bind="attrs"
+          :options="selectOptions"
+          :disabled="
+            !forceEnabled && (disabled || editor?.isEditable === false)
+          "
+          @change="menuClick"
+        >
+          <slot />
+        </t-select>
+      </template>
+      <template v-else-if="menuType === 'popup'">
+        <template v-if="popupHandle === 'arrow'">
+          <t-button
+            class="arslan-menu-button has-arrow"
+            :class="{
+              'show-text': !hideText,
+              active: popupVisible,
+            }"
+            variant="text"
+            size="small"
+            v-bind="attrs"
+            :disabled="
+              !forceEnabled && (disabled || editor?.isEditable === false)
+            "
+          >
+            <div class="arslan-button-content" @click="menuClick">
+              <slot />
+              <template v-if="ico">
+                <span
+                  v-if="ico?.startsWith('<')"
+                  class="arslan-button-icon-svg"
+                  v-html="ico"
+                >
+                </span>
+                <icon v-else class="arslan-button-icon" :name="ico" />
+              </template>
+              <p class="arslan-button-text">{{ text }}</p>
+              <kbd v-if="shortcutText" class="arslan-button-kbd">
+                {{ getShortcut(shortcutText) }}
+              </kbd>
+            </div>
+            <t-popup
+              :attach="container"
+              trigger="click"
+              placement="bottom-left"
+              v-bind="attrs"
+              :visible="popupVisible"
+              :popper-options="{
+                modifiers: [{ name: 'offset', options: { offset: [-22, 0] } }],
+              }"
+            >
+              <span
+                v-if="$toolbar.mode === 'ribbon'"
+                ref="popupHandleRef"
+                class="arslan-button-icon-arrow arslan-button-handle"
+                @click="togglePopup(!popupVisible)"
+              >
+                <icon name="arrow-down" />
+              </span>
+              <template #content>
+                <div ref="popupContentRef" class="arslan-popup-content">
+                  <slot name="content" />
+                </div>
+              </template>
+              <span
+                v-if="$toolbar.mode === 'classic'"
+                ref="popupHandleRef"
+                class="arslan-button-icon-arrow arslan-button-handle"
+                @click="togglePopup(!popupVisible)"
+              >
+                <icon name="arrow-down" />
+              </span>
+            </t-popup>
+          </t-button>
+        </template>
+        <template v-else>
+          <t-popup
+            :attach="container"
+            trigger="click"
+            placement="bottom-left"
+            :visible="popupVisible"
+          >
+            <t-button
+              ref="popupHandleRef"
+              class="arslan-menu-button has-arrow"
+              :class="{
+                huge: (huge && $toolbar.mode === 'ribbon') || forceHuge,
+                'show-text': !hideText,
+                active: popupVisible,
+              }"
+              variant="text"
+              size="small"
+              v-bind="attrs"
+              :disabled="
+                !forceEnabled && (disabled || editor?.isEditable === false)
+              "
+              @click="togglePopup(!popupVisible)"
+            >
+              <div class="arslan-button-content">
+                <slot />
+                <template v-if="ico">
+                  <span
+                    v-if="ico?.startsWith('<')"
+                    class="arslan-button-icon-svg"
+                    v-html="ico"
+                  >
+                  </span>
+                  <icon v-else class="arslan-button-icon" :name="ico" />
+                </template>
+                <p class="arslan-button-text">{{ text }}</p>
+                <kbd v-if="shortcutText" class="arslan-button-kbd">{{
+                  getShortcut(shortcutText)
+                }}</kbd>
+                <span
+                  v-if="$toolbar.mode === 'ribbon'"
+                  class="arslan-button-icon-arrow"
+                >
+                  <icon name="arrow-down" />
+                </span>
+              </div>
+              <span
+                v-if="$toolbar.mode === 'classic'"
+                class="arslan-button-icon-arrow"
+              >
+                <icon name="arrow-down" />
+              </span>
+            </t-button>
+            <template #content>
+              <div ref="popupContentRef" class="arslan-popup-content">
+                <slot name="content" />
+              </div>
+            </template>
+          </t-popup>
+        </template>
+      </template>
+      <template v-else>
+        <slot />
+      </template>
+    </div>
+  </t-tooltip>
+</template>
+
+<script setup lang="ts">
+import { isString } from '@tool-belt/type-predicates'
+import type { DropdownOption } from 'tdesign-vue-next'
+
+import { getShortcut } from '@/utils/shortcut'
+
+const { selectVisible } = useSelect()
+
+const props = defineProps({
+  // Menu type
+  menuType: {
+    type: String,
+    default: 'button',
+  },
+  // Whether it is a large button
+  huge: {
+    type: Boolean,
+    default: false,
+  },
+  // Whether to force it to be a large button, used for testing, not recommended to use
+  forceHuge: {
+    type: Boolean,
+    default: false,
+  },
+  // Button icon
+  ico: {
+    type: String,
+    default: undefined,
+  },
+  // Button text
+  text: {
+    type: String,
+    default: '',
+  },
+  hideText: {
+    type: Boolean,
+    default: false,
+  },
+  // Tooltip text
+  tooltip: {
+    type: [String, Boolean],
+    default: undefined,
+  },
+  // Shortcut
+  shortcut: {
+    type: String,
+    default: undefined,
+  },
+  shortcutText: {
+    type: String,
+    default: undefined,
+  },
+  // Dropdown,Select related
+  selectOptions: {
+    type: Array as PropType<DropdownOption[]>,
+    default: undefined,
+  },
+  selectValue: {
+    type: [String, Number],
+    default: '',
+  },
+  // Popup related
+  popupVisible: {
+    type: Boolean,
+    default: false,
+  },
+  popupHandle: {
+    type: String,
+    default: undefined,
+  },
+  // Menu active state
+  menuActive: {
+    type: Boolean,
+    default: false,
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+  forceEnabled: {
+    type: Boolean,
+    default: false,
+  },
+})
+const emits = defineEmits(['toggle-popup'])
+
+const attrs = useAttrs()
+const container = inject('container')
+const editor = inject('editor')
+const options = inject('options')
+const $toolbar = useState('toolbar', options)
+const menuClick = (...args: any[]) => {
+  if (attrs.onMenuClickThrough) {
+    ;(attrs.onMenuClickThrough as (...args: any[]) => void)(...args)
+  } else if (attrs.onMenuClick) {
+    ;(attrs.onMenuClick as (...args: any[]) => void)(...args)
+  }
+}
+
+const tooltipVisible = $ref(false)
+let tooltipForceHide = $ref(false)
+const popupVisileChange = (visible: boolean) => {
+  // Hide Tooltip, applicable to select, dropdown, popup, etc. when subcomponents are expanded, hide Tooltip
+  tooltipForceHide = visible
+}
+const getTooltipContent = () => {
+  if (props.tooltip === false) {
+    return ''
+  }
+  if (props.huge && props.tooltip) {
+    return `${props.tooltip}${props.shortcut ? ` (${getShortcut(props.shortcut)})` : ''}`
+  }
+  if (props.text) {
+    return `${isString(props.tooltip) && props.tooltip ? props.tooltip : props.text}${props.shortcut ? ` (${getShortcut(props.shortcut)})` : ''}`
+  }
+  return ''
+}
+watch(
+  () => props.popupVisible,
+  (val: boolean) => {
+    tooltipForceHide = val
+  },
+)
+
+// Popup related
+const popupHandleRef = ref(null)
+const popupContentRef = ref(null)
+const togglePopup = (visible: boolean) => {
+  emits('toggle-popup', visible)
+}
+onClickOutside(
+  popupContentRef,
+  () => {
+    emits('toggle-popup', false)
+  },
+  {
+    ignore: [popupHandleRef, '.arslan-popup'],
+  },
+)
+</script>
+
+<style lang="less" scoped>
+.arslan-menu-button {
+  --td-comp-paddingLR-s: 5px;
+  --td-radius-default: var(--arslan-radius);
+  border: none;
+  &.show-text {
+    width: auto;
+    padding-left: var(--td-comp-paddingLR-s);
+    padding-right: var(--td-comp-paddingLR-s);
+    .arslan-button-content .arslan-button-text {
+      display: block !important;
+      margin-left: 3px;
+    }
+  }
+  &[disabled] {
+    .arslan-button-icon {
+      --arslan-primary-color: var(--arslan-text-color-disabled);
+      color: var(--arslan-text-color-disabled) !important;
+    }
+    .arslan-button-text {
+      color: var(--arslan-text-color-disabled) !important;
+    }
+  }
+  &-wrap {
+    display: inline-flex;
+    &:not(:last-child) {
+      margin-right: 5px;
+    }
+  }
+  &.active {
+    background-color: var(--arslan-button-hover-background);
+    .arslan-button-icon-arrow.arslan-button-handle {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+  }
+  .arslan-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .arslan-button-icon,
+    :deep(.arslan-icon) {
+      font-size: 16px;
+    }
+    .arslan-button-icon-svg {
+      display: flex;
+      :deep(svg) {
+        width: 16px;
+        height: 16px;
+      }
+    }
+    .arslan-button-text {
+      display: none;
+    }
+  }
+  .arslan-button-icon-arrow {
+    display: flex;
+    border-top-right-radius: var(--td-radius-default);
+    border-bottom-right-radius: var(--td-radius-default);
+    width: 12px;
+    height: 26px;
+    align-items: center;
+    justify-content: center;
+    margin-right: -3px;
+    .arslan-button-icon {
+      font-size: 10px;
+      color: var(--arslan-text-color-light);
+    }
+    &.arslan-button-handle {
+      margin: 0 -4px 0 2px;
+      &:hover {
+        background-color: var(--td-bg-color-container-active);
+      }
+    }
+  }
+  &.huge {
+    width: auto;
+    padding: 0 var(--td-comp-paddingLR-s);
+    height: 56px;
+    margin-bottom: 0;
+    flex-direction: column;
+    .arslan-button-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      min-width: 32px;
+      .arslan-button-icon {
+        display: block;
+        font-size: 24px;
+        margin-top: 3px;
+      }
+      .arslan-button-icon-svg {
+        display: flex;
+        margin-top: 3px;
+        :deep(svg) {
+          width: 24px;
+          height: 24px;
+        }
+      }
+      .arslan-button-text {
+        display: block;
+        font-size: 12px;
+        color: var(--arslan-text-color);
+      }
+      .arslan-button-icon-arrow {
+        position: absolute;
+        left: calc(50% + 12px);
+        top: 2px;
+      }
+    }
+    &.has-arrow {
+      .arslan-button-content {
+        min-width: 40px;
+      }
+    }
+  }
+}
+:global(.arslan-popup-content) {
+  padding: var(--arslan-popup-content-padding);
+}
+</style>
+

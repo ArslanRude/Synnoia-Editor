@@ -1,0 +1,45 @@
+﻿import { mergeAttributes, Node } from '@tiptap/core'
+
+declare module '@tiptap/core' {
+  interface Commands<ReturnType> {
+    setPageBreak: {
+      setPageBreak: () => ReturnType
+    }
+  }
+}
+
+export default Node.create({
+  name: 'pageBreak',
+  group: 'block',
+  addOptions() {
+    return {
+      HTMLAttributes: {
+        class: 'arslan-page-break',
+        'data-line-number': false,
+        'data-content': t('page.break'),
+      },
+    }
+  },
+  parseHTML() {
+    return [{ tag: 'div[class*="arslan-page-break"]' }]
+  },
+  renderHTML({ HTMLAttributes }) {
+    return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes)]
+  },
+  addCommands() {
+    return {
+      setPageBreak:
+        () =>
+        ({ commands }) =>
+          commands.insertContent({
+            type: this.name,
+          }),
+    }
+  },
+  addKeyboardShortcuts() {
+    return {
+      'Mod-Enter': () => this.editor.commands.setPageBreak(),
+    }
+  },
+})
+

@@ -1,0 +1,187 @@
+﻿<template>
+  <menus-button
+    :ico="content ? 'edit' : 'mermaid'"
+    :text="content ? t('tools.mermaid.edit') : t('tools.mermaid.text')"
+    huge
+    @menu-click="menuClick"
+  >
+    <modal
+      :visible="dialogVisible"
+      icon="mermaid"
+      :header="content ? t('tools.mermaid.edit') : t('tools.mermaid.text')"
+      width="960px"
+      @confirm="setMermaid"
+      @close="dialogVisible = false"
+    >
+      <div class="arslan-mermaid-container">
+        <t-textarea
+          v-model="mermaidCode"
+          class="arslan-mermaid-code"
+          autofocus
+          :placeholder="t('tools.mermaid.placeholder')"
+        />
+        <div class="arslan-mermaid-render">
+          <div
+            class="arslan-mermaid-title"
+            v-text="t('tools.mermaid.preview')"
+          ></div>
+          <div
+            ref="mermaidRef"
+            class="arslan-mermaid-svg narrow-scrollbar"
+            v-html="svgCode"
+          ></div>
+        </div>
+      </div>
+    </modal>
+  </menus-button>
+</template>
+
+<script setup lang="ts">
+import mermaid from 'mermaid'
+import svg64 from 'svg64'
+
+import { shortId } from '@/utils/short-id'
+
+const props = defineProps({
+  content: {
+    type: String,
+    default: '',
+  },
+})
+
+let dialogVisible = $ref(false)
+const editor = inject('editor')
+const container = inject('container')
+const uploadFileMap = inject('uploadFileMap')
+
+// Initialize Mermaid
+const mermaidInit = () => {
+  mermaid.initialize({
+    darkMode: false,
+    startOnLoad: false,
+    // fontFamily:'',
+    fontSize: 12,
+    theme: 'base',
+  })
+}
+
+const menuClick = () => {
+  dialogVisible = true
+  mermaidInit()
+}
+
+// Render Mermaid
+const defaultCode = 'graph TB\na-->b'
+let mermaidCode = $ref('')
+let svgCode = $ref('')
+const mermaidRef = $ref<HTMLElement | null>(null)
+const renderMermaid = async () => {
+  try {
+    const { svg } = await mermaid.render('mermaid-svg', mermaidCode)
+    svgCode = svg
+  } catch {
+    svgCode = ''
+  }
+}
+watch(
+  () => dialogVisible,
+  (val: boolean) => {
+    if (val) {
+      mermaidCode = props.content ?? defaultCode
+    }
+  },
+  { immediate: true },
+)
+watch(
+  () => mermaidCode,
+  async () => {
+    if (dialogVisible) {
+      await nextTick()
+      void renderMermaid()
+    }
+  },
+  { immediate: true },
+)
+
+// Create or update Mermaid
+const setMermaid = () => {
+  if (mermaidCode === '') {
+    useMessage('error', {
+      attach: container,
+      content: t('tools.mermaid.notEmpty'),
+    })
+    return
+  }
+  if (!props.content || (props.content && props.content !== mermaidCode)) {
+    const id = shortId(10)
+    const svg = mermaidRef.querySelector('svg')
+    const { width, height } = svg.getBoundingClientRect()
+    const name = `mermaid-${shortId()}.svg`
+    const blob = new Blob([svg.outerHTML], {
+      type: 'image/svg+xml',
+    })
+    const file = new File([blob], name, {
+      type: 'image/svg+xml',
+    })
+    uploadFileMap.value.set(id, file)
+    editor.value
+      ?.chain()
+      .focus()
+      .setImage(
+        {
+          id,
+          type: 'mermaid',
+          name,
+          size: file.size,
+          src: svg64(svgCode),
+          content: mermaidCode,
+          width,
+          height,
+          equalProportion: false,
+        },
+        !!props.content,
+      )
+      .run()
+  }
+  dialogVisible = false
+}
+</script>
+
+<style lang="less" scoped>
+.arslan-mermaid-container {
+  display: flex;
+  .arslan-mermaid-code {
+    width: 320px;
+    margin-left: 2px;
+    :deep(.arslan-textarea__inner) {
+      height: 100%;
+      resize: none;
+    }
+  }
+  .arslan-mermaid-render {
+    flex: 1;
+    margin-left: 20px;
+    border: solid 1px var(--td-border-level-2-color);
+    border-radius: var(--arslan-radius);
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    .arslan-mermaid-title {
+      background-color: var(--arslan-button-hover-background);
+      padding: 0 10px;
+      position: absolute;
+      font-size: 12px;
+      border-bottom-right-radius: var(--arslan-radius);
+    }
+    .arslan-mermaid-svg {
+      box-sizing: border-box;
+      height: 320px;
+      padding: 40px 20px 20px;
+      overflow: auto;
+      display: flex;
+      justify-content: center;
+    }
+  }
+}
+</style>
+

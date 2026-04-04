@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-primary-light: hsl(0, 0%, 90%);
+    --color-secondary-light: hsl(0, 0%, 95%);
+    --color-highlight-light: hsl(0, 0%, 100%);
+    --color-primary-dark: hsl(0, 0%, 0%);
+    --color-secondary-dark: hsl(0, 0%, 5%);
+    --color-highlight-dark: hsl(0, 0%, 10%);
+    --color-text-light: hsl(0, 0%, 5%);
+    --color-muted-text-light: hsl(0, 0%, 30%);
+    --color-text-dark: hsl(0, 0%, 95%);
+    --color-muted-text-dark: hsl(0, 0%, 70%);
+  }
