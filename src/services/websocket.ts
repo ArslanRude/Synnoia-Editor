@@ -37,8 +37,14 @@ export class WebSocketService {
             if (this.pendingMessage) {
               if (response.error) {
                 this.pendingMessage.reject(new Error(response.error))
+              } else if (response.suggestion) {
+                // Handle new response format: {suggestion, cached}
+                if (response.cached) {
+                  console.log('Suggestion served from cache')
+                }
+                this.pendingMessage.resolve(response.suggestion)
               } else {
-                this.pendingMessage.resolve(response.suggestion ?? '')
+                this.pendingMessage.reject(new Error('Invalid response format'))
               }
               this.pendingMessage = null
             }
@@ -97,6 +103,15 @@ export class WebSocketService {
   }
 
   async getSuggestion(prefixText: string, suffixText: string): Promise<string> {
+    // Check if both prefix and suffix are empty or only whitespace
+    const trimmedPrefix = prefixText.trim()
+    const trimmedSuffix = suffixText.trim()
+    if (!trimmedPrefix && !trimmedSuffix) {
+      return Promise.reject(
+        new Error('Cannot send request with empty prefix and suffix'),
+      )
+    }
+
     // Ensure connection is established
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       try {
