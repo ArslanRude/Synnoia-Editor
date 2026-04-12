@@ -67,72 +67,76 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
+        <Teleport to="body">
+          <div v-if="showMobileMenu" 
+              style="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,0.5)"
+              @click="showMobileMenu = false">
+          </div>
 
-        <!-- Mobile Menu - Slide out panel like sidebar -->
-        <t-drawer
-  :visible="showMobileMenu"
-  @update:visible="showMobileMenu = $event"
-  @close="showMobileMenu = false"
-  @overlay-click="showMobileMenu = false"
-  placement="right"
-  :footer="false"
-  :size="'280px'"
-  :close-btn="false">
-          <div class="mobile-menu-panel">
-            <!-- Simple Header -->
-            <div class="mobile-menu-header">
-              <span class="mobile-menu-title">Menu</span>
-              <button class="mobile-menu-close" @click.stop="closeMobileMenu">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
+          <!-- Drawer Panel -->
+          <div :class="showMobileMenu ? 'menu-open' : ''"
+              style="position:fixed;top:0;right:0;height:100%;width:280px;z-index:9999;
+                      transform:translateX(100%);transition:transform 0.25s ease;
+                      display:flex;flex-direction:column;"
+              :style="showMobileMenu 
+                ? 'transform:translateX(0)' 
+                : 'transform:translateX(100%)'">
 
-            <!-- Menu Items - Simple List -->
-            <div class="mobile-menu-content">
-              <!-- Theme Toggle -->
-              <button class="mobile-menu-item" @click="toggleDark(); showMobileMenu = false">
-                <span class="mobile-menu-icon">
-                  <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <circle cx="12" cy="12" r="5" />
-                    <path
-                      d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
+            <!-- Reuse your existing mobile-menu-panel content here -->
+            <div class="mobile-menu-panel">
+              <div class="mobile-menu-header">
+                <span class="mobile-menu-title">Menu</span>
+                <button type="button" class="mobile-menu-close" @click="showMobileMenu = false">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" 
+                      stroke="currentColor" stroke-width="2">
+                    <path d="M18 6L6 18M6 6l12 12"/>
                   </svg>
-                  <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2">
-                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-                  </svg>
-                </span>
-                <span class="mobile-menu-label">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
-              </button>
+                </button>
+              </div>
 
-              <!-- User Profile -->
-              <button class="mobile-menu-item" @click="showMobileMenu = false">
-                <span class="mobile-menu-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                    <circle cx="12" cy="7" r="4" />
-                  </svg>
-                </span>
-                <span class="mobile-menu-label">Profile</span>
-              </button>
+              <div class="mobile-menu-content">
+                <!-- Theme Toggle -->
+                <button type="button" class="mobile-menu-item" @click="toggleDark(); showMobileMenu = false">
+                  <span class="mobile-menu-icon">
+                    <svg v-if="isDark" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+                        stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="5"/>
+                      <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" 
+                        stroke="currentColor" stroke-width="2">
+                      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                  </span>
+                  <span class="mobile-menu-label">{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
+                </button>
 
-              <!-- Divider -->
-              <div class="mobile-menu-divider"></div>
+                <!-- User Profile -->
+                <button type="button" class="mobile-menu-item" @click="showMobileMenu = false">
+                  <span class="mobile-menu-icon">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" 
+                        stroke="currentColor" stroke-width="2">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                      <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                  </span>
+                  <span class="mobile-menu-label">Profile</span>
+                </button>
 
-              <!-- Save Status -->
-              <button class="mobile-menu-item" :class="{ 'is-saved': isSaved }"
-                @click="saveDocument(); showMobileMenu = false">
-                <span class="mobile-menu-icon">
-                  <span class="save-status-dot" :class="isSaved ? 'saved' : 'unsaved'"></span>
-                </span>
-                <span class="mobile-menu-label">{{ isSaved ? 'Saved' : 'Save Document' }}</span>
-              </button>
+                <div class="mobile-menu-divider"></div>
+
+                <!-- Save -->
+                <button type="button" class="mobile-menu-item" :class="{ 'is-saved': isSaved }"
+                        @click="saveDocument(); showMobileMenu = false">
+                  <span class="mobile-menu-icon">
+                    <span class="save-status-dot" :class="isSaved ? 'saved' : 'unsaved'"></span>
+                  </span>
+                  <span class="mobile-menu-label">{{ isSaved ? 'Saved' : 'Save Document' }}</span>
+                </button>
+              </div>
             </div>
           </div>
-        </t-drawer>
+        </Teleport>
       </div>
     </div>
   </nav>
