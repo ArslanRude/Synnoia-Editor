@@ -150,9 +150,6 @@ export default {
       },
       toggleSidebar: () => {
         emit('toggle-sidebar');
-      },
-      closeMobileMenu: () => {
-        this.showMobileMenu = false;
       }
     };
   },
@@ -281,6 +278,9 @@ export default {
   color: #6b7280;
   cursor: pointer;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 100;
+  pointer-events: auto;
 }
 
 .mobile-menu-close:hover {
