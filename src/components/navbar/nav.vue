@@ -44,8 +44,9 @@
           <icon name="user" size="20" color="currentcolor" />
         </button>
         <button
-          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center">
-          <icon name="sidebar" size="20" color="currentcolor" @click="toggleSidebar" />
+          class="p-2 hover:bg-highlight-light dark:hover:bg-highlight-dark rounded-lg transition-colors duration-200 text-black dark:text-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
+          @click="toggleSidebar">
+          <icon name="sidebar" size="20" color="currentcolor" />
         </button>
       </div>
 
@@ -68,12 +69,12 @@
         </button>
 
         <!-- Mobile Menu - Slide out panel like sidebar -->
-        <t-drawer v-model:visible="showMobileMenu" placement="right" :footer="false" :size="'280px'" :close-btn="false">
+        <t-drawer :visible="showMobileMenu" @update:visible="showMobileMenu = $event" placement="right" :footer="false" :size="'280px'" :close-btn="false" @overlay-click="closeMobileMenu">
           <div class="mobile-menu-panel">
             <!-- Simple Header -->
             <div class="mobile-menu-header">
               <span class="mobile-menu-title">Menu</span>
-              <button class="mobile-menu-close" @click="showMobileMenu = false">
+              <button class="mobile-menu-close" @click.stop="closeMobileMenu">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M18 6L6 18M6 6l12 12" />
                 </svg>
@@ -149,6 +150,9 @@ export default {
       },
       toggleSidebar: () => {
         emit('toggle-sidebar');
+      },
+      closeMobileMenu: () => {
+        this.showMobileMenu = false;
       }
     };
   },
@@ -163,6 +167,9 @@ export default {
   methods: {
     saveDocumentName() {
       // Add your logic to save the document name
+    },
+    closeMobileMenu() {
+      this.showMobileMenu = false;
     },
     saveDocument() {
       // Call the actual save method from parent
