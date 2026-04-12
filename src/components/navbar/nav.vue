@@ -69,7 +69,15 @@
         </button>
 
         <!-- Mobile Menu - Slide out panel like sidebar -->
-        <t-drawer :visible="showMobileMenu" @update:visible="showMobileMenu = $event" placement="right" :footer="false" :size="'280px'" :close-btn="false" @overlay-click="closeMobileMenu">
+        <t-drawer
+  :visible="showMobileMenu"
+  @update:visible="showMobileMenu = $event"
+  @close="showMobileMenu = false"
+  @overlay-click="showMobileMenu = false"
+  placement="right"
+  :footer="false"
+  :size="'280px'"
+  :close-btn="false">
           <div class="mobile-menu-panel">
             <!-- Simple Header -->
             <div class="mobile-menu-header">
