@@ -69,6 +69,7 @@
   "dependencies": {
     "@eslint/object-schema": "^2.1.4",
     "@imgly/background-removal": "1.5.5",
+    "@supabase/supabase-js": "^2.103.3",
     "@tiptap-extend/columns": "^2.1.6",
     "@tiptap/core": "^2.11.5",
     "@tiptap/extension-bold": "2.11.5",
@@ -130,7 +131,6 @@
     "qrcode-svg": "^1.1.0",
     "sign-canvas-plus": "^2.0.3",
     "smooth-signature": "^1.0.15",
-    "supabase": "^2.92.1",
     "svg64": "^2.0.0",
     "tippy.js": "^6.3.7",
     "vue-i18n": "^10.0.0",
