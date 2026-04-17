@@ -22,12 +22,42 @@ const isAuthenticated = computed(() => !!user.value)
 // Track if listener is already set up
 let authListenerInitialized = false
 
+// Cross-domain auth: Check for tokens in URL hash BEFORE anything else
+const hash = window.location.hash
+const hashParams = new URLSearchParams(hash.substring(1))
+const accessTokenFromHash = hashParams.get('access_token')
+const refreshTokenFromHash = hashParams.get('refresh_token')
+
+// Immediately clear hash to prevent tokens in browser history
+if (accessTokenFromHash || refreshTokenFromHash) {
+  window.history.replaceState({}, document.title, window.location.pathname + window.location.search)
+}
+
 // Initialize auth state
 export function useAuth() {
   // Check auth state on mount
   const checkAuth = async () => {
     isLoading.value = true
     try {
+      // If tokens were in hash, set session from them (cross-domain auth)
+      if (accessTokenFromHash && refreshTokenFromHash) {
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessTokenFromHash,
+          refresh_token: refreshTokenFromHash
+        })
+        
+        if (error) {
+          console.error('Failed to set session from hash tokens:', error)
+          // Fall through to normal session check
+        } else if (data.session) {
+          user.value = data.session.user
+          await fetchProfile(data.session.user.id)
+          isLoading.value = false
+          return
+        }
+      }
+      
+      // Normal session check (same-domain or already authenticated)
       const { data: { session }, error } = await supabase.auth.getSession()
       
       if (error) {
