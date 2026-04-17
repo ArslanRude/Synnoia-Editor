@@ -24,11 +24,20 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import Synnoia from '@/components/index.vue'
 import Nav from '@/components/navbar/nav.vue'
 import AgentPanel from '@/components/sidebar/sidebar.vue'
 import { shortId } from '@/utils/short-id'
 import { templates } from '@/data/templates'
+import { useAuth } from '@/composables/useAuth'
+
+// Initialize auth state (optional - editor works without login)
+const { checkAuth } = useAuth()
+
+onMounted(async () => {
+  await checkAuth()
+})
 
 let isSidebarOpen = $ref(false)
 let sidebarWidth = $ref(400) // Default width in pixels
