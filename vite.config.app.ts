@@ -10,7 +10,7 @@ import { createSvgIconsPlugin } from 'vite-plugin-svg-icons'
 import tsConfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
-  base: '/',  // Changed from '/my-word' to '/'
+  base: '/',
   plugins: [
     tailwindcss(),
     tsConfigPaths(),
