@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import type { User, AuthError } from '@supabase/supabase-js'
-import { supabase } from './useSupabase'
+import { supabase } from './client'
 
 export interface UserProfile {
   id: string

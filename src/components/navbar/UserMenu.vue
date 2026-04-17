@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useAuth } from '@/composables/useAuth'
+import { useAuth } from '@/auth'
 
 const { user, profile, isLoading, isAuthenticated, displayName, avatarUrl, signOut, checkAuth } = useAuth()
 

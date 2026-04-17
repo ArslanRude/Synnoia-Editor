@@ -30,7 +30,7 @@ import Nav from '@/components/navbar/nav.vue'
 import AgentPanel from '@/components/sidebar/sidebar.vue'
 import { shortId } from '@/utils/short-id'
 import { templates } from '@/data/templates'
-import { useAuth } from '@/composables/useAuth'
+import { useAuth } from '@/auth'
 
 // Initialize auth state (optional - editor works without login)
 const { checkAuth } = useAuth()

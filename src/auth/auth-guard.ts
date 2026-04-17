@@ -1,4 +1,4 @@
-import { useAuth } from '@/composables/useAuth'
+import { useAuth } from './useAuth'
 
 // Auth guard for protecting routes/pages
 export async function requireAuth(): Promise<boolean> {
