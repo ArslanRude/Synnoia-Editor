@@ -105,7 +105,6 @@
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
           <div class="px-5 shrink-0 first:pl-0 empty:hidden">
             <menus-toolbar-insert-template v-if="!disableItem('template')" />
-            <menus-toolbar-insert-web-page v-if="!disableItem('webPage')" />
           </div>
           <div class="px-5 shrink-0 first:pl-0 empty:hidden">
             <slot name="toolbar_insert" toolbar-mode="ribbon" />

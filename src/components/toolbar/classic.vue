@@ -85,7 +85,6 @@
         </div>
         <div class="arslan-virtual-group">
           <menus-toolbar-insert-template v-if="!disableItem('template')" />
-          <menus-toolbar-insert-web-page v-if="!disableItem('webPage')" />
         </div>
         <div class="virtual-group is-slot">
           <slot name="toolbar_insert" toolbar-mode="classic" />
