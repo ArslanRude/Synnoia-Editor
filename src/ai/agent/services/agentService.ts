@@ -4,21 +4,9 @@
  * Client-side service for communicating with the AI backend.
  * Routes requests through /api/agent (Vite proxy in dev).
  */
-import type { TipTapDoc } from '@/utils/diffEngine'
+import type { TipTapDoc } from '@/ai/diff'
 
-export interface AgentRequest {
-  prompt: string
-  document: TipTapDoc // Always full document (for context/undo)
-  selectionDoc?: TipTapDoc // Selected content as JSON (if selection exists)
-  selectionText?: string // Plain text of selection (for reference)
-  hasSelection: boolean // Flag to indicate selection mode
-  model?: string // Selected AI model name
-}
-
-export interface AgentResponse {
-  content: TipTapDoc | string
-  streaming?: boolean
-}
+import type { AgentRequest } from '../types'
 
 const AGENT_ENDPOINT = '/api/agent'
 const REQUEST_TIMEOUT = 60000 // 60s

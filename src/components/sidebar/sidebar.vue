@@ -226,8 +226,7 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
 
-import { useAgentSidebar } from '@/composables/useAgentSidebar'
-import { sendMockAgentRequest } from '@/services/agentService'
+import { useAgent, sendMockAgentRequest } from '@/ai/agent'
 
 interface Props {
     isOpen?: boolean
@@ -247,7 +246,7 @@ const emit = defineEmits<{
 }>()
 
 // Agent composable
-const agent = useAgentSidebar()
+const agent = useAgent()
 
 // Local UI state
 let selectedModel = $ref('gpt-4o')

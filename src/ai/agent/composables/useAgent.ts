@@ -1,53 +1,19 @@
 /**
- * AI Agent Sidebar Composable
+ * AI Agent Composable
  *
  * Encapsulates all agent state logic: status machine, document snapshots,
  * diff computation, accept/reject flow, undo stack, and change history.
  */
 import type { Editor } from '@tiptap/vue-3'
 
-import {
-  acceptDiffDocument,
-  createDiffDocument,
-  rejectDiffDocument,
-} from '@/utils/diffApplier'
-import { documentsEqual, type TipTapDoc } from '@/utils/diffEngine'
+import { acceptDiffDocument, createDiffDocument, rejectDiffDocument } from '@/ai/diff'
+import { documentsEqual, type TipTapDoc } from '@/ai/diff'
 
-// --- Types ---
+import type { AgentMessage, AgentStatus, HistoryEntry, UndoEntry } from '../types'
 
-export type AgentStatus =
-  | 'idle'
-  | 'thinking'
-  | 'proposing'
-  | 'awaiting-confirmation'
-  | 'applied'
-  | 'rejected'
+export type { AgentMessage, AgentStatus, HistoryEntry }
 
-export interface AgentMessage {
-  id: string
-  role: 'user' | 'assistant' | 'system'
-  content: string
-  timestamp: Date
-  status?: 'streaming' | 'complete' | 'error'
-}
-
-export interface HistoryEntry {
-  id: string
-  action: 'accepted' | 'rejected' | 'regenerated'
-  prompt: string
-  timestamp: Date
-}
-
-interface UndoEntry {
-  originalDoc: TipTapDoc
-  appliedDoc: TipTapDoc
-  prompt: string
-  timestamp: Date
-}
-
-// --- Composable ---
-
-export function useAgentSidebar() {
+export function useAgent() {
   // Reactive state
   const status = ref<AgentStatus>('idle')
   const messages = ref<AgentMessage[]>([])

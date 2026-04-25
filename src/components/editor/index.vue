@@ -36,7 +36,7 @@ import { Editor, EditorContent } from '@tiptap/vue-3'
 
 import { getDefaultExtensions, inputAndPasteRules } from '@/extensions'
 import { contentTransform } from '@/utils/content-transform'
-import { websocketService } from '@/services/websocket'
+import { websocketService } from '@/ai/completion'
 
 const destroyed = inject('destroyed')
 const page = inject('page')

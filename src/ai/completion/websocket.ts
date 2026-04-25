@@ -1,4 +1,4 @@
-import { WEBSOCKET_CONFIG } from '../config/websocket'
+import { WEBSOCKET_CONFIG } from './config'
 
 export class WebSocketService {
   private ws: WebSocket | null = null
@@ -8,6 +8,7 @@ export class WebSocketService {
     resolve: (value: string) => void
     reject: (error: Error) => void
   } | null = null
+
   async connect(): Promise<void> {
     if (this.ws?.readyState === WebSocket.OPEN) {
       return

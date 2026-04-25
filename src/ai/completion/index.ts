@@ -2,12 +2,15 @@ import { Extension } from '@tiptap/core'
 import { Plugin, PluginKey } from '@tiptap/pm/state'
 import { Decoration, DecorationSet } from '@tiptap/pm/view'
 
-import { WEBSOCKET_CONFIG } from '../../config/websocket'
-import { getSuggestion } from './suggestion'
+import { WEBSOCKET_CONFIG } from './config'
 
-export interface CompletionOptions {
-  suggestion: (prefixText: string, suffixText: string) => Promise<string>
-}
+import { getSuggestion } from './suggestion'
+import type { CompletionOptions } from './types'
+
+export * from './types'
+export * from './config'
+export * from './websocket'
+export { getSuggestion }
 
 export const completionPluginKey = new PluginKey('completion')
 

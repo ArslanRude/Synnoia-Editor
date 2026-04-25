@@ -1,4 +1,4 @@
-import { websocketService } from '../../services/websocket'
+import { websocketService } from './websocket'
 
 export const getSuggestion = async (
   prefixText: string,
