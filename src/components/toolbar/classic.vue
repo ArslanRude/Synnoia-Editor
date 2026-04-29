@@ -176,9 +176,8 @@
       </template>
       <template v-if="currentMenu === 'export'">
         <div class="arslan-virtual-group">
-          <menus-toolbar-export-image v-if="!disableItem('exportImage')" />
-          <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-text v-if="!disableItem('exportText')" />
+          <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-word v-if="!disableItem('exportWord')" />
         </div>
         <div class="virtual-group is-slot">

@@ -18,7 +18,7 @@ export interface AgentMessage {
 
 export interface HistoryEntry {
   id: string
-  action: 'accepted' | 'rejected' | 'regenerated'
+  action: 'accepted' | 'rejected'
   prompt: string
   timestamp: Date
 }
@@ -27,6 +27,7 @@ export interface AgentRequest {
   prompt: string
   document: TipTapDoc // Always full document (for context/undo)
   selectionDoc?: TipTapDoc // Selected content as JSON (if selection exists)
+  parentNode?: TipTapDoc // Full parent node containing the selection
   selectionText?: string // Plain text of selection (for reference)
   hasSelection: boolean // Flag to indicate selection mode
   model?: string // Selected AI model name

@@ -20,6 +20,7 @@ export async function sendAgentRequest(
   document: TipTapDoc,
   selectionText = '',
   selectionDoc?: TipTapDoc,
+  parentNode?: TipTapDoc,
   model?: string,
 ): Promise<TipTapDoc | ReadableStream<string>> {
   const controller = new AbortController()
@@ -35,6 +36,7 @@ export async function sendAgentRequest(
         prompt,
         document,
         selectionDoc,
+        parentNode,
         selectionText,
         hasSelection: !!selectionDoc,
         model,
@@ -96,6 +98,7 @@ export async function sendMockAgentRequest(
   document: TipTapDoc,
   _selectionText = '',
   _selectionDoc?: TipTapDoc,
+  _parentNode?: TipTapDoc,
 ): Promise<TipTapDoc> {
   // Simulate network delay
   await new Promise((resolve) =>

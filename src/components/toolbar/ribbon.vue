@@ -230,9 +230,8 @@
         <template v-if="currentMenu === 'export'">
           <div class="px-5 shrink-0 first:pl-0 empty:hidden">
             <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
-            <menus-toolbar-export-image v-if="!disableItem('exportImage')" />
-            <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
             <menus-toolbar-export-text v-if="!disableItem('exportText')" />
+            <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
             <menus-toolbar-export-word v-if="!disableItem('exportWord')" />
           </div>
           <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>

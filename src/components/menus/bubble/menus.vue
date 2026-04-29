@@ -117,10 +117,8 @@
     <menus-bubble-node-delete />
   </template>
   <template v-else>
-    <template v-if="options.ai?.assistant?.enabled">
-      <menus-bubble-assistant />
-      <div class="arslan-bubble-menu-divider"></div>
-    </template>
+    <menus-bubble-synnoia-agent />
+    <div class="arslan-bubble-menu-divider"></div>
     <menus-toolbar-base-font-size :select="false" />
     <div
       v-if="

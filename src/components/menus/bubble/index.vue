@@ -1,18 +1,14 @@
 ﻿<template>
   <bubble-menu
     class="arslan-editor-bubble-menu"
-    :class="{ assistant }"
     :editor="editor!"
     :tippy-options="tippyOpitons"
   >
-    <menus-bubble-menus
-      v-if="options?.document?.enableBubbleMenu && !assistant"
-    >
+    <menus-bubble-menus v-if="options?.document?.enableBubbleMenu">
       <template #bubble_menu="props">
         <slot name="bubble_menu" v-bind="props" />
       </template>
     </menus-bubble-menus>
-    <ai-assistant-input v-if="options?.ai?.assistant?.enabled && assistant" />
   </bubble-menu>
 </template>
 
@@ -21,7 +17,6 @@ import { BubbleMenu } from '@tiptap/vue-3'
 import type { Instance } from 'tippy.js'
 
 const editor = inject('editor')
-const assistant = inject('assistant')
 const options = inject('options')
 
 // Bubble menu
@@ -33,25 +28,10 @@ const tippyOpitons = $ref<Partial<Instance>>({
   onShow(instance: Instance) {
     tippyInstance = instance
   },
-  onHide() {
-    assistant.value = false
-  },
   onDestroy() {
     tippyInstance = null
   },
 })
-
-// Assistant
-watch(
-  () => [assistant.value],
-  (visible: any[]) => {
-    if (tippyInstance) {
-      tippyInstance?.setProps({
-        placement: visible.includes(true) ? 'bottom' : 'top',
-      })
-    }
-  },
-)
 
 // Destroy tippy
 onUnmounted(() => {
@@ -69,12 +49,10 @@ onUnmounted(() => {
   align-items: center;
   flex-wrap: wrap;
 
-  &:not(.assistant) {
-    padding: 8px 10px;
-    box-shadow: var(--arslan-shadow);
-    border: 1px solid var(--arslan-border-color);
-    background-color: var(--arslan-color-white);
-  }
+  padding: 8px 10px;
+  box-shadow: var(--arslan-shadow);
+  border: 1px solid var(--arslan-border-color);
+  background-color: var(--arslan-color-white);
 
   &:empty {
     display: none;

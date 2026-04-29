@@ -9,7 +9,7 @@
     :select-value="
       isTypeRunning
         ? null
-        : editor?.getAttributes('textStyle').fontSize || '12px'
+        : editor?.getAttributes('textStyle').fontSize || '14px'
     "
     v-bind="$attrs"
     :placeholder="t('base.fontSize.text')"
@@ -79,7 +79,7 @@ const increaseFontSize = () => {
       setFontSize(nextFont.value)
     }
   } else {
-    setFontSize('12px')
+    setFontSize('14px')
   }
 }
 
@@ -96,7 +96,7 @@ const decreaseFontSize = () => {
       setFontSize(prevFont.value)
     }
   } else {
-    setFontSize('12px')
+    setFontSize('14px')
   }
 }
 </script>
