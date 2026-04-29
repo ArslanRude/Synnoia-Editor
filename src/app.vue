@@ -2,7 +2,7 @@
   <div class="h-screen flex flex-col overflow-hidden">
     <!-- Navbar - fixed height -->
     <div class="flex-shrink-0">
-      <Nav @toggle-sidebar="isSidebarOpen = !isSidebarOpen" />
+      <Nav @toggle-sidebar="toggleSidebar" />
     </div>
 
     <!-- Content area with editor and sidebar -->
@@ -14,7 +14,7 @@
 
       <!-- AI Agent Panel - integrated into layout -->
       <AgentPanel v-if="isSidebarOpen" :is-open="isSidebarOpen" :width="sidebarWidth" :editor="editorRef?.getEditor?.()"
-        @update:is-open="isSidebarOpen = $event" @update:width="sidebarWidth = $event" />
+        :initial-selection="selectedTextForAgent" @update:is-open="isSidebarOpen = $event" @update:width="sidebarWidth = $event" />
     </div>
 
     <!-- <div class="box">
@@ -24,7 +24,6 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
 import Synnoia from '@/components/index.vue'
 import Nav from '@/components/navbar/nav.vue'
 import AgentPanel from '@/components/sidebar/sidebar.vue'
@@ -35,13 +34,30 @@ import { useAuth } from '@/auth'
 // Initialize auth state (optional - editor works without login)
 const { checkAuth } = useAuth()
 
-onMounted(async () => {
-  await checkAuth()
-})
-
 let isSidebarOpen = $ref(false)
 let sidebarWidth = $ref(400) // Default width in pixels
+let selectedTextForAgent = $ref('')
 const editorRef = $ref(null)
+
+// Handle sidebar toggle - clear selection when closing
+const toggleSidebar = () => {
+  isSidebarOpen = !isSidebarOpen
+  if (!isSidebarOpen) {
+    selectedTextForAgent = ''
+  }
+}
+
+// Initialize on mount
+onMounted(async () => {
+  await checkAuth()
+
+  // Listen for synnoia agent open event from bubble menu
+  window.addEventListener('synnoia:open-agent', (event: any) => {
+    const selectionText = event.detail?.selectionText || ''
+    selectedTextForAgent = selectionText
+    isSidebarOpen = true
+  })
+})
 const options = $ref({
   theme: 'light',
   toolbar: {

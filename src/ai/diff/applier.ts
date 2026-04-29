@@ -1,6 +1,6 @@
 import type { Editor } from '@tiptap/vue-3'
 
-import type { TipTapDoc, TipTapNode } from './diffEngine'
+import type { TipTapDoc, TipTapNode } from './engine'
 
 /**
  * Apply inline diff marks to a new document based on LCS differences.

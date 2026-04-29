@@ -85,7 +85,6 @@
         </div>
         <div class="arslan-virtual-group">
           <menus-toolbar-insert-template v-if="!disableItem('template')" />
-          <menus-toolbar-insert-web-page v-if="!disableItem('webPage')" />
         </div>
         <div class="virtual-group is-slot">
           <slot name="toolbar_insert" toolbar-mode="classic" />
@@ -177,9 +176,8 @@
       </template>
       <template v-if="currentMenu === 'export'">
         <div class="arslan-virtual-group">
-          <menus-toolbar-export-image v-if="!disableItem('exportImage')" />
-          <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-text v-if="!disableItem('exportText')" />
+          <menus-toolbar-export-pdf v-if="!disableItem('exportPDF')" />
           <menus-toolbar-export-word v-if="!disableItem('exportWord')" />
         </div>
         <div class="virtual-group is-slot">

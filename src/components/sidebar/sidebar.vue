@@ -13,7 +13,7 @@
                 <div class="header-main">
                     <div class="header-title">
                         <div class="agent-avatar">
-                            <img src="/src/assets/logo/Synnoia Logo Black.png" alt="Synnoia Logo">
+                            <img src="/src/assets/logo/Synnoia Logo.png" alt="Synnoia Logo">
                         </div>
                         <h2>Synnoia</h2>
                     </div>
@@ -53,12 +53,6 @@
                     <button class="tab-segment" :class="{ active: activeTab === 'chatHistory' }"
                         @click="activeTab = 'chatHistory'">
                         Sessions
-                    </button>
-                    <button class="tab-segment" :class="{ active: activeTab === 'history' }"
-                        @click="activeTab = 'history'">
-                        Changes
-                        <span v-if="agent.history.value.length > 0" class="tab-badge">{{ agent.history.value.length
-                            }}</span>
                     </button>
                 </div>
             </div>
@@ -136,19 +130,25 @@
                             </svg>
                             Reject
                         </button>
-                        <button class="confirm-btn confirm-btn--regen" @click="handleRegenerate">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="23 4 23 10 17 10"></polyline>
-                                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
-                            </svg>
-                            Regenerate
-                        </button>
                     </div>
                 </div>
 
                 <!-- Input Area -->
                 <div class="input-container">
+                    <!-- Selected Text Reference -->
+                    <div v-if="selectedTextReference" class="selection-reference">
+                        <div class="selection-chip">
+                            <span class="selection-label">Selected:</span>
+                            <span class="selection-text">{{ selectedTextReference.length > 50 ? selectedTextReference.slice(0, 50) + '...' : selectedTextReference }}</span>
+                            <button class="selection-clear" @click="clearSelectionReference" title="Clear selection">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
                     <div class="input-wrapper">
                         <select v-model="selectedModel" class="model-select" title="Choose LLM Model">
                             <option value="gpt-4o">GPT-4o</option>
@@ -178,7 +178,7 @@
 
             <!-- Chat History Tab -->
             <template v-if="activeTab === 'chatHistory'">
-                <div class="history-container">
+                <div class="chat-history-container">
                     <div class="empty-state">
                         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1.5">
@@ -190,35 +190,6 @@
                     </div>
                 </div>
             </template>
-
-            <!-- History Tab -->
-            <template v-if="activeTab === 'history'">
-                <div class="history-container">
-                    <div v-if="agent.history.value.length === 0" class="empty-state">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1.5">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <polyline points="12 6 12 12 16 14"></polyline>
-                        </svg>
-                        <p>No changes yet</p>
-                    </div>
-
-                    <div v-for="entry in agent.history.value" :key="entry.id" class="history-entry"
-                        :class="`history-entry--${entry.action}`">
-                        <div class="history-entry-header">
-                            <span class="history-action-badge">
-                                {{ entry.action === 'accepted' ? '✅' : entry.action === 'rejected' ? '❌' : '🔁' }}
-                                {{ entry.action }}
-                            </span>
-                            <span class="history-time">{{ formatTime(entry.timestamp) }}</span>
-                        </div>
-                        <div class="history-prompt">{{ entry.prompt }}</div>
-                        <div class="history-diff-count">
-                            {{ entry.action === 'regenerated' ? 'Prompt updated' : 'Changes applied' }}
-                        </div>
-                    </div>
-                </div>
-            </template>
         </div>
     </div>
 </template>
@@ -226,19 +197,20 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
 
-import { useAgentSidebar } from '@/composables/useAgentSidebar'
-import { sendMockAgentRequest } from '@/services/agentService'
+import { useAgent, sendMockAgentRequest } from '@/ai/agent'
 
 interface Props {
     isOpen?: boolean
     width?: number
     editor?: { value: Editor | null } | null
+    initialSelection?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
     isOpen: false,
     width: 400,
     editor: null,
+    initialSelection: '',
 })
 
 const emit = defineEmits<{
@@ -247,15 +219,16 @@ const emit = defineEmits<{
 }>()
 
 // Agent composable
-const agent = useAgentSidebar()
+const agent = useAgent()
 
 // Local UI state
 let selectedModel = $ref('gpt-4o')
 let inputMessage = $ref('')
-let activeTab = $ref<'chat' | 'history' | 'chatHistory'>('chat')
+let activeTab = $ref<'chat' | 'chatHistory'>('chat')
 let messagesContainer = $ref<HTMLElement | null>(null)
 let inputArea = $ref<HTMLTextAreaElement | null>(null)
 let isResizing = $ref(false)
+let selectedTextReference = $ref('')
 
 const suggestions = [
     'Fix grammar throughout',
@@ -271,7 +244,7 @@ const statusLabel = $computed(() => {
         'thinking': 'Thinking...',
         'proposing': 'Proposing',
         'awaiting-confirmation': 'Review Changes',
-        'applied': 'Applied ✓',
+        'applied': 'Applied ',
         'rejected': 'Rejected',
     }
     return labels[agent.status.value] || agent.status.value
@@ -283,11 +256,30 @@ const inputPlaceholder = $computed(() => {
     return 'Tell the agent what to change...'
 })
 
-// Watch for panel opening to focus input
+// Watch for panel opening to focus input and handle initial selection
 $: if (props.isOpen) {
     setTimeout(() => {
         inputArea?.focus()
     }, 350)
+    // Set the selected text reference when sidebar opens
+    if (props.initialSelection) {
+        selectedTextReference = props.initialSelection
+    }
+}
+
+// Watch for initialSelection changes
+watch(
+    () => props.initialSelection,
+    (newSelection) => {
+        if (newSelection) {
+            selectedTextReference = newSelection
+        }
+    },
+)
+
+// Clear selection reference when sending
+const clearSelectionReference = () => {
+    selectedTextReference = ''
 }
 
 // Auto-resize textarea
@@ -326,6 +318,9 @@ const handleSend = async () => {
         return
     }
 
+    // Clear selection reference when sending
+    clearSelectionReference()
+
     inputMessage = ''
     setTimeout(() => {
         if (inputArea) inputArea.style.height = 'auto'
@@ -345,12 +340,6 @@ const handleAccept = () => {
 const handleReject = () => {
     if (!props.editor?.value) return
     agent.rejectChanges(props.editor.value)
-    scrollToBottom()
-}
-
-const handleRegenerate = async () => {
-    if (!props.editor?.value) return
-    await agent.regenerate(props.editor.value, sendMockAgentRequest, selectedModel)
     scrollToBottom()
 }
 
@@ -940,15 +929,6 @@ if (typeof window !== 'undefined') {
             transform: translateY(-1px);
         }
     }
-
-    &--regen {
-        background: white;
-        @apply dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700;
-
-        &:hover {
-            @apply bg-gray-50 dark:bg-gray-700;
-        }
-    }
 }
 
 // --- Input Container ---
@@ -956,6 +936,62 @@ if (typeof window !== 'undefined') {
     padding: 16px 20px 20px;
     @apply bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800;
     flex-shrink: 0;
+}
+
+// --- Selection Reference Chip ---
+.selection-reference {
+    margin-bottom: 10px;
+}
+
+.selection-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    border-radius: 8px;
+    font-size: 12px;
+    color: white;
+    max-width: 100%;
+    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
+}
+
+.selection-label {
+    font-weight: 600;
+    white-space: nowrap;
+    opacity: 0.9;
+}
+
+.selection-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-style: italic;
+    opacity: 0.95;
+}
+
+.selection-clear {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+    svg {
+        width: 10px;
+        height: 10px;
+    }
 }
 
 .input-wrapper {
@@ -1071,14 +1107,14 @@ textarea {
     }
 }
 
-// --- History Tab ---
-.history-container {
+// --- Chat History Container ---
+.chat-history-container {
     flex: 1;
     overflow-y: auto;
     padding: 20px;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    justify-content: center;
 
     &::-webkit-scrollbar {
         width: 4px;
@@ -1088,72 +1124,6 @@ textarea {
         @apply bg-gray-200 dark:bg-gray-700;
         border-radius: 4px;
     }
-}
-
-.history-entry {
-    padding: 14px;
-    border-radius: 12px;
-    background: white;
-    @apply dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-
-    &:hover {
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        border-color: #e2e8f0;
-        @apply dark:border-gray-600;
-    }
-}
-
-.history-entry-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.history-action-badge {
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.history-entry--accepted .history-action-badge {
-    color: #10b981;
-}
-
-.history-entry--rejected .history-action-badge {
-    color: #ef4444;
-}
-
-.history-entry--regenerated .history-action-badge {
-    color: #6366f1;
-}
-
-.history-time {
-    font-size: 11px;
-    @apply text-gray-400;
-}
-
-.history-prompt {
-    font-size: 13.5px;
-    line-height: 1.5;
-    @apply text-gray-800 dark:text-gray-200;
-    margin-bottom: 8px;
-}
-
-.history-diff-count {
-    font-size: 12px;
-    @apply text-gray-500;
-    background: #f8fafc;
-    @apply dark:bg-gray-900;
-    padding: 4px 10px;
-    border-radius: 6px;
-    display: inline-block;
 }
 
 // Mobile responsive styles

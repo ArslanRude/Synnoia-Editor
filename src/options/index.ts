@@ -15,12 +15,10 @@ import type {
   LocaleLabel,
   PageSize,
   Template,
-  WebPageItem,
 } from '@/types'
 
 import { defaultAiOptions } from './ai'
 import { defaultDicts } from './dicts'
-import { defaultWebPages } from './web-pages'
 
 // Default configuration
 const defaultOptions: ArslanEditorOptions = {
@@ -104,7 +102,6 @@ const defaultOptions: ArslanEditorOptions = {
       return null
     },
   },
-  webPages: defaultWebPages,
   templates: [],
   cdnUrl: '', // Using local components instead of CDN
   shareUrl: location.href || '',
@@ -718,37 +715,6 @@ const ojbectSchema = new ObjectSchema({
         required: false,
       },
     },
-  },
-  webPages: {
-    merge: 'replace',
-    validate(value: WebPageItem[]) {
-      if (value && !Array.isArray(value)) {
-        throw new Error('Key "webPages": must be a array.')
-      }
-      value.forEach((item, index: number) => {
-        if (!item.label || item.label === '') {
-          throw new Error(
-            `Key "webPages[${index}]": Key "label" cannot be empty.`,
-          )
-        }
-        if (!item.icon || item.icon === '') {
-          throw new Error(
-            `Key "webPages[${index}]": Key "icon" cannot be empty.`,
-          )
-        }
-        if (!item.validate || !isFunction(item.validate)) {
-          throw new Error(
-            `Key "webPages[${index}]": Key "validate" must be a function.`,
-          )
-        }
-        if (!item.transformURL || !isFunction(item.transformURL)) {
-          throw new Error(
-            `Key "webPages[${index}]": Key "transformURL" must be a function.`,
-          )
-        }
-      })
-    },
-    required: false,
   },
   shareUrl: {
     merge: 'replace',

@@ -1,53 +1,19 @@
 /**
- * AI Agent Sidebar Composable
+ * AI Agent Composable
  *
  * Encapsulates all agent state logic: status machine, document snapshots,
  * diff computation, accept/reject flow, undo stack, and change history.
  */
 import type { Editor } from '@tiptap/vue-3'
 
-import {
-  acceptDiffDocument,
-  createDiffDocument,
-  rejectDiffDocument,
-} from '@/utils/diffApplier'
-import { documentsEqual, type TipTapDoc } from '@/utils/diffEngine'
+import { acceptDiffDocument, createDiffDocument, rejectDiffDocument } from '@/ai/diff'
+import { documentsEqual, type TipTapDoc } from '@/ai/diff'
 
-// --- Types ---
+import type { AgentMessage, AgentStatus, HistoryEntry, UndoEntry } from '../types'
 
-export type AgentStatus =
-  | 'idle'
-  | 'thinking'
-  | 'proposing'
-  | 'awaiting-confirmation'
-  | 'applied'
-  | 'rejected'
+export type { AgentMessage, AgentStatus, HistoryEntry }
 
-export interface AgentMessage {
-  id: string
-  role: 'user' | 'assistant' | 'system'
-  content: string
-  timestamp: Date
-  status?: 'streaming' | 'complete' | 'error'
-}
-
-export interface HistoryEntry {
-  id: string
-  action: 'accepted' | 'rejected' | 'regenerated'
-  prompt: string
-  timestamp: Date
-}
-
-interface UndoEntry {
-  originalDoc: TipTapDoc
-  appliedDoc: TipTapDoc
-  prompt: string
-  timestamp: Date
-}
-
-// --- Composable ---
-
-export function useAgentSidebar() {
+export function useAgent() {
   // Reactive state
   const status = ref<AgentStatus>('idle')
   const messages = ref<AgentMessage[]>([])
@@ -119,6 +85,7 @@ export function useAgentSidebar() {
       doc: TipTapDoc,
       selectionText: string,
       selectionDoc?: TipTapDoc,
+      parentNode?: TipTapDoc,
       model?: string,
     ) => Promise<TipTapDoc | ReadableStream<string>>,
     model?: string,
@@ -154,6 +121,25 @@ export function useAgentSidebar() {
       }
     }
 
+    // Get the full parent node containing the selection
+    let parentNode: TipTapDoc | undefined
+    if (hasSelection) {
+      const $from = selection.$from
+      const parent = $from.parent
+      const depth = $from.depth
+
+      if (depth > 0) {
+        // Get the full parent node at the current depth
+        parentNode = {
+          type: 'doc',
+          content: [parent.toJSON()],
+        }
+      } else {
+        // Selection is at top level, use the full document
+        parentNode = originalSnapshot.value
+      }
+    }
+
     // Debug: Log what will be sent to the agent
     console.log('[Agent Request]', {
       prompt,
@@ -161,8 +147,10 @@ export function useAgentSidebar() {
       hasSelection,
       selectionText: hasSelection ? selectionText : null,
       selectionDocSize: selectionDoc ? JSON.stringify(selectionDoc).length : 0,
+      parentNodeSize: parentNode ? JSON.stringify(parentNode).length : 0,
       documentSize: JSON.stringify(originalSnapshot.value).length,
       selectionDoc: hasSelection ? JSON.stringify(selectionDoc, null, 2) : null,
+      parentNode: hasSelection ? JSON.stringify(parentNode, null, 2) : null,
     })
 
     try {
@@ -171,6 +159,7 @@ export function useAgentSidebar() {
         originalSnapshot.value,
         selectionText,
         selectionDoc,
+        parentNode,
         model,
       )
 
@@ -320,36 +309,6 @@ export function useAgentSidebar() {
   }
 
   /**
-   * Regenerate — re-run the last prompt
-   */
-  async function regenerate(
-    editor: Editor,
-    sendFn: (
-      prompt: string,
-      doc: TipTapDoc,
-      selectionText: string,
-      selectionDoc?: TipTapDoc,
-      model?: string,
-    ) => Promise<TipTapDoc | ReadableStream<string>>,
-    model?: string,
-  ): Promise<void> {
-    if (!lastPrompt.value) return
-
-    // Since we are regenerating, rollback document to original state before showing new thinking state
-    if (originalSnapshot.value && status.value === 'awaiting-confirmation') {
-      editor.commands.setContent(originalSnapshot.value)
-    }
-
-    addHistoryEntry('regenerated', lastPrompt.value)
-
-    // Reset proposal
-    proposedContent.value = null
-    status.value = 'idle'
-
-    await sendPrompt(editor, lastPrompt.value, sendFn, model)
-  }
-
-  /**
    * Undo the last accepted change
    */
   function undoLastChange(editor: Editor): void {
@@ -392,7 +351,6 @@ export function useAgentSidebar() {
     sendPrompt,
     acceptChanges,
     rejectChanges,
-    regenerate,
     undoLastChange,
     clearMessages,
   }
