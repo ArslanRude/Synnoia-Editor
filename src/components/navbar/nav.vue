@@ -167,6 +167,7 @@
 <script>
 import { inject } from 'vue';
 import { useDark } from '@vueuse/core';
+import { useDocument } from '@/composables/useDocument';
 import UserMenu from './UserMenu.vue';
 export default {
   name: 'NavBar',
@@ -176,12 +177,15 @@ export default {
   emits: ['toggle-sidebar'],
   setup(props, { emit }) {
     const isDark = useDark();
+    const { documentName, setDocumentName } = useDocument();
 
     // Inject save functionality from parent
     const saveContentMethod = inject('saveContent');
 
     return {
       isDark,
+      documentName,
+      setDocumentName,
       saveContentMethod,
       toggleDark: () => {
         isDark.value = !isDark.value;
@@ -193,7 +197,6 @@ export default {
   },
   data() {
     return {
-      documentName: '',
       isSaved: false,
       lastSaved: null,
       showMobileMenu: false
@@ -201,7 +204,7 @@ export default {
   },
   methods: {
     saveDocumentName() {
-      // Add your logic to save the document name
+      // Document name is automatically synced via the composable
     },
     closeMobileMenu() {
       this.showMobileMenu = false;

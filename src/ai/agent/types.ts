@@ -31,6 +31,7 @@ export interface AgentRequest {
   selectionText?: string // Plain text of selection (for reference)
   hasSelection: boolean // Flag to indicate selection mode
   model?: string // Selected AI model name
+  documentName?: string // Document name
 }
 
 export interface AgentResponse {

@@ -66,7 +66,7 @@
                             stroke-width="1.5">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                         </svg>
-                        <p>Ask the AI agent to modify your document</p>
+                        <p>Ask Synnoia anything</p>
                         <div class="suggestions">
                             <button v-for="suggestion in suggestions" :key="suggestion" class="suggestion-chip"
                                 @click="useSuggestion(suggestion)">
@@ -198,6 +198,7 @@
 import type { Editor } from '@tiptap/vue-3'
 
 import { useAgent, sendMockAgentRequest } from '@/ai/agent'
+import { useDocument } from '@/composables/useDocument'
 
 interface Props {
     isOpen?: boolean
@@ -220,6 +221,9 @@ const emit = defineEmits<{
 
 // Agent composable
 const agent = useAgent()
+
+// Document composable
+const { documentName } = useDocument()
 
 // Local UI state
 let selectedModel = $ref('gpt-4o')
@@ -327,7 +331,7 @@ const handleSend = async () => {
     }, 0)
 
     // Use mock service for development
-    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel)
+    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel, documentName.value)
     scrollToBottom()
 }
 
