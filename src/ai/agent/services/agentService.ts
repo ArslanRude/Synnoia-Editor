@@ -2,17 +2,15 @@
  * AI Agent Service
  *
  * Client-side service for communicating with the AI backend.
- * Routes requests through /api/agent (Vite proxy in dev).
+ * Uses WebSocket for real-time communication.
  */
 import type { TipTapDoc } from '@/ai/diff'
 
 import type { AgentRequest } from '../types'
-
-const AGENT_ENDPOINT = '/api/agent'
-const REQUEST_TIMEOUT = 60000 // 60s
+import { agentWebSocketService } from '../websocket'
 
 /**
- * Send a prompt to the agent backend.
+ * Send a prompt to the agent backend via WebSocket.
  * Returns either a TipTapDoc (static) or a ReadableStream (streaming).
  */
 export async function sendAgentRequest(
@@ -22,67 +20,24 @@ export async function sendAgentRequest(
   selectionDoc?: TipTapDoc,
   parentNode?: TipTapDoc,
   model?: string,
+  documentName?: string,
 ): Promise<TipTapDoc | ReadableStream<string>> {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT)
+  const request: AgentRequest = {
+    prompt,
+    document,
+    selectionDoc,
+    parentNode,
+    selectionText,
+    hasSelection: !!selectionDoc,
+    model,
+    documentName,
+  }
 
   try {
-    const response = await fetch(AGENT_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        prompt,
-        document,
-        selectionDoc,
-        parentNode,
-        selectionText,
-        hasSelection: !!selectionDoc,
-        model,
-      } satisfies AgentRequest),
-      signal: controller.signal,
-    })
-
-    clearTimeout(timeout)
-
-    if (!response.ok) {
-      const errorText = await response.text().catch(() => 'Unknown error')
-      throw new Error(`Agent request failed (${response.status}): ${errorText}`)
-    }
-
-    const contentType = response.headers.get('content-type') || ''
-
-    // Streaming response (SSE or ndjson)
-    if (
-      contentType.includes('text/event-stream') ||
-      contentType.includes('application/x-ndjson') ||
-      contentType.includes('text/plain')
-    ) {
-      if (!response.body) {
-        throw new Error('Streaming response has no body')
-      }
-
-      return response.body.pipeThrough(new TextDecoderStream())
-    }
-
-    // Static JSON response
-    const data = await response.json()
-
-    // Validate it looks like a TipTap doc
-    if (data && data.type === 'doc' && Array.isArray(data.content)) {
-      return data as TipTapDoc
-    }
-
-    // If response has a content field with the doc
-    if (data?.content?.type === 'doc') {
-      return data.content as TipTapDoc
-    }
-
-    throw new Error('Invalid response format from agent')
+    const result = await agentWebSocketService.sendAgentRequest(request)
+    return result
   } catch (err: any) {
-    clearTimeout(timeout)
-    if (err.name === 'AbortError') {
+    if (err.message?.includes('timed out')) {
       throw new Error('Agent request timed out')
     }
     throw err
@@ -99,6 +54,8 @@ export async function sendMockAgentRequest(
   _selectionText = '',
   _selectionDoc?: TipTapDoc,
   _parentNode?: TipTapDoc,
+  _model?: string,
+  _documentName?: string,
 ): Promise<TipTapDoc> {
   // Simulate network delay
   await new Promise((resolve) =>

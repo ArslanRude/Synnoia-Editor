@@ -15,7 +15,9 @@
                         <div class="agent-avatar">
                             <img src="/src/assets/logo/Synnoia Logo.png" alt="Synnoia Logo">
                         </div>
-                        <h2>Synnoia</h2>
+                        <div class="brand">
+                            <h2>Synnoia</h2>
+                        </div>
                     </div>
                     <div class="header-actions">
                         <!-- Status Pill -->
@@ -62,17 +64,10 @@
                 <!-- Messages Area -->
                 <div class="messages-container" ref="messagesContainer">
                     <div v-if="agent.messages.value.length === 0" class="empty-state">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1.5">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <p>Ask the AI agent to modify your document</p>
-                        <div class="suggestions">
-                            <button v-for="suggestion in suggestions" :key="suggestion" class="suggestion-chip"
-                                @click="useSuggestion(suggestion)">
-                                {{ suggestion }}
-                            </button>
+                        <div class="empty-logo">
+                            <img src="/src/assets/logo/Synnoia Logo Black.png" alt="Synnoia">
                         </div>
+                        <p>Ask Synnoia anything...</p>
                     </div>
 
                     <div v-for="message in agent.messages.value" :key="message.id" class="message"
@@ -88,8 +83,6 @@
                                 {{ message.content }}
                                 <span v-if="message.status === 'streaming'" class="streaming-cursor">▊</span>
                             </div>
-
-
 
                             <div class="message-time">{{ formatTime(message.timestamp) }}</div>
                         </div>
@@ -135,20 +128,6 @@
 
                 <!-- Input Area -->
                 <div class="input-container">
-                    <!-- Selected Text Reference -->
-                    <div v-if="selectedTextReference" class="selection-reference">
-                        <div class="selection-chip">
-                            <span class="selection-label">Selected:</span>
-                            <span class="selection-text">{{ selectedTextReference.length > 50 ? selectedTextReference.slice(0, 50) + '...' : selectedTextReference }}</span>
-                            <button class="selection-clear" @click="clearSelectionReference" title="Clear selection">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
                     <div class="input-wrapper">
                         <select v-model="selectedModel" class="model-select" title="Choose LLM Model">
                             <option value="gpt-4o">GPT-4o</option>
@@ -180,12 +159,9 @@
             <template v-if="activeTab === 'chatHistory'">
                 <div class="chat-history-container">
                     <div class="empty-state">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="1.5">
-                            <line x1="3" y1="12" x2="21" y2="12"></line>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <line x1="3" y1="18" x2="21" y2="18"></line>
-                        </svg>
+                        <div class="empty-logo">
+                            <img src="/src/assets/logo/Synnoia Logo Black.png" alt="Synnoia">
+                        </div>
                         <p>No chat history available</p>
                     </div>
                 </div>
@@ -198,19 +174,18 @@
 import type { Editor } from '@tiptap/vue-3'
 
 import { useAgent, sendMockAgentRequest } from '@/ai/agent'
+import { useDocument } from '@/composables/useDocument'
 
 interface Props {
     isOpen?: boolean
     width?: number
     editor?: { value: Editor | null } | null
-    initialSelection?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
     isOpen: false,
     width: 400,
     editor: null,
-    initialSelection: '',
 })
 
 const emit = defineEmits<{
@@ -221,6 +196,9 @@ const emit = defineEmits<{
 // Agent composable
 const agent = useAgent()
 
+// Document composable
+const { documentName } = useDocument()
+
 // Local UI state
 let selectedModel = $ref('gpt-4o')
 let inputMessage = $ref('')
@@ -228,14 +206,6 @@ let activeTab = $ref<'chat' | 'chatHistory'>('chat')
 let messagesContainer = $ref<HTMLElement | null>(null)
 let inputArea = $ref<HTMLTextAreaElement | null>(null)
 let isResizing = $ref(false)
-let selectedTextReference = $ref('')
-
-const suggestions = [
-    'Fix grammar throughout',
-    'Make the intro more concise',
-    'Add a conclusion section',
-    'Improve the tone to be more professional',
-]
 
 // Computed
 const statusLabel = $computed(() => {
@@ -261,25 +231,6 @@ $: if (props.isOpen) {
     setTimeout(() => {
         inputArea?.focus()
     }, 350)
-    // Set the selected text reference when sidebar opens
-    if (props.initialSelection) {
-        selectedTextReference = props.initialSelection
-    }
-}
-
-// Watch for initialSelection changes
-watch(
-    () => props.initialSelection,
-    (newSelection) => {
-        if (newSelection) {
-            selectedTextReference = newSelection
-        }
-    },
-)
-
-// Clear selection reference when sending
-const clearSelectionReference = () => {
-    selectedTextReference = ''
 }
 
 // Auto-resize textarea
@@ -318,16 +269,13 @@ const handleSend = async () => {
         return
     }
 
-    // Clear selection reference when sending
-    clearSelectionReference()
-
     inputMessage = ''
     setTimeout(() => {
         if (inputArea) inputArea.style.height = 'auto'
     }, 0)
 
     // Use mock service for development
-    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel)
+    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel, documentName.value)
     scrollToBottom()
 }
 
@@ -350,11 +298,6 @@ const handleUndo = () => {
 
 const handleClear = () => {
     agent.clearMessages()
-}
-
-const useSuggestion = (suggestion: string) => {
-    inputMessage = suggestion
-    setTimeout(() => inputArea?.focus(), 0)
 }
 
 const formatTime = (date: Date) => {
@@ -480,7 +423,7 @@ if (typeof window !== 'undefined') {
 .header-title {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .agent-avatar {
@@ -491,12 +434,25 @@ if (typeof window !== 'undefined') {
     justify-content: center;
 }
 
-.header-title h2 {
+.brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.brand h2 {
     margin: 0;
     font-size: 16px;
     font-weight: 600;
     letter-spacing: -0.01em;
     @apply text-gray-900 dark:text-gray-100;
+}
+
+.tagline {
+    font-size: 11px;
+    font-weight: 500;
+    @apply text-gray-400 dark:text-gray-500;
+    letter-spacing: 0.02em;
 }
 
 .header-actions {
@@ -633,15 +589,6 @@ if (typeof window !== 'undefined') {
     }
 }
 
-.tab-badge {
-    background: #6366f1;
-    color: white;
-    font-size: 10px;
-    font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 10px;
-}
-
 // --- Messages Area ---
 .messages-container {
     flex: 1;
@@ -673,49 +620,29 @@ if (typeof window !== 'undefined') {
     height: 100%;
     @apply text-gray-400 dark:text-gray-500;
     text-align: center;
-    gap: 16px;
-
-    svg {
-        opacity: 0.4;
-        width: 32px;
-        height: 32px;
-    }
-
-    p {
-        margin: 0;
-        font-size: 14px;
-        max-width: 220px;
-    }
+    gap: 20px;
 }
 
-.suggestions {
+.empty-logo {
+    width: 48px;
+    height: 48px;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    align-items: center;
     justify-content: center;
-    max-width: 280px;
-    margin-top: 10px;
+    opacity: 0.8;
+    
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }
 
-.suggestion-chip {
-    background: white;
-    @apply dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300;
-    padding: 6px 14px;
-    border-radius: 20px;
-    font-size: 12px;
+.empty-state p {
+    margin: 0;
+    font-size: 14px;
     font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-
-    &:hover {
-        border-color: #6366f1;
-        color: #6366f1;
-        background: #f8fafc;
-        @apply dark:bg-gray-800;
-        box-shadow: 0 2px 4px rgba(99, 102, 241, 0.1);
-        transform: translateY(-1px);
-    }
+    @apply text-gray-500 dark:text-gray-400;
 }
 
 .message {
@@ -936,62 +863,6 @@ if (typeof window !== 'undefined') {
     padding: 16px 20px 20px;
     @apply bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800;
     flex-shrink: 0;
-}
-
-// --- Selection Reference Chip ---
-.selection-reference {
-    margin-bottom: 10px;
-}
-
-.selection-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-    border-radius: 8px;
-    font-size: 12px;
-    color: white;
-    max-width: 100%;
-    box-shadow: 0 2px 4px rgba(99, 102, 241, 0.2);
-}
-
-.selection-label {
-    font-weight: 600;
-    white-space: nowrap;
-    opacity: 0.9;
-}
-
-.selection-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-style: italic;
-    opacity: 0.95;
-}
-
-.selection-clear {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 18px;
-    height: 18px;
-    border: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-    cursor: pointer;
-    color: white;
-    flex-shrink: 0;
-    transition: all 0.2s ease;
-
-    &:hover {
-        background: rgba(255, 255, 255, 0.3);
-    }
-
-    svg {
-        width: 10px;
-        height: 10px;
-    }
 }
 
 .input-wrapper {

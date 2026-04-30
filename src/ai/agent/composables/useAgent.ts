@@ -87,8 +87,10 @@ export function useAgent() {
       selectionDoc?: TipTapDoc,
       parentNode?: TipTapDoc,
       model?: string,
+      documentName?: string,
     ) => Promise<TipTapDoc | ReadableStream<string>>,
     model?: string,
+    documentName?: string,
   ): Promise<void> {
     if (status.value === 'thinking') return
 
@@ -144,6 +146,7 @@ export function useAgent() {
     console.log('[Agent Request]', {
       prompt,
       model,
+      documentName,
       hasSelection,
       selectionText: hasSelection ? selectionText : null,
       selectionDocSize: selectionDoc ? JSON.stringify(selectionDoc).length : 0,
@@ -161,6 +164,7 @@ export function useAgent() {
         selectionDoc,
         parentNode,
         model,
+        documentName,
       )
 
       if (result instanceof ReadableStream) {
