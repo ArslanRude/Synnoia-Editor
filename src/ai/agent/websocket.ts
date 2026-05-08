@@ -1,14 +1,21 @@
 import { AGENT_WEBSOCKET_CONFIG } from './config'
 import type { TipTapDoc } from '@/ai/diff'
-import type { AgentRequest } from './types'
+import type { AgentRequest, SynnoiaAgentBackendRequest, SynnoiaAgentBackendResponse } from './types'
+
+export interface AgentResponseWithMetadata {
+  doc: TipTapDoc
+  operation_type: 'create' | 'append' | 'prepend' | 'replace' | 'insert' | ''
+  anchor_id: string | null
+}
 
 export class AgentWebSocketService {
   private ws: WebSocket | null = null
   private reconnectAttempts = 0
   private isConnecting = false
   private pendingMessage: {
-    resolve: (value: TipTapDoc | ReadableStream<string>) => void
+    resolve: (value: AgentResponseWithMetadata | ReadableStream<string>) => void
     reject: (error: Error) => void
+    onStatus?: (status: string, message: string) => void
   } | null = null
   private messageBuffer: string[] = []
 
@@ -36,34 +43,69 @@ export class AgentWebSocketService {
 
         this.ws.onmessage = (event) => {
           try {
-            const response = JSON.parse(event.data)
+            const response: SynnoiaAgentBackendResponse = JSON.parse(event.data)
 
             if (this.pendingMessage) {
+              // Handle error response
               if (response.error) {
                 this.pendingMessage.reject(new Error(response.error))
-              } else if (response.streaming) {
-                // Handle streaming response
+                this.pendingMessage = null
+                return
+              }
+
+              // Handle status/processing messages
+              if (response.status === 'processing' && response.message) {
+                if (this.pendingMessage.onStatus) {
+                  this.pendingMessage.onStatus('processing', response.message)
+                }
+                return
+              }
+
+              // Handle response with response_json (TipTap document - already parsed)
+              // Only apply if response_json has actual content
+              const hasValidDoc = response.response_json &&
+                response.response_json.type === 'doc' &&
+                response.response_json.content &&
+                response.response_json.content.length > 0
+
+              if (hasValidDoc) {
+                const result: AgentResponseWithMetadata = {
+                  doc: response.response_json as TipTapDoc,
+                  operation_type: response.operation_type || '',
+                  anchor_id: response.anchor_id || null
+                }
+                this.pendingMessage.resolve(result)
+                this.pendingMessage = null
+                return
+              }
+
+              // Handle response with text content only (no document changes or empty response_json)
+              if (response.response) {
+                // Create a stream from the text response to show in sidebar
+                const stream = new ReadableStream<string>({
+                  start(controller) {
+                    controller.enqueue(response.response || '')
+                    controller.close()
+                  },
+                })
+                this.pendingMessage.resolve(stream)
+                this.pendingMessage = null
+                return
+              }
+
+              // Handle streaming flag
+              if (response.streaming) {
                 this.messageBuffer = []
                 const stream = new ReadableStream<string>({
                   start(controller) {
-                    // Enqueue the initial chunk
-                    if (response.chunk) {
-                      controller.enqueue(response.chunk)
+                    if (response.response) {
+                      controller.enqueue(response.response)
                     }
                   },
                 })
                 this.pendingMessage.resolve(stream)
                 this.pendingMessage = null
-              } else if (response.content) {
-                // Handle static response with content field
-                this.pendingMessage.resolve(response.content as TipTapDoc)
-                this.pendingMessage = null
-              } else if (response.type === 'doc' && Array.isArray(response.content)) {
-                // Handle direct TipTapDoc response
-                this.pendingMessage.resolve(response as TipTapDoc)
-                this.pendingMessage = null
-              } else {
-                this.pendingMessage.reject(new Error('Invalid response format'))
+                return
               }
             }
           } catch (error) {
@@ -108,6 +150,10 @@ export class AgentWebSocketService {
     })
   }
 
+  // Native WebSocket ping/pong handled by browser and FastAPI backend
+  // ws_ping_interval=20s is configured in FastAPI uvicorn
+  // No custom heartbeat needed - browser handles it automatically
+
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= AGENT_WEBSOCKET_CONFIG.MAX_RECONNECT_ATTEMPTS) {
       console.error('Max reconnection attempts reached for Agent WebSocket')
@@ -126,7 +172,7 @@ export class AgentWebSocketService {
     }, AGENT_WEBSOCKET_CONFIG.RECONNECT_DELAY * this.reconnectAttempts)
   }
 
-  async sendAgentRequest(request: AgentRequest): Promise<TipTapDoc | ReadableStream<string>> {
+  async sendAgentRequest(request: AgentRequest): Promise<AgentResponseWithMetadata | ReadableStream<string>> {
     // Ensure connection is established
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
       try {
@@ -138,6 +184,33 @@ export class AgentWebSocketService {
 
     return new Promise((resolve, reject) => {
       this.pendingMessage = { resolve, reject }
+
+      const message = JSON.stringify(request)
+
+      try {
+        this.ws!.send(message)
+      } catch (error) {
+        this.pendingMessage = null
+        reject(new Error('Failed to send message'))
+      }
+    })
+  }
+
+  async sendSynnoiaAgentRequest(
+    request: SynnoiaAgentBackendRequest,
+    onStatus?: (status: string, message: string) => void
+  ): Promise<AgentResponseWithMetadata | ReadableStream<string>> {
+    // Ensure connection is established
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
+      try {
+        await this.connect()
+      } catch (error) {
+        throw new Error('Failed to connect to Agent WebSocket server')
+      }
+    }
+
+    return new Promise((resolve, reject) => {
+      this.pendingMessage = { resolve, reject, onStatus }
 
       const message = JSON.stringify(request)
 

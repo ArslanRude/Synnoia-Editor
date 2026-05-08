@@ -1,11 +1,27 @@
 export const AGENT_WEBSOCKET_CONFIG = {
-  // Update this URL to match your FastAPI WebSocket server for AI agent
-  URL: 'wss://synnoia-agent.up.railway.app/ws',
+  // Production WebSocket URL (Railway)
+  PROD_URL: 'wss://synnoia-agent.up.railway.app/ws/agent',
+
+  // Local development WebSocket URL (FastAPI backend)
+  DEV_URL: 'wss://synnoia-agent.up.railway.app/ws/agent',
+
+  // Use local backend in development, production URL in production builds
+  get URL() {
+    // Check if we're in development mode (Vite dev server)
+    const isDev = typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+       window.location.hostname === '127.0.0.1')
+    return isDev ? this.DEV_URL : this.PROD_URL
+  },
 
   // Connection settings
   MAX_RECONNECT_ATTEMPTS: 5,
   RECONNECT_DELAY: 1000,
 
   // Request settings
-  REQUEST_TIMEOUT: 60000, // 60s
+  REQUEST_TIMEOUT: 60000, // 60 seconds
+
+  // Heartbeat settings (matches backend ws_ping_interval)
+  HEARTBEAT_INTERVAL: 15000, // 15s
+  HEARTBEAT_TIMEOUT: 15000, // 15s
 }
