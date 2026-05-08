@@ -89,16 +89,31 @@
                     </div>
 
                     <!-- Thinking indicator -->
-                    <div v-if="agent.status.value === 'thinking'" class="message assistant typing-indicator">
-                        <div class="message-avatar">
-                            <img width="16" height="16" src="/src/assets/logo/Synnoia Logo White.png"
-                                alt="Synnoia Logo">
-                        </div>
-                        <div class="message-content">
-                            <div class="typing-dots">
-                                <span></span>
-                                <span></span>
-                                <span></span>
+                    <div v-if="agent.status.value === 'thinking'" class="thinking-block">
+                        <div class="thinking-border-glow"></div>
+                        <div class="thinking-inner">
+                            <div class="thinking-header">
+                                <div class="thinking-avatar-glow">
+                                    <img width="18" height="18" src="/src/assets/logo/Synnoia Logo White.png"
+                                        alt="Synnoia Logo">
+                                </div>
+                                <div class="thinking-label">Synnoia is working</div>
+                                <div class="thinking-elapsed">{{ thinkingElapsed }}s</div>
+                            </div>
+                            <div class="thinking-phrase-area">
+                                <Transition name="fade-slide" mode="out-in">
+                                    <span class="thinking-phrase" :key="thinkingPhrase">{{ thinkingPhrase }}</span>
+                                </Transition>
+                            </div>
+                            <div class="thinking-wave">
+                                <span class="wave-dot"></span>
+                                <span class="wave-dot"></span>
+                                <span class="wave-dot"></span>
+                                <span class="wave-dot"></span>
+                                <span class="wave-dot"></span>
+                            </div>
+                            <div class="thinking-progress-bar">
+                                <div class="thinking-progress-shimmer"></div>
                             </div>
                         </div>
                     </div>
@@ -206,6 +221,44 @@ let activeTab = $ref<'chat' | 'chatHistory'>('chat')
 let messagesContainer = $ref<HTMLElement | null>(null)
 let inputArea = $ref<HTMLTextAreaElement | null>(null)
 let isResizing = $ref(false)
+
+// Thinking animation state
+const thinkingPhrases = [
+    'Analyzing your request...',
+    'Thinking deeply...',
+    'Selecting the best approach...',
+    'Crafting your content...',
+    'Processing document context...',
+    'Almost there...',
+]
+let thinkingPhrase = $ref(thinkingPhrases[0])
+let thinkingElapsed = $ref(0)
+let thinkingPhraseTimer: ReturnType<typeof setInterval> | null = null
+let thinkingElapsedTimer: ReturnType<typeof setInterval> | null = null
+
+// Start / stop thinking timers when status changes
+watch(
+    () => agent.status.value,
+    (newStatus, oldStatus) => {
+        if (newStatus === 'thinking') {
+            thinkingElapsed = 0
+            thinkingPhrase = thinkingPhrases[0]
+            let phraseIndex = 0
+
+            thinkingElapsedTimer = setInterval(() => {
+                thinkingElapsed++
+            }, 1000)
+
+            thinkingPhraseTimer = setInterval(() => {
+                phraseIndex = (phraseIndex + 1) % thinkingPhrases.length
+                thinkingPhrase = thinkingPhrases[phraseIndex]
+            }, 3000)
+        } else if (oldStatus === 'thinking') {
+            if (thinkingPhraseTimer) { clearInterval(thinkingPhraseTimer); thinkingPhraseTimer = null }
+            if (thinkingElapsedTimer) { clearInterval(thinkingElapsedTimer); thinkingElapsedTimer = null }
+        }
+    },
+)
 
 // Computed
 const statusLabel = $computed(() => {
@@ -799,32 +852,167 @@ if (typeof window !== 'undefined') {
     margin-top: 2px;
 }
 
-// --- Typing Indicator ---
-.typing-dots {
+// --- Thinking Block ---
+.thinking-block {
+    position: relative;
+    border-radius: 16px;
+    padding: 2px;
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.thinking-border-glow {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899, #6366f1);
+    background-size: 300% 300%;
+    animation: borderGlow 3s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes borderGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+}
+
+.thinking-inner {
+    position: relative;
+    z-index: 1;
+    background: #fff;
+    @apply dark:bg-gray-800;
+    border-radius: 14px;
+    padding: 16px 18px;
     display: flex;
-    gap: 4px;
-    padding: 14px 16px;
-    @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700;
-    border-radius: 12px;
-    border-top-left-radius: 4px;
-    width: fit-content;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    flex-direction: column;
+    gap: 12px;
+}
 
-    span {
-        width: 5px;
-        height: 5px;
-        border-radius: 50%;
-        background: #6366f1;
-        animation: typingDot 1.4s infinite ease-in-out both;
+.thinking-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
-        &:nth-child(1) {
-            animation-delay: -0.32s;
-        }
+.thinking-avatar-glow {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    animation: avatarPulse 2s ease-in-out infinite;
+}
 
-        &:nth-child(2) {
-            animation-delay: -0.16s;
-        }
+@keyframes avatarPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.5); }
+    50%      { box-shadow: 0 0 0 8px rgba(99, 102, 241, 0); }
+}
+
+.thinking-label {
+    font-size: 13px;
+    font-weight: 700;
+    @apply text-gray-800 dark:text-gray-100;
+    flex: 1;
+}
+
+.thinking-elapsed {
+    font-size: 11px;
+    font-weight: 600;
+    color: #6366f1;
+    @apply dark:text-indigo-400;
+    font-variant-numeric: tabular-nums;
+    background: rgba(99, 102, 241, 0.08);
+    padding: 2px 8px;
+    border-radius: 10px;
+}
+
+.thinking-phrase-area {
+    min-height: 22px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
+.thinking-phrase {
+    font-size: 13px;
+    font-weight: 500;
+    color: #6366f1;
+    @apply dark:text-indigo-300;
+    display: block;
+}
+
+// Vue transition — use :deep so scoped styles apply to Transition children
+:deep(.fade-slide-enter-active),
+:deep(.fade-slide-leave-active) {
+    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+:deep(.fade-slide-enter-from) {
+    opacity: 0;
+    transform: translateY(8px);
+}
+:deep(.fade-slide-leave-to) {
+    opacity: 0;
+    transform: translateY(-8px);
+}
+
+.thinking-wave {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 0;
+}
+
+.wave-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #6366f1;
+    animation: waveBounce 1.4s ease-in-out infinite;
+
+    &:nth-child(1) { animation-delay: 0s; }
+    &:nth-child(2) { animation-delay: 0.15s; }
+    &:nth-child(3) { animation-delay: 0.3s; }
+    &:nth-child(4) { animation-delay: 0.45s; }
+    &:nth-child(5) { animation-delay: 0.6s; }
+}
+
+@keyframes waveBounce {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.4;
     }
+    30% {
+        transform: translateY(-8px);
+        opacity: 1;
+    }
+}
+
+.thinking-progress-bar {
+    width: 100%;
+    height: 3px;
+    background: rgba(99, 102, 241, 0.1);
+    @apply dark:bg-indigo-900/30;
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.thinking-progress-shimmer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 40%;
+    border-radius: 3px;
+    background: linear-gradient(90deg, transparent, #6366f1, transparent);
+    animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(350%); }
 }
 
 // --- Confirmation Bar ---
