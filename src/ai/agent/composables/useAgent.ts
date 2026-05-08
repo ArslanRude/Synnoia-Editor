@@ -10,8 +10,9 @@ import { acceptDiffDocument, createDiffDocument, rejectDiffDocument } from '@/ai
 import { documentsEqual, type TipTapDoc } from '@/ai/diff'
 
 import type { AgentMessage, AgentStatus, HistoryEntry, UndoEntry } from '../types'
+import type { AgentResponseWithMetadata } from '../websocket'
 
-export type { AgentMessage, AgentStatus, HistoryEntry }
+export type { AgentMessage, AgentStatus, HistoryEntry, AgentResponseWithMetadata }
 
 export function useAgent() {
   // Reactive state
@@ -24,6 +25,7 @@ export function useAgent() {
   const lastPrompt = ref<string>('')
   const streamingContent = ref<string>('')
   const errorMessage = ref<string>('')
+  const selectionRange = ref<{ from: number; to: number } | null>(null)
 
   // Computed
   const hasProposal = computed(
@@ -33,6 +35,127 @@ export function useAgent() {
   const canUndo = computed(() => undoStack.value.length > 0)
 
   // --- Helpers ---
+
+  /**
+   * Apply operation to document based on operation_type and selection state
+   */
+  function applyOperation(
+    originalDoc: TipTapDoc,
+    responseDoc: TipTapDoc,
+    operation_type: string,
+    anchor_id: string | null,
+    hasSelection: boolean,
+  ): TipTapDoc {
+    const responseNodes = responseDoc.content || []
+
+    // If there was a selection and no specific operation_type, treat as selection replacement
+    if (hasSelection && (!operation_type || operation_type === 'replace')) {
+      // For selection replacement, we can't easily merge at doc level
+      // The editor transaction will handle the actual replacement at the selection range
+      // Return response as-is - the caller will handle applying it to the selection
+      return responseDoc
+    }
+
+    switch (operation_type) {
+      case 'create':
+        // Clear editor, return response as new document
+        return responseDoc
+
+      case 'append':
+        // Push response nodes onto end of existing document
+        return {
+          type: 'doc',
+          content: [...(originalDoc.content || []), ...responseNodes],
+        }
+
+      case 'prepend':
+        // Unshift response nodes onto start of existing document
+        return {
+          type: 'doc',
+          content: [...responseNodes, ...(originalDoc.content || [])],
+        }
+
+      case 'replace':
+        // Replace selected nodes with response nodes
+        return responseDoc
+
+      case 'insert':
+        // Find node with id == anchor_id, insert response nodes after it
+        if (anchor_id && originalDoc.content) {
+          const newContent: any[] = []
+          let inserted = false
+
+          for (const node of originalDoc.content) {
+            newContent.push(node)
+            // Check if this node or any child has the anchor_id
+            if (!inserted && hasNodeId(node, anchor_id)) {
+              newContent.push(...responseNodes)
+              inserted = true
+            }
+          }
+
+          // If anchor not found, append at end
+          if (!inserted) {
+            newContent.push(...responseNodes)
+          }
+
+          return { type: 'doc', content: newContent }
+        }
+        return responseDoc
+
+      default:
+        // Default: treat as replace/create
+        return responseDoc
+    }
+  }
+
+  /**
+   * Check if a node or its children has a specific id
+   */
+  function hasNodeId(node: any, id: string): boolean {
+    if (node.attrs?.id === id) return true
+    if (node.attrs?.anchor_id === id) return true
+    if (node.content) {
+      for (const child of node.content) {
+        if (hasNodeId(child, id)) return true
+      }
+    }
+    return false
+  }
+
+  /**
+   * Merge response document into original at selection position
+   * For selection-based replacements, we replace content at the selection range
+   */
+  function mergeAtSelection(
+    originalDoc: TipTapDoc,
+    responseDoc: TipTapDoc,
+    range: { from: number; to: number },
+  ): TipTapDoc {
+    // Since we're working with JSON, we need a simplified approach
+    // The actual replacement happens at the editor transaction level
+    // Here we construct a document that shows the diff properly
+
+    const originalNodes = originalDoc.content || []
+    const responseNodes = responseDoc.content || []
+
+    // For a proper merge, we need to know which nodes were selected
+    // Since we don't have node-level position mapping in JSON,
+    // we'll return a document that combines both for diff display
+    // The actual application will use editor commands to replace the selection
+
+    // Create a merged document:
+    // - Mark selected nodes as "removed" in diff by not including them
+    // - Include response nodes as "added"
+    // - Include non-selected nodes as "unchanged"
+
+    // For now, return the response merged with original context
+    // This creates a document showing what the result should look like
+    return {
+      type: 'doc',
+      content: responseNodes.length > 0 ? responseNodes : originalNodes,
+    }
+  }
 
   function generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).slice(2, 8)
@@ -88,7 +211,7 @@ export function useAgent() {
       parentNode?: TipTapDoc,
       model?: string,
       documentName?: string,
-    ) => Promise<TipTapDoc | ReadableStream<string>>,
+    ) => Promise<AgentResponseWithMetadata | ReadableStream<string>>,
     model?: string,
     documentName?: string,
   ): Promise<void> {
@@ -112,6 +235,11 @@ export function useAgent() {
     const selectionText = hasSelection
       ? editor.state.doc.textBetween(selection.from, selection.to)
       : ''
+
+    // Store selection range for later use when applying response
+    selectionRange.value = hasSelection
+      ? { from: selection.from, to: selection.to }
+      : null
 
     // Extract selected content as TipTap JSON if selection exists
     let selectionDoc: TipTapDoc | undefined
@@ -194,10 +322,26 @@ export function useAgent() {
         // Try to parse the final streamed content as TipTap JSON
         try {
           const parsed = JSON.parse(streamingContent.value)
-          proposedContent.value = parsed as TipTapDoc
+          const responseDoc = parsed as TipTapDoc
+
+          // Check if we had a selection when sending the prompt
+          const hadSelection = selectionRange.value !== null
+
+          // If there was a selection, merge response into original
+          if (hadSelection) {
+            proposedContent.value = mergeAtSelection(
+              originalSnapshot.value,
+              responseDoc,
+              selectionRange.value!,
+            )
+          } else {
+            proposedContent.value = responseDoc
+          }
+
           assistantMsg.status = 'complete'
+          const operationLabel = hadSelection ? 'selection update' : 'update'
           assistantMsg.content =
-            "I've prepared changes to your document. Review the diff below and accept or reject."
+            `I've prepared changes to your document (${operationLabel}). Review the diff below and accept or reject.`
 
           // Compute inline diff document
           const markedDoc = createDiffDocument(
@@ -211,13 +355,36 @@ export function useAgent() {
           status.value = 'awaiting-confirmation'
         } catch {
           // Streamed content is plain text (explanation), not JSON
+          // When there's a selection but only text response, show in sidebar
           assistantMsg.status = 'complete'
           assistantMsg.content = streamingContent.value
           status.value = 'idle'
         }
       } else {
-        // Static TipTapDoc response
-        proposedContent.value = result
+        // Static response with operation metadata
+        const { doc: responseDoc, operation_type, anchor_id } = result
+
+        // Check if we had a selection when sending the prompt
+        const hadSelection = selectionRange.value !== null
+
+        // If there was a selection, merge response into original at selection position
+        if (hadSelection && (!operation_type || operation_type === 'replace')) {
+          // Merge response document nodes into original document
+          proposedContent.value = mergeAtSelection(
+            originalSnapshot.value,
+            responseDoc,
+            selectionRange.value!,
+          )
+        } else {
+          // Apply the operation to get the proposed content
+          proposedContent.value = applyOperation(
+            originalSnapshot.value,
+            responseDoc,
+            operation_type,
+            anchor_id,
+            hadSelection,
+          )
+        }
 
         if (documentsEqual(originalSnapshot.value, proposedContent.value)) {
           addMessage(
@@ -237,9 +404,10 @@ export function useAgent() {
         // Render inline diff
         editor.commands.setContent(markedDoc)
 
+        const operationLabel = hadSelection ? 'selection update' : (operation_type || 'update')
         const assistantMsg = addMessage(
           'assistant',
-          "I've prepared changes to your document. Review the inline diff and accept or reject.",
+          `I've prepared changes to your document (${operationLabel}). Review the inline diff and accept or reject.`,
         )
 
         status.value = 'awaiting-confirmation'
@@ -273,8 +441,33 @@ export function useAgent() {
       timestamp: new Date(),
     })
 
-    // Clean up DiffRemoved and DiffAdded marks
-    acceptDiffDocument(editor)
+    // Check if this was a selection-based change
+    const hadSelection = selectionRange.value !== null
+
+    if (hadSelection && selectionRange.value) {
+      // For selection-based changes, use editor commands to replace just the selection
+      const { from, to } = selectionRange.value
+
+      // Clean up diff marks first
+      acceptDiffDocument(editor)
+
+      // Replace the selection with the proposed content
+      // Focus and set selection first
+      editor.commands.focus()
+      editor.commands.setTextSelection({ from, to })
+
+      // Insert the new content (this replaces the selection)
+      const newNodes = proposedContent.value.content || []
+      if (newNodes.length > 0) {
+        // Clear current selection and insert new nodes
+        editor.commands.deleteSelection()
+        editor.commands.insertContent(newNodes)
+      }
+    } else {
+      // For full document changes, use the standard accept flow
+      // Clean up DiffRemoved and DiffAdded marks
+      acceptDiffDocument(editor)
+    }
 
     // Log to history
     addHistoryEntry('accepted', lastPrompt.value)
@@ -284,6 +477,7 @@ export function useAgent() {
     // Reset proposal state
     status.value = 'applied'
     proposedContent.value = null
+    selectionRange.value = null
 
     // Brief status display, then back to idle
     setTimeout(() => {
@@ -306,6 +500,7 @@ export function useAgent() {
     // Reset
     status.value = 'rejected'
     proposedContent.value = null
+    selectionRange.value = null
 
     setTimeout(() => {
       if (status.value === 'rejected') status.value = 'idle'

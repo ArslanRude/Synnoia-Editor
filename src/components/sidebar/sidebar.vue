@@ -173,7 +173,7 @@
 <script setup lang="ts">
 import type { Editor } from '@tiptap/vue-3'
 
-import { useAgent, sendMockAgentRequest } from '@/ai/agent'
+import { useAgent, sendSynnoiaAgentRequest } from '@/ai/agent'
 import { useDocument } from '@/composables/useDocument'
 
 interface Props {
@@ -274,8 +274,8 @@ const handleSend = async () => {
         if (inputArea) inputArea.style.height = 'auto'
     }, 0)
 
-    // Use mock service for development
-    await agent.sendPrompt(props.editor.value, content, sendMockAgentRequest, selectedModel, documentName.value)
+    // Use Synnoia Agent backend service
+    await agent.sendPrompt(props.editor.value, content, sendSynnoiaAgentRequest, selectedModel, documentName.value)
     scrollToBottom()
 }
 
@@ -584,8 +584,6 @@ if (typeof window !== 'undefined') {
         background: white;
         @apply dark:bg-gray-700;
         color: #0f172a;
-        @apply dark:text-gray-100;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 }
 
@@ -598,17 +596,46 @@ if (typeof window !== 'undefined') {
     flex-direction: column;
     gap: 20px;
 
+    // Firefox scrollbar
+    scrollbar-width: thin;
+    scrollbar-color: #d1d5db transparent;
+
+    @media (prefers-color-scheme: dark) {
+        scrollbar-color: #4b5563 transparent;
+    }
+
     &::-webkit-scrollbar {
-        width: 4px;
+        width: 8px;
+        height: 8px;
     }
 
     &::-webkit-scrollbar-track {
-        background: transparent;
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 4px;
     }
 
     &::-webkit-scrollbar-thumb {
-        @apply bg-gray-200 dark:bg-gray-700;
+        background: #9ca3af;
         border-radius: 4px;
+        min-height: 40px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        &::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background: #6b7280;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
     }
 }
 

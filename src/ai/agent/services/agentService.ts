@@ -6,11 +6,58 @@
  */
 import type { TipTapDoc } from '@/ai/diff'
 
-import type { AgentRequest } from '../types'
-import { agentWebSocketService } from '../websocket'
+import type { AgentRequest, SynnoiaAgentBackendRequest, SynnoiaAgentBackendResponse } from '../types'
+import { agentWebSocketService, type AgentResponseWithMetadata } from '../websocket'
 
 /**
- * Send a prompt to the agent backend via WebSocket.
+ * Send a prompt to the Synnoia Agent backend via WebSocket.
+ * Transforms the frontend AgentRequest to the backend format.
+ * Returns either a TipTapDoc (static) or a ReadableStream (streaming).
+ */
+export async function sendSynnoiaAgentRequest(
+  prompt: string,
+  document: TipTapDoc,
+  selectionText = '',
+  selectionDoc?: TipTapDoc,
+  parentNode?: TipTapDoc,
+  model?: string,
+  documentName?: string,
+): Promise<AgentResponseWithMetadata | ReadableStream<string>> {
+  // Get document text content
+  const getDocText = (doc: TipTapDoc): string => {
+    if (!doc.content) return ''
+    return doc.content
+      .map((node: any) => {
+        if (node.type === 'text') return node.text || ''
+        if (node.content) return getDocText({ type: 'doc', content: node.content })
+        return ''
+      })
+      .join(' ')
+  }
+
+  const docText = getDocText(document)
+
+  // Transform to backend format
+  const backendRequest: SynnoiaAgentBackendRequest = {
+    query: prompt,
+    document_name: documentName || 'Untitled Document',
+    doc_text: selectionText || docText,
+    doc_json: selectionDoc || document,
+  }
+
+  try {
+    const result = await agentWebSocketService.sendSynnoiaAgentRequest(backendRequest)
+    return result
+  } catch (err: any) {
+    if (err.message?.includes('timed out')) {
+      throw new Error('Agent request timed out')
+    }
+    throw err
+  }
+}
+
+/**
+ * Send a prompt to a generic agent backend via WebSocket.
  * Returns either a TipTapDoc (static) or a ReadableStream (streaming).
  */
 export async function sendAgentRequest(
@@ -21,7 +68,7 @@ export async function sendAgentRequest(
   parentNode?: TipTapDoc,
   model?: string,
   documentName?: string,
-): Promise<TipTapDoc | ReadableStream<string>> {
+): Promise<AgentResponseWithMetadata | ReadableStream<string>> {
   const request: AgentRequest = {
     prompt,
     document,
@@ -56,7 +103,7 @@ export async function sendMockAgentRequest(
   _parentNode?: TipTapDoc,
   _model?: string,
   _documentName?: string,
-): Promise<TipTapDoc> {
+): Promise<AgentResponseWithMetadata> {
   // Simulate network delay
   await new Promise((resolve) =>
     setTimeout(resolve, 1500 + Math.random() * 1000),
@@ -108,5 +155,9 @@ export async function sendMockAgentRequest(
     }
   }
 
-  return modified
+  return {
+    doc: modified,
+    operation_type: '',
+    anchor_id: null,
+  }
 }
