@@ -59,6 +59,7 @@ import TextBox from './text-box'
 import Toc from './toc'
 import typeWriter from './type-writer'
 import Video from './video'
+import { UniqueId } from './unique-id'
 import { DiffAdded, DiffRemoved } from './diff-marks'
 
 export const getDefaultExtensions = ({
@@ -208,6 +209,7 @@ export const getDefaultExtensions = ({
     Echarts,
     Completion,
     typeWriter,
+    UniqueId,
     DiffAdded,
     DiffRemoved,
   ]
