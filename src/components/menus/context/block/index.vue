@@ -234,7 +234,7 @@ const dropdownVisible = (visible: boolean) => {
 
 .ProseMirror-noderangeselection {
   *::selection {
-    background: transparent;
+    background: var(--arslan-text-selection-background);
   }
 
   * {

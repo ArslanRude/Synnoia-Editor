@@ -34,7 +34,6 @@ import Callout from './callout'
 import CodeBlock from './code-block'
 import { Completion } from '@/ai/completion'
 import Datetime from './datetime'
-import Echarts from './echarts'
 import File from './file'
 import FileHandler from './file-handler'
 import FontSize from './font-size'
@@ -206,7 +205,6 @@ export const getDefaultExtensions = ({
     Dropcursor.configure({
       color: 'var(--arslan-primary-color)',
     }),
-    Echarts,
     Completion,
     typeWriter,
     UniqueId,

@@ -4,7 +4,7 @@
     :text="t('base.selectAll')"
     shortcut="Ctrl+A"
     hide-text
-    @menu-click="editor?.chain().focus().selectAll().run()"
+    @menu-click="editor?.chain().focus().selectVisibleAll().run()"
   />
 </template>
 

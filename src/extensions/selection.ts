@@ -11,10 +11,14 @@ declare module '@tiptap/core' {
     deleteSelectionNode: {
       deleteSelectionNode: () => ReturnType
     }
+    selectVisibleAll: {
+      selectVisibleAll: () => ReturnType
+    }
   }
 }
 export default Extension.create({
   name: 'selection',
+  priority: 1000,
   addProseMirrorPlugins() {
     const { editor } = this
 
@@ -22,6 +26,17 @@ export default Extension.create({
       new Plugin({
         key: new PluginKey('selection'),
         props: {
+          handleKeyDown(view, event) {
+            if (
+              (event.ctrlKey || event.metaKey) &&
+              event.key.toLowerCase() === 'a'
+            ) {
+              event.preventDefault()
+              return editor.commands.selectAll()
+            }
+
+            return false
+          },
           decorations(state) {
             if (state.selection.empty) {
               return null
@@ -31,11 +46,41 @@ export default Extension.create({
             //   return null
             // }
 
-            return DecorationSet.create(state.doc, [
-              Decoration.inline(state.selection.from, state.selection.to, {
-                class: 'arslan-text-selection',
-              }),
-            ])
+            const decorations: Decoration[] = []
+            const { from, to } = state.selection
+
+            state.doc.nodesBetween(from, to, (node, pos) => {
+              if (node.isTextblock) {
+                const textFrom = Math.max(from, pos + 1)
+                const textTo = Math.min(to, pos + node.nodeSize - 1)
+
+                if (textFrom < textTo) {
+                  decorations.push(
+                    Decoration.inline(textFrom, textTo, {
+                      class: 'arslan-text-selection',
+                    }),
+                  )
+                } else if (node.content.size === 0) {
+                  decorations.push(
+                    Decoration.node(pos, pos + node.nodeSize, {
+                      class: 'arslan-block-selection',
+                    }),
+                  )
+                }
+
+                return false
+              }
+
+              if (node.isAtom && pos >= from && pos + node.nodeSize <= to) {
+                decorations.push(
+                  Decoration.node(pos, pos + node.nodeSize, {
+                    class: 'arslan-block-selection',
+                  }),
+                )
+              }
+            })
+
+            return DecorationSet.create(state.doc, decorations)
           },
         },
       }),
@@ -76,6 +121,26 @@ export default Extension.create({
           }
           return commands.deleteNode(node.type.name)
         },
+      selectVisibleAll:
+        () =>
+                ({ state, dispatch, editor }) => {
+          const from = 1
+          const to = Math.max(from, state.doc.content.size - 1)
+
+          if (to <= from) {
+            return editor.commands.selectAll()
+          }
+
+          dispatch?.(
+            state.tr.setSelection(TextSelection.create(state.doc, from, to)),
+          )
+          return true
+        },
+    }
+  },
+  addKeyboardShortcuts() {
+    return {
+      'Mod-a': () => this.editor.commands.selectVisibleAll(),
     }
   },
 })
