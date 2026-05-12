@@ -546,24 +546,24 @@ export function useAgent() {
       return
     }
 
-    editor.commands.setContent(result.doc)
-    undoStack.value.push({
-      originalDoc: beforeDoc,
-      appliedDoc: result.doc,
-      prompt: lastPrompt.value,
-      timestamp: new Date(),
-    })
+    // Compute inline diff document
+    const markedDoc = createDiffDocument(beforeDoc, result.doc)
+
+    // Render inline diff
+    editor.commands.setContent(markedDoc)
+
+    // Store proposal state
+    originalSnapshot.value = beforeDoc
     proposedContent.value = result.doc
-    addHistoryEntry('accepted', lastPrompt.value)
+    directProposal.value = false
+
+    const operationLabel = data.operation_type || 'update'
     renderAssistantState({
       ...data,
-      action_summary: data.action_summary || 'Document updated successfully.',
+      action_summary: data.action_summary || `I've prepared changes to your document (${operationLabel}). Review the inline diff and accept or reject.`,
     }, 'complete')
-    status.value = 'applied'
 
-    setTimeout(() => {
-      if (status.value === 'applied') status.value = 'idle'
-    }, 2000)
+    status.value = 'awaiting-confirmation'
   }
 
   function buildAgentBlocks(data: SynnoiaAgentBackendResponse): AgentMessageBlock[] {
@@ -1016,8 +1016,9 @@ export function useAgent() {
     })
 
     if (directProposal.value) {
+      // Direct proposals (like diagrams) just need status update
       addHistoryEntry('accepted', lastPrompt.value)
-      addMessage('system', 'Changes applied successfully.')
+      addMessage('system', '✅ Changes applied successfully.')
       status.value = 'applied'
       proposedContent.value = null
       selectionRange.value = null
