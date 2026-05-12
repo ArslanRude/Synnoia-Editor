@@ -1,9 +1,9 @@
 export const AGENT_WEBSOCKET_CONFIG = {
   // Production WebSocket URL (Railway)
-  PROD_URL: 'wss://synnoia-agent.up.railway.app/ws/agent',
+  PROD_URL: 'wss://synnoia-agent-production.up.railway.app/ws/agent',
 
   // Local development WebSocket URL (FastAPI backend)
-  DEV_URL: 'ws://localhost:8000/ws/agent',
+  DEV_URL: 'wss://synnoia-agent-production.up.railway.app/ws/agent',
 
   // Use local backend in development, production URL in production builds
   get URL() {

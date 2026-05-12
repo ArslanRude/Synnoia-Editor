@@ -236,11 +236,15 @@ function exportDrawioXmlToSvg({
         }
 
         if (msg.event === 'load') {
-          postMessage({
-            action: 'export',
-            format: 'xmlsvg',
-            xml: graph,
-          })
+          window.setTimeout(() => {
+            postMessage({
+              action: 'export',
+              format: 'xmlsvg',
+              xml: graph,
+              spinKey: 'export',
+              border: 8,
+            })
+          }, 500)
           return
         }
 
@@ -261,9 +265,10 @@ function exportDrawioXmlToSvg({
     frame.style.position = 'fixed'
     frame.style.left = '-10000px'
     frame.style.top = '-10000px'
-    frame.style.width = '1px'
-    frame.style.height = '1px'
+    frame.style.width = '1200px'
+    frame.style.height = '900px'
     frame.style.opacity = '0'
+    frame.style.pointerEvents = 'none'
     frame.src = `${domain}?ui=atlas&proto=json&libraries=1&configure=1&noSaveBtn=1&lang=en`
     document.body.appendChild(frame)
   })

@@ -571,7 +571,7 @@ export function useAgent() {
     const intent = data.intent ||
       (data.response_json || data.document || data.graph || data.diagram_json ? 'generation' : undefined)
 
-    if (intent) {
+    if (intent && intent !== 'chitchat' && intent !== 'clarification') {
       blocks.push(
         { type: 'heading', text: 'What user wants' },
         { type: 'paragraph', text: describeIntent(intent) },

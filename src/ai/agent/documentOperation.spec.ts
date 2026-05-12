@@ -38,6 +38,20 @@ describe('applyDocumentOperationToDoc', () => {
     expect(result.doc.content.map((node) => node.attrs?.id)).toEqual(['a', 'b', 'x'])
   })
 
+  it('does not preserve the default empty paragraph when appending into an empty editor', () => {
+    const result = applyDocumentOperationToDoc(
+      {
+        type: 'doc',
+        content: [{ type: 'paragraph' }],
+      },
+      generatedDoc,
+      'append',
+      null,
+    )
+
+    expect(result.doc.content.map((node) => node.attrs?.id)).toEqual(['x'])
+  })
+
   it('prepends generated nodes', () => {
     const result = applyDocumentOperationToDoc(currentDoc, generatedDoc, 'prepend', null)
 

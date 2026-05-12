@@ -189,9 +189,9 @@
                 <div class="input-container">
                     <div class="input-wrapper">
                         <select v-model="selectedModel" class="model-select" title="Choose LLM Model">
-                            <option value="gpt-4o">GPT-4o</option>
-                            <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
-                            <option value="gemini-1-5-pro">Gemini 1.5 Pro</option>
+                            <option value="gpt-4o">GPT-5.3</option>
+                            <option value="claude-3-5-sonnet">Claude 4.7 Sonnet</option>
+                            <option value="gemini-1-5-pro">Gemini 3.1 Pro</option>
                         </select>
                         <div class="textarea-wrapper">
                             <textarea v-model="inputMessage" @input="resizeTextarea"

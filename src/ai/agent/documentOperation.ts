@@ -90,7 +90,7 @@ export function applyDocumentOperationToDoc(
   anchorId: string | null | undefined,
 ): DocumentOperationResult {
   const newNodes = newContent.content || []
-  const currentNodes = currentDoc.content || []
+  const currentNodes = normalizeCurrentNodes(currentDoc.content || [])
   const operation = operationType || 'create'
 
   switch (operation) {
@@ -151,6 +151,23 @@ export function applyDocumentOperationToDoc(
       console.warn('Unknown operation_type:', operationType)
       return { doc: currentDoc }
   }
+}
+
+function normalizeCurrentNodes(nodes: TipTapNode[]): TipTapNode[] {
+  return isEmptyStarterDocument(nodes) ? [] : nodes
+}
+
+function isEmptyStarterDocument(nodes: TipTapNode[]): boolean {
+  return nodes.length === 1 && isEmptyParagraph(nodes[0])
+}
+
+function isEmptyParagraph(node: TipTapNode): boolean {
+  return node.type === 'paragraph' &&
+    (!node.content || node.content.length === 0 || node.content.every(isEmptyTextNode))
+}
+
+function isEmptyTextNode(node: TipTapNode): boolean {
+  return node.type === 'text' && (!node.text || node.text.trim() === '')
 }
 
 function safeParseJson(value: string): unknown {
