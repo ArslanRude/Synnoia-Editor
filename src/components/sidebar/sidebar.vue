@@ -80,7 +80,51 @@
                         </div>
                         <div class="message-content">
                             <div class="message-text" :class="{ 'message-error': message.status === 'error' }">
-                                {{ message.content }}
+                                <template v-if="message.blocks?.length">
+                                    <div class="agent-blocks">
+                                        <template v-for="(block, blockIndex) in message.blocks"
+                                            :key="`${message.id}-${blockIndex}`">
+                                            <h3 v-if="block.type === 'heading'" class="agent-block-heading">
+                                                {{ block.text }}
+                                            </h3>
+                                            <p v-else-if="block.type === 'paragraph'" class="agent-block-paragraph">
+                                                {{ block.text }}
+                                            </p>
+                                            <div v-else-if="block.type === 'outline'" class="agent-outline">
+                                                <h3 v-if="block.title" class="agent-block-heading">
+                                                    {{ block.title }}
+                                                </h3>
+                                                <div v-for="(item, itemIndex) in block.items || []"
+                                                    :key="`${message.id}-${blockIndex}-${itemIndex}`"
+                                                    class="agent-outline-item">
+                                                    <div class="agent-outline-title">{{ item.title }}</div>
+                                                    <div v-if="item.diagramType" class="agent-outline-meta">
+                                                        Type: {{ item.diagramType }}
+                                                    </div>
+                                                    <div v-if="item.instructions" class="agent-outline-body">
+                                                        {{ item.instructions }}
+                                                    </div>
+                                                    <div v-if="item.nodeTypes?.length" class="agent-outline-meta">
+                                                        Nodes: {{ item.nodeTypes.join(', ') }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <details v-else-if="block.type === 'code'" class="agent-code-window">
+                                                <summary>
+                                                    <span>{{ block.title }}</span>
+                                                    <button class="agent-code-copy"
+                                                        @click.stop.prevent="copyCode(block.code || '')">
+                                                        Copy
+                                                    </button>
+                                                </summary>
+                                                <pre><code>{{ block.code }}</code></pre>
+                                            </details>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template v-else>
+                                    {{ message.content }}
+                                </template>
                                 <span v-if="message.status === 'streaming'" class="streaming-cursor">▊</span>
                             </div>
 
@@ -358,6 +402,11 @@ const formatTime = (date: Date) => {
         hour: '2-digit',
         minute: '2-digit'
     })
+}
+
+const copyCode = async (code: string) => {
+    if (!code) return
+    await navigator.clipboard?.writeText(code)
 }
 
 // --- Resize ---
@@ -825,6 +874,107 @@ if (typeof window !== 'undefined') {
     font-size: 12px;
     @apply text-gray-500;
     font-style: italic;
+}
+
+.agent-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.agent-block-heading {
+    margin: 2px 0 0;
+    font-size: 13px;
+    line-height: 1.35;
+    font-weight: 700;
+    color: #111827;
+    @apply dark:text-gray-100;
+}
+
+.agent-block-paragraph {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.agent-outline {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.agent-outline-item {
+    border-left: 2px solid #c7d2fe;
+    @apply dark:border-indigo-800;
+    padding-left: 10px;
+}
+
+.agent-outline-title {
+    font-weight: 650;
+    color: #1f2937;
+    @apply dark:text-gray-100;
+}
+
+.agent-outline-body,
+.agent-outline-meta {
+    margin-top: 2px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #4b5563;
+    @apply dark:text-gray-300;
+}
+
+.agent-outline-meta {
+    font-weight: 600;
+    color: #6366f1;
+    @apply dark:text-indigo-300;
+}
+
+.agent-code-window {
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+.agent-code-window summary {
+    min-height: 34px;
+    padding: 7px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #111827;
+    font-size: 12px;
+    font-weight: 700;
+    list-style: none;
+}
+
+.agent-code-window summary::-webkit-details-marker {
+    display: none;
+}
+
+.agent-code-copy {
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.08);
+    color: #f9fafb;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 650;
+    padding: 3px 8px;
+}
+
+.agent-code-window pre {
+    margin: 0;
+    max-height: 220px;
+    overflow: auto;
+    padding: 12px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .streaming-cursor {

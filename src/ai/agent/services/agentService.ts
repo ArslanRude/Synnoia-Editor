@@ -7,7 +7,7 @@
 import type { TipTapDoc } from '@/ai/diff'
 
 import type { AgentRequest, SynnoiaAgentBackendRequest, SynnoiaAgentBackendResponse } from '../types'
-import { agentWebSocketService, type AgentResponseWithMetadata } from '../websocket'
+import { agentWebSocketService, type AgentResponseWithMetadata, type SynnoiaAgentCallbacks } from '../websocket'
 
 /**
  * Send a prompt to the Synnoia Agent backend via WebSocket.
@@ -22,7 +22,8 @@ export async function sendSynnoiaAgentRequest(
   parentNode?: TipTapDoc,
   model?: string,
   documentName?: string,
-): Promise<AgentResponseWithMetadata | ReadableStream<string>> {
+  callbacks: SynnoiaAgentCallbacks = {},
+): Promise<SynnoiaAgentBackendResponse> {
   // Get document text content
   const getDocText = (doc: TipTapDoc): string => {
     if (!doc.content) return ''
@@ -40,13 +41,13 @@ export async function sendSynnoiaAgentRequest(
   // Transform to backend format
   const backendRequest: SynnoiaAgentBackendRequest = {
     query: prompt,
-    document_name: documentName || 'Untitled Document',
-    doc_text: selectionText || docText,
-    doc_json: selectionDoc || document,
+    doc_text: docText,
+    doc_json: JSON.stringify(document),
+    model: model || 'gpt-4o',
   }
 
   try {
-    const result = await agentWebSocketService.sendSynnoiaAgentRequest(backendRequest)
+    const result = await agentWebSocketService.sendSynnoiaAgentRequest(backendRequest, callbacks)
     return result
   } catch (err: any) {
     if (err.message?.includes('timed out')) {

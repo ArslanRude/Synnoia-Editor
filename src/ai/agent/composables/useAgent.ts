@@ -9,8 +9,10 @@ import type { Editor } from '@tiptap/vue-3'
 import { acceptDiffDocument, createDiffDocument, rejectDiffDocument } from '@/ai/diff'
 import { documentsEqual, type TipTapDoc } from '@/ai/diff'
 
-import type { AgentMessage, AgentStatus, HistoryEntry, UndoEntry } from '../types'
-import type { AgentResponseWithMetadata } from '../websocket'
+import { applyDocumentOperationToDoc, parseGeneratedDocument, parseStreamedBackendResult } from '../documentOperation'
+import { createDiagramImageNode, diagramJsonToDrawioXml, isDrawioXmlEmpty } from '../diagram'
+import type { AgentMessage, AgentMessageBlock, AgentOutlineBlockItem, AgentStatus, HistoryEntry, SynnoiaAgentBackendResponse, UndoEntry } from '../types'
+import type { AgentResponseWithMetadata, SynnoiaAgentCallbacks } from '../websocket'
 
 export type { AgentMessage, AgentStatus, HistoryEntry, AgentResponseWithMetadata }
 
@@ -22,6 +24,7 @@ export function useAgent() {
   const undoStack = ref<UndoEntry[]>([])
   const originalSnapshot = ref<TipTapDoc | null>(null)
   const proposedContent = ref<TipTapDoc | null>(null)
+  const directProposal = ref(false)
   const lastPrompt = ref<string>('')
   const streamingContent = ref<string>('')
   const errorMessage = ref<string>('')
@@ -196,11 +199,582 @@ export function useAgent() {
 
   // --- Core actions ---
 
+  async function sendPrompt(
+    editor: Editor,
+    prompt: string,
+    sendFn: (
+      prompt: string,
+      doc: TipTapDoc,
+      selectionText: string,
+      selectionDoc?: TipTapDoc,
+      parentNode?: TipTapDoc,
+      model?: string,
+      documentName?: string,
+      callbacks?: SynnoiaAgentCallbacks,
+    ) => Promise<SynnoiaAgentBackendResponse>,
+    model?: string,
+    documentName?: string,
+  ): Promise<void> {
+    if (status.value === 'thinking') return
+
+    lastPrompt.value = prompt
+    errorMessage.value = ''
+    originalSnapshot.value = captureSnapshot(editor)
+    proposedContent.value = null
+    directProposal.value = false
+    streamingContent.value = ''
+
+    addMessage('user', prompt)
+    status.value = 'thinking'
+
+    const { selection } = editor.state
+    const hasSelection = !selection.empty
+    const selectionText = hasSelection
+      ? editor.state.doc.textBetween(selection.from, selection.to)
+      : ''
+
+    selectionRange.value = hasSelection
+      ? { from: selection.from, to: selection.to }
+      : null
+
+    let selectionDoc: TipTapDoc | undefined
+    if (hasSelection) {
+      const slice = selection.content()
+      selectionDoc = {
+        type: 'doc',
+        content: slice.content.toJSON(),
+      }
+    }
+
+    let parentNode: TipTapDoc | undefined
+    if (hasSelection) {
+      const $from = selection.$from
+      const parent = $from.parent
+      const depth = $from.depth
+
+      parentNode = depth > 0
+        ? {
+            type: 'doc',
+            content: [parent.toJSON()],
+          }
+        : originalSnapshot.value
+    }
+
+    console.log('[Agent Request]', {
+      prompt,
+      model,
+      documentName,
+      hasSelection,
+      documentSize: JSON.stringify(originalSnapshot.value).length,
+    })
+
+    let assistantMsg: AgentMessage | undefined
+    let receivedStream = false
+
+    const ensureAssistantMessage = (): AgentMessage => {
+      if (!assistantMsg) {
+        assistantMsg = addMessage('assistant', '', {
+          status: 'streaming',
+        })
+      }
+      return assistantMsg
+    }
+
+    const completeAssistantMessage = (content: string): void => {
+      const msg = ensureAssistantMessage()
+      msg.blocks = undefined
+      msg.content = content
+      msg.status = 'complete'
+      streamingContent.value = content
+    }
+
+    const renderAssistantState = (
+      data: SynnoiaAgentBackendResponse,
+      messageStatus: AgentMessage['status'] = 'streaming',
+    ): void => {
+      const blocks = buildAgentBlocks(data)
+      if (blocks.length === 0) {
+        return
+      }
+
+      const msg = ensureAssistantMessage()
+      msg.blocks = blocks
+      msg.content = ''
+      msg.status = messageStatus
+    }
+
+    const callbacks: SynnoiaAgentCallbacks = {
+      onProcessing(message) {
+        const msg = ensureAssistantMessage()
+        msg.blocks = [
+          { type: 'heading', text: 'Status' },
+          { type: 'paragraph', text: message || 'Processing your request...' },
+        ]
+        msg.content = message || 'Processing your request...'
+        msg.status = 'streaming'
+      },
+      onToken(token) {
+        const msg = ensureAssistantMessage()
+        if (!receivedStream) {
+          streamingContent.value = ''
+          msg.content = 'Working on your request...'
+          receivedStream = true
+        }
+        streamingContent.value += token
+        const progress = parseStreamedBackendResult(streamingContent.value)
+        if (progress) {
+          renderAssistantState(progress)
+        } else if (!msg.blocks?.length) {
+          msg.blocks = [
+            { type: 'heading', text: 'Status' },
+            { type: 'paragraph', text: 'Working on your request...' },
+          ]
+        }
+        msg.status = 'streaming'
+      },
+      onError(message) {
+        const friendlyMessage = formatAgentError(message)
+        errorMessage.value = friendlyMessage
+        const msg = ensureAssistantMessage()
+        msg.blocks = [
+          { type: 'heading', text: 'Error' },
+          { type: 'paragraph', text: friendlyMessage },
+        ]
+        msg.content = `Error: ${friendlyMessage}`
+        msg.status = 'error'
+      },
+    }
+
+    try {
+      const finalResult = await sendFn(
+        prompt,
+        originalSnapshot.value,
+        selectionText,
+        selectionDoc,
+        parentNode,
+        model,
+        documentName,
+        callbacks,
+      )
+
+      const recoveredResult = recoverFinalResult(finalResult)
+      renderAssistantState(recoveredResult)
+      await handleFinalResult(editor, recoveredResult, completeAssistantMessage, renderAssistantState)
+    } catch (err: any) {
+      errorMessage.value = formatAgentError(err?.message || 'An unexpected error occurred')
+      if (assistantMsg?.status !== 'error') {
+        addMessage('system', `Error: ${errorMessage.value}`, {
+          status: 'error',
+          blocks: [
+            { type: 'heading', text: 'Error' },
+            { type: 'paragraph', text: errorMessage.value },
+          ],
+        })
+      }
+      status.value = 'idle'
+    }
+  }
+
+  async function handleFinalResult(
+    editor: Editor,
+    data: SynnoiaAgentBackendResponse,
+    completeAssistantMessage: (content: string) => void,
+    renderAssistantState: (
+      data: SynnoiaAgentBackendResponse,
+      messageStatus?: AgentMessage['status'],
+    ) => void,
+  ): Promise<void> {
+    const intent = data.intent || (data.response_json || data.document || data.graph ? 'generation' : 'communication')
+
+    switch (intent) {
+      case 'chitchat':
+        renderAssistantState(data, 'complete')
+        status.value = 'idle'
+        break
+
+      case 'clarification':
+        renderAssistantState(data, 'complete')
+        status.value = 'idle'
+        break
+
+      case 'communication':
+        renderAssistantState(data, 'complete')
+        status.value = 'idle'
+        break
+
+      case 'generation':
+        await handleGeneration(editor, data, completeAssistantMessage, renderAssistantState)
+        break
+    }
+  }
+
+  function recoverFinalResult(data: SynnoiaAgentBackendResponse): SynnoiaAgentBackendResponse {
+    const streamedResult = parseStreamedBackendResult(streamingContent.value)
+    if (!streamedResult) {
+      return data
+    }
+
+    return {
+      ...streamedResult,
+      ...data,
+      intent: data.intent || streamedResult.intent,
+      task_type: data.task_type || streamedResult.task_type,
+      write_outline: data.write_outline || streamedResult.write_outline,
+      diagram_outline: data.diagram_outline || streamedResult.diagram_outline,
+      operation_type: data.operation_type || streamedResult.operation_type,
+      anchor_id: data.anchor_id ?? streamedResult.anchor_id,
+      document: data.document || streamedResult.document,
+      response_json: data.response_json || streamedResult.response_json,
+      graph: data.graph || streamedResult.graph,
+      diagram_json: data.diagram_json || streamedResult.diagram_json,
+      action_summary: data.action_summary || streamedResult.action_summary,
+    }
+  }
+
+  function hasActionableResult(data: SynnoiaAgentBackendResponse): boolean {
+    return Boolean(
+      data.response_json ||
+      data.document ||
+      data.graph ||
+      data.diagram_json ||
+      data.action_summary ||
+      (
+        data.intent &&
+        data.intent !== 'generation'
+      ),
+    )
+  }
+
+  async function handleGeneration(
+    editor: Editor,
+    data: SynnoiaAgentBackendResponse,
+    completeAssistantMessage: (content: string) => void,
+    renderAssistantState: (
+      data: SynnoiaAgentBackendResponse,
+      messageStatus?: AgentMessage['status'],
+    ) => void,
+  ): Promise<void> {
+    renderAssistantState(data)
+
+    const graphXml = resolveDiagramXml(data)
+    if (graphXml) {
+      if (isDrawioXmlEmpty(graphXml)) {
+        addMessage('system', 'Error: Diagram XML contains no visible shapes.', {
+          status: 'error',
+          blocks: [
+            { type: 'heading', text: 'Error' },
+            { type: 'paragraph', text: 'Diagram XML contains no visible shapes. Please check the backend graph/diagram_json output.' },
+          ],
+        })
+        status.value = 'idle'
+        return
+      }
+
+      const diagramNode = await createDiagramImageNode({
+        graph: graphXml,
+        title: data.title,
+        diagramType: data.diagram_type,
+      })
+      const beforeDoc = captureSnapshot(editor)
+      const diagramOperation = data.anchor_id
+        ? 'insert'
+        : data.operation_type && data.operation_type !== 'create'
+          ? data.operation_type
+          : 'append'
+      const result = applyDocumentOperationToDoc(
+        beforeDoc,
+        {
+          type: 'doc',
+          content: [diagramNode],
+        },
+        diagramOperation,
+        data.anchor_id,
+      )
+
+      if (result.error) {
+        errorMessage.value = result.error
+        addMessage('system', `Error: ${result.error}`, {
+          status: 'error',
+          blocks: [
+            { type: 'heading', text: 'Error' },
+            { type: 'paragraph', text: result.error },
+          ],
+        })
+        status.value = 'idle'
+        return
+      }
+
+      originalSnapshot.value = beforeDoc
+      proposedContent.value = result.doc
+      directProposal.value = true
+      editor.commands.setContent(result.doc)
+      renderAssistantState({
+        ...data,
+        graph: graphXml,
+        operation_type: diagramOperation,
+        action_summary: data.action_summary || `Previewing ${data.title || data.diagram_type || 'diagram'} in the document. Accept to keep it or reject to restore the previous document.`,
+      }, 'complete')
+      status.value = 'awaiting-confirmation'
+      return
+    }
+
+    const responseDoc = parseGeneratedDocument(data.response_json || data.document)
+    if (!responseDoc) {
+      renderAssistantState(data, 'complete')
+      status.value = 'idle'
+      return
+    }
+
+    const beforeDoc = captureSnapshot(editor)
+    const result = applyDocumentOperationToDoc(
+      beforeDoc,
+      responseDoc,
+      data.operation_type,
+      data.anchor_id,
+    )
+
+    if (result.error) {
+      errorMessage.value = result.error
+      addMessage('system', `Error: ${result.error}`, {
+        status: 'error',
+        blocks: [
+          { type: 'heading', text: 'Error' },
+          { type: 'paragraph', text: result.error },
+        ],
+      })
+      status.value = 'idle'
+      return
+    }
+
+    editor.commands.setContent(result.doc)
+    undoStack.value.push({
+      originalDoc: beforeDoc,
+      appliedDoc: result.doc,
+      prompt: lastPrompt.value,
+      timestamp: new Date(),
+    })
+    proposedContent.value = result.doc
+    addHistoryEntry('accepted', lastPrompt.value)
+    renderAssistantState({
+      ...data,
+      action_summary: data.action_summary || 'Document updated successfully.',
+    }, 'complete')
+    status.value = 'applied'
+
+    setTimeout(() => {
+      if (status.value === 'applied') status.value = 'idle'
+    }, 2000)
+  }
+
+  function buildAgentBlocks(data: SynnoiaAgentBackendResponse): AgentMessageBlock[] {
+    const blocks: AgentMessageBlock[] = []
+    const intent = data.intent ||
+      (data.response_json || data.document || data.graph || data.diagram_json ? 'generation' : undefined)
+
+    if (intent) {
+      blocks.push(
+        { type: 'heading', text: 'What user wants' },
+        { type: 'paragraph', text: describeIntent(intent) },
+      )
+    }
+
+    if (intent === 'chitchat') {
+      addTextSection(blocks, 'Response', data.chitchat_response || data.response)
+      return blocks
+    }
+
+    if (intent === 'clarification') {
+      addTextSection(blocks, 'Please Clarify Your Request', data.clarification_question || data.response)
+      return blocks
+    }
+
+    if (intent === 'communication') {
+      if (data.response) {
+        blocks.push({ type: 'paragraph', text: data.response })
+      }
+      return blocks
+    }
+
+    if (intent === 'generation') {
+      addTextSection(blocks, 'Task', data.task_type || inferTaskType(data))
+
+      const writeOutline = normalizeWriteOutline(data.write_outline)
+      if (writeOutline.length > 0) {
+        blocks.push({
+          type: 'outline',
+          title: 'Writing Outline',
+          items: writeOutline,
+        })
+      }
+
+      const diagramOutline = normalizeDiagramOutline(data.diagram_outline)
+      if (diagramOutline.length > 0) {
+        blocks.push({
+          type: 'outline',
+          title: 'Diagram Outline',
+          items: diagramOutline,
+        })
+      }
+
+      const generatedJson = data.response_json || data.document
+      if (generatedJson) {
+        blocks.push({
+          type: 'code',
+          title: 'Generated JSON',
+          language: 'json',
+          code: formatJson(generatedJson),
+        })
+      }
+
+      if (typeof data.graph === 'string' && data.graph.trim()) {
+        blocks.push({
+          type: 'code',
+          title: 'Generated XML',
+          language: 'xml',
+          code: data.graph,
+        })
+      }
+
+      if (data.diagram_json) {
+        blocks.push({
+          type: 'code',
+          title: 'Generated Diagram JSON',
+          language: 'json',
+          code: formatJson(data.diagram_json),
+        })
+      }
+
+      addTextSection(blocks, 'Summary', data.action_summary)
+      return blocks
+    }
+
+    if (data.response) {
+      blocks.push({ type: 'paragraph', text: data.response })
+    }
+
+    return blocks
+  }
+
+  function addTextSection(
+    blocks: AgentMessageBlock[],
+    heading: string,
+    text: string | null | undefined,
+  ): void {
+    if (!text) {
+      return
+    }
+
+    blocks.push(
+      { type: 'heading', text: heading },
+      { type: 'paragraph', text },
+    )
+  }
+
+  function describeIntent(intent: string): string {
+    const descriptions: Record<string, string> = {
+      communication: 'User wants communication.',
+      generation: 'User wants editing in the document.',
+      chitchat: 'User is chatting.',
+      clarification: 'User request needs clarification.',
+    }
+
+    return descriptions[intent] || `User intent: ${intent}.`
+  }
+
+  function inferTaskType(data: SynnoiaAgentBackendResponse): string {
+    if ((data.graph || data.diagram_json) && !data.response_json && !data.document) {
+      return 'diagram'
+    }
+
+    if (data.response_json || data.document) {
+      return 'write'
+    }
+
+    return ''
+  }
+
+  function normalizeWriteOutline(value: unknown): AgentOutlineBlockItem[] {
+    if (!Array.isArray(value)) {
+      return []
+    }
+
+    return value.map((item: any, index) => ({
+      title: String(item?.section || item?.title || `Section ${index + 1}`),
+      instructions: item?.instructions || item?.description || '',
+      nodeTypes: Array.isArray(item?.node_types)
+        ? item.node_types
+        : Array.isArray(item?.nodeTypes)
+          ? item.nodeTypes
+          : [],
+    }))
+  }
+
+  function normalizeDiagramOutline(value: unknown): AgentOutlineBlockItem[] {
+    if (!Array.isArray(value)) {
+      return []
+    }
+
+    return value.map((item: any, index) => ({
+      title: String(item?.title || item?.section || `Diagram ${index + 1}`),
+      instructions: item?.instructions || item?.description || '',
+      diagramType: item?.diagram_type || item?.diagramType || item?.type || '',
+    }))
+  }
+
+  function formatJson(value: unknown): string {
+    if (typeof value === 'string') {
+      try {
+        return JSON.stringify(JSON.parse(value), null, 2)
+      } catch {
+        return value
+      }
+    }
+
+    return JSON.stringify(value, null, 2)
+  }
+
+  function formatAgentError(message: string): string {
+    const normalized = message.toLowerCase()
+
+    if (normalized.includes('insufficient_quota') || normalized.includes('exceeded your current quota')) {
+      return 'The AI request could not be completed because the connected OpenAI account has reached its quota or billing limit. Please check the backend API key billing/usage settings, then try again.'
+    }
+
+    if (normalized.includes('rate limit') || normalized.includes('429')) {
+      return 'The AI service is temporarily rate-limited. Please wait a moment and try again.'
+    }
+
+    if (normalized.includes('timeout')) {
+      return 'The AI request took too long to finish. Please try again with a shorter request or retry in a moment.'
+    }
+
+    if (normalized.includes('failed to connect') || normalized.includes('websocket')) {
+      return 'Synnoia could not connect to the local AI backend. Please make sure the backend server is running and try again.'
+    }
+
+    return message.replace(/^Agent execution failed:\s*/i, '')
+  }
+
+  function resolveDiagramXml(data: SynnoiaAgentBackendResponse): string | null {
+    if (typeof data.graph === 'string' && data.graph.trim() && !isDrawioXmlEmpty(data.graph)) {
+      return data.graph
+    }
+
+    const fromJson = diagramJsonToDrawioXml(data.diagram_json)
+    if (fromJson) {
+      return fromJson
+    }
+
+    return typeof data.graph === 'string' && data.graph.trim()
+      ? data.graph
+      : null
+  }
+
   /**
    * Send a prompt to the agent. Takes the editor instance and the user prompt.
    * The `sendFn` callback handles the actual API call and returns the proposed content.
    */
-  async function sendPrompt(
+  async function sendPromptLegacy(
     editor: Editor,
     prompt: string,
     sendFn: (
@@ -441,6 +1015,20 @@ export function useAgent() {
       timestamp: new Date(),
     })
 
+    if (directProposal.value) {
+      addHistoryEntry('accepted', lastPrompt.value)
+      addMessage('system', 'Changes applied successfully.')
+      status.value = 'applied'
+      proposedContent.value = null
+      selectionRange.value = null
+      directProposal.value = false
+
+      setTimeout(() => {
+        if (status.value === 'applied') status.value = 'idle'
+      }, 2000)
+      return
+    }
+
     // Check if this was a selection-based change
     const hadSelection = selectionRange.value !== null
 
@@ -478,6 +1066,7 @@ export function useAgent() {
     status.value = 'applied'
     proposedContent.value = null
     selectionRange.value = null
+    directProposal.value = false
 
     // Brief status display, then back to idle
     setTimeout(() => {
@@ -491,8 +1080,12 @@ export function useAgent() {
   function rejectChanges(editor: Editor): void {
     if (status.value !== 'awaiting-confirmation') return
 
-    // Revert DiffAdded and DiffRemoved marks
-    rejectDiffDocument(editor)
+    if (directProposal.value && originalSnapshot.value) {
+      editor.commands.setContent(originalSnapshot.value)
+    } else {
+      // Revert DiffAdded and DiffRemoved marks
+      rejectDiffDocument(editor)
+    }
 
     addHistoryEntry('rejected', lastPrompt.value)
     addMessage('system', '❌ Changes rejected.')
@@ -501,6 +1094,7 @@ export function useAgent() {
     status.value = 'rejected'
     proposedContent.value = null
     selectionRange.value = null
+    directProposal.value = false
 
     setTimeout(() => {
       if (status.value === 'rejected') status.value = 'idle'
@@ -526,6 +1120,7 @@ export function useAgent() {
     messages.value = []
     status.value = 'idle'
     proposedContent.value = null
+    directProposal.value = false
     streamingContent.value = ''
     errorMessage.value = ''
   }

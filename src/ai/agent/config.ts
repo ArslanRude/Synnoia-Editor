@@ -3,7 +3,7 @@ export const AGENT_WEBSOCKET_CONFIG = {
   PROD_URL: 'wss://synnoia-agent.up.railway.app/ws/agent',
 
   // Local development WebSocket URL (FastAPI backend)
-  DEV_URL: 'wss://synnoia-agent.up.railway.app/ws/agent',
+  DEV_URL: 'ws://localhost:8000/ws/agent',
 
   // Use local backend in development, production URL in production builds
   get URL() {
@@ -11,6 +11,10 @@ export const AGENT_WEBSOCKET_CONFIG = {
     const isDev = typeof window !== 'undefined' &&
       (window.location.hostname === 'localhost' ||
        window.location.hostname === '127.0.0.1')
+    const envUrl = import.meta.env.VITE_SYNNOIA_AGENT_WS_URL
+    if (envUrl) {
+      return envUrl
+    }
     return isDev ? this.DEV_URL : this.PROD_URL
   },
 
