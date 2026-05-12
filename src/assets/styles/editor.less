@@ -141,8 +141,18 @@
       background-color: var(--arslan-text-selection-background);
     }
 
+    &:not(.is-readonly) .arslan-block-selection {
+      background-color: var(--arslan-text-selection-background);
+      border-radius: var(--arslan-radius);
+    }
+
     &.show-model .arslan-text-selection {
       background-color: var(--arslan-text-selection-background);
+    }
+
+    &.show-model .arslan-block-selection {
+      background-color: var(--arslan-text-selection-background);
+      border-radius: var(--arslan-radius);
     }
 
     ::selection {

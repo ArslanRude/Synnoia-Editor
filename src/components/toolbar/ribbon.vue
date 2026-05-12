@@ -186,7 +186,6 @@
           <div class="px-5 shrink-0 first:pl-0 empty:hidden">
             <div class="bg-primary-light dark:bg-primary-dark w-[1px]"></div>
             <menus-toolbar-tools-diagrams v-if="!disableItem('diagrams')" />
-            <menus-toolbar-tools-echarts v-if="!disableItem('echarts')" />
             <!-- <menus-toolbar-tools-mind-map v-if="!disableItem('mind-map')" /> -->
             <menus-toolbar-tools-mermaid v-if="!disableItem('mermaid')" />
           </div>
