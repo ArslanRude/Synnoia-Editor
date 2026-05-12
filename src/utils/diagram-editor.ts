@@ -24,7 +24,7 @@ class DiagramEditor {
     params: Record<string, any>
     container: string
   }) {
-    this.domain = domain ?? this.domain
+    this.domain = domain || this.domain
     this.params = { ...this.params, ...params }
     this.container = container
   }
