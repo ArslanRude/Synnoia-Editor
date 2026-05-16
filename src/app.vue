@@ -29,9 +29,9 @@ import Nav from '@/components/navbar/nav.vue'
 import AgentPanel from '@/components/sidebar/sidebar.vue'
 import { shortId } from '@/utils/short-id'
 import { templates } from '@/data/templates'
-import { useAuth } from '@/auth'
+import { useAuth, requireAuth } from '@/auth'
 
-// Initialize auth state (optional - editor works without login)
+// Initialize auth state
 const { checkAuth } = useAuth()
 
 let isSidebarOpen = $ref(false)
@@ -49,6 +49,10 @@ const toggleSidebar = () => {
 
 // Initialize on mount
 onMounted(async () => {
+  // Check if user is authenticated, otherwise redirect to login
+  const authenticated = await requireAuth()
+  if (!authenticated) return
+
   await checkAuth()
 
   // Listen for synnoia agent open event from bubble menu
