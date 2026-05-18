@@ -89,7 +89,7 @@ export function applyDocumentOperationToDoc(
   operationType: SynnoiaDocumentOperation | undefined,
   anchorId: string | null | undefined,
 ): DocumentOperationResult {
-  const newNodes = newContent.content || []
+  const newNodes = stripLeadingEmptyNodes(newContent.content || [])
   const currentNodes = normalizeCurrentNodes(currentDoc.content || [])
   const operation = operationType || 'create'
 
@@ -157,13 +157,35 @@ function normalizeCurrentNodes(nodes: TipTapNode[]): TipTapNode[] {
   return isEmptyStarterDocument(nodes) ? [] : nodes
 }
 
-function isEmptyStarterDocument(nodes: TipTapNode[]): boolean {
-  return nodes.length === 1 && isEmptyParagraph(nodes[0])
+export function isEmptyStarterDocument(nodes: TipTapNode[]): boolean {
+  if (nodes.length === 0) {
+    return true
+  }
+  return nodes.every(isEmptySimpleNode)
 }
 
-function isEmptyParagraph(node: TipTapNode): boolean {
-  return node.type === 'paragraph' &&
-    (!node.content || node.content.length === 0 || node.content.every(isEmptyTextNode))
+function isEmptySimpleNode(node: TipTapNode): boolean {
+  if (node.type !== 'paragraph' && node.type !== 'heading') {
+    return false
+  }
+  if (!node.content || node.content.length === 0) {
+    return true
+  }
+  // Treat as empty if it only contains empty text or hard breaks
+  return node.content.every((child) => {
+    if (child.type === 'text') {
+      return !child.text || child.text.trim() === ''
+    }
+    return child.type === 'hardBreak'
+  })
+}
+
+function stripLeadingEmptyNodes(nodes: TipTapNode[]): TipTapNode[] {
+  const firstNonEmptyIndex = nodes.findIndex(node => !isEmptySimpleNode(node))
+  if (firstNonEmptyIndex === -1) {
+    return []
+  }
+  return nodes.slice(firstNonEmptyIndex)
 }
 
 function isEmptyTextNode(node: TipTapNode): boolean {
