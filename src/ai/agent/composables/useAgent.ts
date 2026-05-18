@@ -758,11 +758,26 @@ export function useAgent() {
 
   function normalizeDiagramOutline(value: unknown): AgentOutlineBlockItem[] {
     if (!Array.isArray(value)) return []
-    return value.map((item: any, index) => ({
-      title: item.title ? `Generate Diagram: ${item.title}` : (item.type ? `Generate Diagram: ${item.type}` : `Diagram ${index + 1}`),
-      instructions: item?.instructions || item?.description || '',
-      diagramType: item?.diagram_type || item?.type || item?.diagramType || 'diagram',
-    }))
+    return value.map((item: any, index) => {
+      const type = item?.diagram_type || item?.type || item?.diagramType || `Diagram ${index + 1}`
+      const direction = item?.direction ? ` (${item.direction})` : ''
+      const nodeCount = Array.isArray(item?.nodes) ? item.nodes.length : 0
+      const edgeCount = Array.isArray(item?.edges) ? item.edges.length : 0
+
+      const instructions = nodeCount > 0
+        ? `${nodeCount} node${nodeCount !== 1 ? 's' : ''}, ${edgeCount} connection${edgeCount !== 1 ? 's' : ''}${direction}`
+        : item?.instructions || item?.description || ''
+
+      return {
+        title: `Generate ${capitalize(type)} Diagram`,
+        instructions,
+        diagramType: type,
+      }
+    })
+  }
+
+  function capitalize(str: string): string {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : str
   }
 
   function formatJson(value: unknown): string {
@@ -799,18 +814,25 @@ export function useAgent() {
   }
 
   function resolveDiagramXml(data: SynnoiaAgentBackendResponse): string | null {
-    if (typeof data.graph === 'string' && data.graph.trim() && !isDrawioXmlEmpty(data.graph)) {
-      return data.graph
+    // Try diagram_json first (always a structured object)
+    if (data.diagram_json) {
+      const fromJson = diagramJsonToDrawioXml(data.diagram_json)
+      if (fromJson) return fromJson
     }
 
-    const fromJson = diagramJsonToDrawioXml(data.diagram_json)
-    if (fromJson) {
-      return fromJson
+    const graphValue = data.graph
+    if (!graphValue) return null
+
+    // If it's already valid drawio XML, use it directly
+    if (typeof graphValue === 'string' && graphValue.trim().startsWith('<mxGraphModel')) {
+      return graphValue.trim()
     }
 
-    return typeof data.graph === 'string' && data.graph.trim()
-      ? data.graph
-      : null
+    // Otherwise pass through diagramJsonToDrawioXml which handles JSON + Python repr strings
+    const fromGraph = diagramJsonToDrawioXml(graphValue)
+    if (fromGraph) return fromGraph
+
+    return null
   }
 
   /**

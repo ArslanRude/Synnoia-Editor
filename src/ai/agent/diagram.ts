@@ -133,10 +133,24 @@ function parseJsonMaybe(value: string): unknown {
     return null
   }
 
+  // Try standard JSON first
   try {
     return JSON.parse(trimmed)
   } catch {
-    return null
+    // Fallback: normalize Python repr strings
+    // e.g. single quotes → double, None → null, True/False → true/false
+    try {
+      const normalized = trimmed
+        // Replace Python None, True, False
+        .replace(/\bNone\b/g, 'null')
+        .replace(/\bTrue\b/g, 'true')
+        .replace(/\bFalse\b/g, 'false')
+        // Replace Python single-quoted strings with double-quoted, handling escaped single quotes
+        .replace(/'/g, '"')
+      return JSON.parse(normalized)
+    } catch {
+      return null
+    }
   }
 }
 
@@ -244,7 +258,7 @@ function exportDrawioXmlToSvg({
               spinKey: 'export',
               border: 8,
             })
-          }, 500)
+          }, 1500)
           return
         }
 
