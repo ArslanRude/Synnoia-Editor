@@ -132,35 +132,14 @@
                         </div>
                     </div>
 
-                    <!-- Thinking indicator -->
-                    <div v-if="agent.status.value === 'thinking'" class="thinking-block">
-                        <div class="thinking-border-glow"></div>
-                        <div class="thinking-inner">
-                            <div class="thinking-header">
-                                <div class="thinking-avatar-glow">
-                                    <img width="18" height="18" src="/src/assets/logo/Synnoia Logo White.png"
-                                        alt="Synnoia Logo">
-                                </div>
-                                <div class="thinking-label">Synnoia is working</div>
-                                <div class="thinking-elapsed">{{ thinkingElapsed }}s</div>
-                            </div>
-                            <div class="thinking-phrase-area">
-                                <Transition name="fade-slide" mode="out-in">
-                                    <span class="thinking-phrase" :key="thinkingPhrase">{{ thinkingPhrase }}</span>
-                                </Transition>
-                            </div>
-                            <div class="thinking-wave">
-                                <span class="wave-dot"></span>
-                                <span class="wave-dot"></span>
-                                <span class="wave-dot"></span>
-                                <span class="wave-dot"></span>
-                                <span class="wave-dot"></span>
-                            </div>
-                            <div class="thinking-progress-bar">
-                                <div class="thinking-progress-shimmer"></div>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Thinking/Streaming indicator -->
+                    <StreamingBlock
+                        v-if="(agent.status.value === 'thinking' || agent.status.value === 'proposing') && agent.status.value !== 'awaiting-confirmation'"
+                        :planning-items="agent.planningItems.value"
+                        :node="agent.streamingNode.value"
+                        :tokens="agent.streamingTokens.value"
+                        :summary="agent.streamingSummary.value"
+                    />
                 </div>
 
                 <!-- Accept/Reject Bar -->
@@ -234,6 +213,7 @@ import type { Editor } from '@tiptap/vue-3'
 
 import { useAgent, sendSynnoiaAgentRequest } from '@/ai/agent'
 import { useDocument } from '@/composables/useDocument'
+import StreamingBlock from './StreamingBlock.vue'
 
 interface Props {
     isOpen?: boolean

@@ -9,7 +9,7 @@ import type { Editor } from '@tiptap/vue-3'
 import { acceptDiffDocument, createDiffDocument, rejectDiffDocument } from '@/ai/diff'
 import { documentsEqual, type TipTapDoc } from '@/ai/diff'
 
-import { applyDocumentOperationToDoc, parseGeneratedDocument, parseStreamedBackendResult } from '../documentOperation'
+import { applyDocumentOperationToDoc, isEmptyStarterDocument, parseGeneratedDocument, parseStreamedBackendResult } from '../documentOperation'
 import { createDiagramImageNode, diagramJsonToDrawioXml, isDrawioXmlEmpty } from '../diagram'
 import type { AgentMessage, AgentMessageBlock, AgentOutlineBlockItem, AgentStatus, HistoryEntry, SynnoiaAgentBackendResponse, UndoEntry } from '../types'
 import type { AgentResponseWithMetadata, SynnoiaAgentCallbacks } from '../websocket'
@@ -29,6 +29,12 @@ export function useAgent() {
   const streamingContent = ref<string>('')
   const errorMessage = ref<string>('')
   const selectionRange = ref<{ from: number; to: number } | null>(null)
+
+  // --- Real-time streaming state (shown in StreamingBlock sidebar widget) ---
+  const streamingNode = ref<string>('')
+  const streamingTokens = ref<string>('')
+  const streamingSummary = ref<string>('')
+  const planningItems = ref<AgentOutlineBlockItem[]>([])
 
   // Computed
   const hasProposal = computed(
@@ -224,6 +230,12 @@ export function useAgent() {
     directProposal.value = false
     streamingContent.value = ''
 
+    // Reset streaming sidebar state for fresh request
+    streamingNode.value = ''
+    streamingTokens.value = ''
+    streamingSummary.value = ''
+    planningItems.value = []
+
     addMessage('user', prompt)
     status.value = 'thinking'
 
@@ -307,29 +319,60 @@ export function useAgent() {
       onProcessing(message) {
         const msg = ensureAssistantMessage()
         msg.blocks = [
-          { type: 'heading', text: 'Status' },
           { type: 'paragraph', text: message || 'Processing your request...' },
         ]
         msg.content = message || 'Processing your request...'
         msg.status = 'streaming'
       },
-      onToken(token) {
+      // Full token+state callback — called for every streaming message from backend
+      onToken(token, response) {
         const msg = ensureAssistantMessage()
         if (!receivedStream) {
           streamingContent.value = ''
+          streamingTokens.value = ''
           msg.content = 'Working on your request...'
           receivedStream = true
         }
-        streamingContent.value += token
-        const progress = parseStreamedBackendResult(streamingContent.value)
-        if (progress) {
-          renderAssistantState(progress)
-        } else if (!msg.blocks?.length) {
-          msg.blocks = [
-            { type: 'heading', text: 'Status' },
-            { type: 'paragraph', text: 'Working on your request...' },
-          ]
+
+        const msgType = (response as any).type as string | undefined
+
+        if (msgType === 'token') {
+          // Raw character token from planner or writer node
+          const node = (response as any).node || 'agent'
+          streamingNode.value = node
+          streamingTokens.value += token
+          streamingContent.value += token
+        } else if (msgType === 'values' || msgType === 'messages' || response.write_outline || response.diagram_outline) {
+          // LangGraph state snapshot — extract planning outline and summary
+          if ((response as any).node === 'planner') {
+            streamingNode.value = 'planner'
+          }
+          if (response.write_outline && Array.isArray(response.write_outline)) {
+            planningItems.value = normalizeWriteOutline(response.write_outline)
+          }
+          if (response.diagram_outline && Array.isArray(response.diagram_outline)) {
+            const diagItems = normalizeDiagramOutline(response.diagram_outline)
+            // Merge, avoiding duplicates
+            const existing = new Set(planningItems.value.map(i => i.title))
+            for (const item of diagItems) {
+              if (!existing.has(item.title)) planningItems.value.push(item)
+            }
+          }
+          if (response.action_summary) {
+            streamingSummary.value = response.action_summary
+          }
+          // Update sidebar message with current progress
+          const progress = parseStreamedBackendResult(streamingContent.value) || response
+          renderAssistantState(progress, 'streaming')
+        } else {
+          // Fallback plain text token
+          streamingContent.value += token
+          const progress = parseStreamedBackendResult(streamingContent.value)
+          if (progress) {
+            renderAssistantState(progress, 'streaming')
+          }
         }
+
         msg.status = 'streaming'
       },
       onError(message) {
@@ -514,7 +557,11 @@ export function useAgent() {
         operation_type: diagramOperation,
         action_summary: data.action_summary || `Previewing ${data.title || data.diagram_type || 'diagram'} in the document. Accept to keep it or reject to restore the previous document.`,
       }, 'complete')
-      status.value = 'awaiting-confirmation'
+
+      // Rule 2: Status never goes backwards once user action taken
+      if (status.value === 'thinking' || status.value === 'proposing') {
+        status.value = 'awaiting-confirmation'
+      }
       return
     }
 
@@ -547,7 +594,11 @@ export function useAgent() {
     }
 
     // Compute inline diff document
-    const markedDoc = createDiffDocument(beforeDoc, result.doc)
+    const diffBeforeDoc = {
+      ...beforeDoc,
+      content: isEmptyStarterDocument(beforeDoc.content) ? [] : beforeDoc.content,
+    }
+    const markedDoc = createDiffDocument(diffBeforeDoc, result.doc)
 
     // Render inline diff
     editor.commands.setContent(markedDoc)
@@ -563,7 +614,10 @@ export function useAgent() {
       action_summary: data.action_summary || `I've prepared changes to your document (${operationLabel}). Review the inline diff and accept or reject.`,
     }, 'complete')
 
-    status.value = 'awaiting-confirmation'
+    // Rule 2: Status never goes backwards once user action taken
+    if (status.value === 'thinking' || status.value === 'proposing') {
+      status.value = 'awaiting-confirmation'
+    }
   }
 
   function buildAgentBlocks(data: SynnoiaAgentBackendResponse): AgentMessageBlock[] {
@@ -596,13 +650,11 @@ export function useAgent() {
     }
 
     if (intent === 'generation') {
-      addTextSection(blocks, 'Task', data.task_type || inferTaskType(data))
-
       const writeOutline = normalizeWriteOutline(data.write_outline)
       if (writeOutline.length > 0) {
         blocks.push({
           type: 'outline',
-          title: 'Writing Outline',
+          title: 'Planning',
           items: writeOutline,
         })
       }
@@ -611,7 +663,7 @@ export function useAgent() {
       if (diagramOutline.length > 0) {
         blocks.push({
           type: 'outline',
-          title: 'Diagram Outline',
+          title: 'Planning',
           items: diagramOutline,
         })
       }
@@ -620,7 +672,7 @@ export function useAgent() {
       if (generatedJson) {
         blocks.push({
           type: 'code',
-          title: 'Generated JSON',
+          title: 'JSON',
           language: 'json',
           code: formatJson(generatedJson),
         })
@@ -644,7 +696,9 @@ export function useAgent() {
         })
       }
 
-      addTextSection(blocks, 'Summary', data.action_summary)
+      if (data.action_summary) {
+        blocks.push({ type: 'paragraph', text: data.action_summary })
+      }
       return blocks
     }
 
@@ -694,30 +748,20 @@ export function useAgent() {
   }
 
   function normalizeWriteOutline(value: unknown): AgentOutlineBlockItem[] {
-    if (!Array.isArray(value)) {
-      return []
-    }
-
+    if (!Array.isArray(value)) return []
     return value.map((item: any, index) => ({
-      title: String(item?.section || item?.title || `Section ${index + 1}`),
+      title: String(item?.title || item?.section || item?.step || `Step ${index + 1}`),
       instructions: item?.instructions || item?.description || '',
-      nodeTypes: Array.isArray(item?.node_types)
-        ? item.node_types
-        : Array.isArray(item?.nodeTypes)
-          ? item.nodeTypes
-          : [],
+      nodeTypes: Array.isArray(item?.node_types) ? item.node_types : Array.isArray(item?.nodes) ? item.nodes : (Array.isArray(item?.nodeTypes) ? item.nodeTypes : []),
     }))
   }
 
   function normalizeDiagramOutline(value: unknown): AgentOutlineBlockItem[] {
-    if (!Array.isArray(value)) {
-      return []
-    }
-
+    if (!Array.isArray(value)) return []
     return value.map((item: any, index) => ({
-      title: String(item?.title || item?.section || `Diagram ${index + 1}`),
+      title: item.title ? `Generate Diagram: ${item.title}` : (item.type ? `Generate Diagram: ${item.type}` : `Diagram ${index + 1}`),
       instructions: item?.instructions || item?.description || '',
-      diagramType: item?.diagram_type || item?.diagramType || item?.type || '',
+      diagramType: item?.diagram_type || item?.type || item?.diagramType || 'diagram',
     }))
   }
 
@@ -729,7 +773,6 @@ export function useAgent() {
         return value
       }
     }
-
     return JSON.stringify(value, null, 2)
   }
 
@@ -1018,7 +1061,6 @@ export function useAgent() {
     if (directProposal.value) {
       // Direct proposals (like diagrams) just need status update
       addHistoryEntry('accepted', lastPrompt.value)
-      addMessage('system', '✅ Changes applied successfully.')
       status.value = 'applied'
       proposedContent.value = null
       selectionRange.value = null
@@ -1061,8 +1103,6 @@ export function useAgent() {
     // Log to history
     addHistoryEntry('accepted', lastPrompt.value)
 
-    addMessage('system', '✅ Changes applied successfully.')
-
     // Reset proposal state
     status.value = 'applied'
     proposedContent.value = null
@@ -1089,7 +1129,6 @@ export function useAgent() {
     }
 
     addHistoryEntry('rejected', lastPrompt.value)
-    addMessage('system', '❌ Changes rejected.')
 
     // Reset
     status.value = 'rejected'
@@ -1137,6 +1176,12 @@ export function useAgent() {
     lastPrompt,
     streamingContent,
     errorMessage,
+
+    // Streaming sidebar state
+    streamingNode,
+    streamingTokens,
+    streamingSummary,
+    planningItems,
 
     // Computed
     hasProposal,

@@ -10,7 +10,7 @@ export interface AgentResponseWithMetadata {
 
 export interface SynnoiaAgentCallbacks {
   onProcessing?: (message: string) => void
-  onToken?: (token: string) => void
+  onToken?: (token: string, response: SynnoiaAgentBackendResponse) => void
   onFinal?: (response: SynnoiaAgentBackendResponse) => void
   onError?: (message: string) => void
 }
@@ -73,7 +73,7 @@ export class AgentWebSocketService {
             // If JSON parse fails, treat as streaming chunk
             if (this.pendingMessage) {
               if (this.pendingMessage.mode === 'synnoia') {
-                this.pendingMessage.callbacks?.onToken?.(event.data)
+                this.pendingMessage.callbacks?.onToken?.(event.data, { token: event.data, status: 'streaming' })
               } else {
                 const stream = new ReadableStream<string>({
                   start(controller) {
@@ -125,7 +125,8 @@ export class AgentWebSocketService {
       return
     }
 
-    if (response.error || response.status === 'error') {
+    // 1. Error handling
+    if (response.error || response.status === 'error' || (response as any).type === 'error') {
       const message = response.error || response.message || 'Agent request failed.'
       this.pendingMessage.callbacks?.onError?.(message)
       this.pendingMessage.reject(new Error(message))
@@ -133,25 +134,50 @@ export class AgentWebSocketService {
       return
     }
 
-    if (response.status === 'processing') {
+    // 2. Processing status (do not resolve promise)
+    if (response.status === 'processing' || (response as any).type === 'status') {
       this.pendingMessage.callbacks?.onProcessing?.(
         response.message || 'Processing your request...',
       )
       return
     }
 
-    if (response.status === 'streaming') {
-      const token = response.token ?? response.chunk ?? response.response ?? ''
-      if (token) {
-        this.pendingMessage.callbacks?.onToken?.(token)
+    // 3. Streaming / planning tokens — ALWAYS call onToken first before checking for final
+    // This captures: type='token' (raw chars), type='values' (LangGraph state with outlines),
+    // type='messages', and any message carrying write_outline / diagram_outline.
+    const isStreamingEvent = (
+      response.status === 'streaming' ||
+      (response as any).type === 'token' ||
+      (response as any).type === 'values' ||
+      (response as any).type === 'messages' ||
+      response.write_outline ||
+      response.diagram_outline
+    )
+
+    if (isStreamingEvent) {
+      const token = response.token ?? response.chunk ?? (response as any).message ?? response.response ?? ''
+      this.pendingMessage.callbacks?.onToken?.(token, response)
+
+      // Only fall through to promise resolution if this message ALSO carries a final payload
+      const hasFinalpayload = (
+        (response as any).type === 'complete' ||
+        response.response_json ||
+        response.chitchat_response ||
+        response.clarification_question
+      )
+      if (!hasFinalpayload) {
+        return  // pure streaming event — do NOT resolve promise
       }
-      return
+      // has both streaming data AND final payload — fall through to resolve below
     }
 
+    // 4. Final result — resolve promise
     if (
-      hasActionableFinalResponse(response) ||
-      isBackendFinalEnvelope(response) ||
-      response.response
+      (response as any).type === 'complete' ||
+      response.response_json ||
+      response.chitchat_response ||
+      response.clarification_question ||
+      isBackendFinalEnvelope(response)
     ) {
       this.pendingMessage.callbacks?.onFinal?.(response)
       this.pendingMessage.resolve(response)
@@ -159,6 +185,7 @@ export class AgentWebSocketService {
       return
     }
 
+    // 5. status='complete' with no payload — gracefully ignore
     if (response.status === 'complete') {
       return
     }
