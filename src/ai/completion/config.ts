@@ -1,6 +1,6 @@
 export const WEBSOCKET_CONFIG = {
   // Update this URL to match your FastAPI WebSocket server
-  URL: 'wss://synnoia-tab-production.up.railway.app/ws',
+  URL: 'wss://synnoiatab-production.up.railway.app/ws',
 
   // Connection settings
   MAX_RECONNECT_ATTEMPTS: 5,
